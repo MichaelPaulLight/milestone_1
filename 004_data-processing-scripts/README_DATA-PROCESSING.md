@@ -1,0 +1,3 @@
+This folder contains all the scripts/notebooks used to process data. 
+
+Outputs should be stored in .../003_data/...
