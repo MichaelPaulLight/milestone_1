@@ -4,8 +4,7 @@ import os
 import re
 
 def read_dataframes():
-    # Clean data folder and file names
-    base_path = r'003_data\002_clean-data' 
+
     file_names = {  # table_name: file_name
         'ballot': 'BALLOT_CLEANED.csv',
         'demo': 'DEMO_CLEANED.csv',
@@ -16,7 +15,7 @@ def read_dataframes():
     }
     
     # Target column names for each dataframe
-    column_name_mapping_not_used = generate_column_name_mapping()
+    # column_name_mapping_not_used = generate_column_name_mapping()
     column_name_mapping = { # table_name: [column_names]
         'ballot': [
             'id', 'county_name', 'yes_count_2020', 'no_count_2020', 'total_count_2020', 'yes_percentage_2020', 'no_percentage_2020',
@@ -109,16 +108,15 @@ def read_dataframes():
     dataframes = {}
     
     for table_name, file_name in file_names.items():
-        file_path = os.path.join(base_path, file_name)
-        df = pd.read_csv(file_path)
-        df.columns = column_name_mapping[table_name]
+        df = pd.read_csv(file_name)
+        # df.columns = column_name_mapping[table_name]
         if 'id' in df.columns:
             df.drop(columns=['id'], inplace=True)
-        df.sort_values(by='county_name', inplace=True)
-        df.reset_index(drop=True, inplace=True)
+        # df.sort_values(by='county_name', inplace=True)
+        # df.reset_index(drop=True, inplace=True)
         dataframes[table_name] = df
-    dataframes['demo'] = pd.merge(dataframes['demo'], dataframes['demo_add'], on='county_name', how='right')
-    dataframes.pop('demo_add')
+    # dataframes['demo'] = pd.merge(dataframes['demo'], dataframes['demo_add'], on='county_name', how='right')
+    # dataframes.pop('demo_add')
     return dataframes
 
 class Table:
@@ -230,7 +228,7 @@ class Database:
         else:
             raise ValueError(f"Table '{table_name}' not found")
 
-    def merge_views(self, views_list: List[Tuple[str, str]]) -> pd.DataFrame:
+    def merge_views(self, views_list: List[Tuple[str, str]], key = 'county_name') -> pd.DataFrame:
         """Merge multiple views from different tables."""
         merged_df = None
         for table_name, view_name in views_list:
@@ -238,7 +236,7 @@ class Database:
             if merged_df is None:
                 merged_df = view_df
             else:
-                merged_df = pd.merge(merged_df, view_df, on='county_name', how='outer')
+                merged_df = pd.merge(merged_df, view_df, on=key, how='outer')
         return merged_df
 
     def merge_all(self) -> pd.DataFrame:
