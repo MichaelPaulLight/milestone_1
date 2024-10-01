@@ -16,6 +16,7 @@ def read_dataframes():
     }
     
     # Target column names for each dataframe
+    column_name_mapping_not_used = generate_column_name_mapping()
     column_name_mapping = { # table_name: [column_names]
         'ballot': [
             'id', 'county_name', 'yes_count_2020', 'no_count_2020', 'total_count_2020', 'yes_percentage_2020', 'no_percentage_2020',
@@ -264,3 +265,42 @@ class Database:
         if columns:
             result = result[columns]
         return result
+
+def generate_column_name_mapping() -> Dict[str, List[str]]:
+
+    base_path = r'003_data\002_clean-data' 
+    file_names = {  # table_name: file_name
+        'ballot': 'BALLOT_CLEANED.csv',
+        'demo': 'DEMO_CLEANED.csv',
+        'demo_add': 'DEMO_ADD_CLEANED.csv',
+        'facility': 'FASCILITY_CLEANED.csv',
+        'medicare': 'MEDICARE_CLEAN.csv',
+        'voter': 'VOTER_REG_CEANED.csv'
+    }
+    def clean_column_name(name: str) -> str:
+        """Cleans and standardizes a column name."""
+        name = name.lower()
+        name = re.sub(r'[^\w\s]', '_', name)
+        name = re.sub(r'\s+', '_', name)
+        return name.strip('_')
+
+    column_name_mapping = {}
+    
+    for table_name, file_name in file_names.items():
+        file_path = os.path.join(base_path, file_name)
+        df = pd.read_csv(file_path)
+        
+        # Clean and standardize column names
+        columns = [clean_column_name(col) for col in df.columns]
+        
+        # Ensure 'county_name' is present and in the correct position
+        if 'id' in columns and 'county_name' in columns:
+            columns.remove('county_name')
+            id_index = columns.index('id')
+            columns.insert(id_index + 1, 'county_name')
+        elif 'county_name' not in columns:
+            columns.insert(0, 'county_name')
+        
+        column_name_mapping[table_name] = columns
+    
+    return column_name_mapping
