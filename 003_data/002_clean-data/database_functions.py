@@ -155,57 +155,6 @@ class Database:
     def create_views(self) -> Dict[str, Dict[str, List[str]]]:
         """Create predefined views for each table."""
         views = {
-            'ballot': {
-                '2018': ['county_name', 'yes_count_2018', 'no_count_2018', 'total_count_2018', 'yes_perc_2018', 'no_perc_2018'],
-                '2020': ['county_name', 'yes_count_2020', 'no_count_2020', 'total_count_2020', 'yes_perc_2020', 'no_perc_2020'],
-                '2022': ['county_name', 'yes_count_2022', 'no_count_2022', 'total_count_2022', 'yes_perc_2022', 'no_perc_2022'],
-                'all_counts': ['county_name', 'yes_count_2020', 'no_count_2020', 'total_count_2020', 'yes_count_2018', 'no_count_2018', 'total_count_2018', 'yes_count_2022', 'no_count_2022', 'total_count_2022'],
-                'all_percentages': ['county_name', 'yes_perc_2020', 'no_perc_2020', 'yes_perc_2018', 'no_perc_2018', 'yes_perc_2022', 'no_perc_2022'],
-            },
-            'demo': {
-                'population': ['county_name', 'population_january_2023', 'median_household_income_2021'],
-                'race_ethnicity': ['county_name', 'one_race', 'some_other_race', 'two_or_more_races', 'total_races_tallied', 
-                                'white_alone_or_in_combination_with_one_or_more_other_races', 'black_or_african_american_alone_or_in_combination_with_one_or_more_other_races', 
-                                'american_indian_and_alaska_native_alone_or_in_combination_with_one_or_more_other_races', 
-                                'asian_alone_or_in_combination_with_one_or_more_other_races', 
-                                'native_hawaiian_and_other_pacific_islander_alone_or_in_combination_with_one_or_more_other_races', 
-                                'hispanic_or_latino_of_any_race', 'race_ethnicity_american_indian_2023', 
-                                'race_ethnicity_asian_2023', 'race_ethnicity_black_2023', 'race_ethnicity_hispanic_2023', 
-                                'race_ethnicity_multi_racial_ethnic_2023', 'race_ethnicity_hawaiian_pacific_island_2023', 
-                                'race_ethnicity_white_2023'],
-                'age_groups': ['county_name', 'age_0_5_2023', 'age_6_17_2023', 'age_18_64_2023', 'age_65_2023'],
-                'age_distribution': ['county_name', 'under_5_years', 'age_5_9', 'age_10_14', 
-                                    'age_15_19', 'age_20_24', 'age_25_29', 
-                                    'age_30_34', 'age_35_39', 'age_40_44', 
-                                    'age_45_49', 'age_50_54', 'age_55_59', 
-                                    'age_60_64', 'age_65_69', 'age_70_74', 
-                                    'age_75_79', 'age_80_84', 'age_85_plus', 
-                                    'age_16_plus', 'age_18_plus', 'age_21_plus', 
-                                    'age_62_plus', 'age_65_plus'],
-                'gender_distribution': ['county_name', 'male_population', 'female_population'],
-                'household_composition': ['county_name', 'in_households', 'householder', 'total_households', 
-                                        'married_couple_household', 'cohabiting_couple_household', 
-                                        'male_householder_no_spouse_or_partner_present', 'female_householder_no_spouse_or_partner_present', 
-                                        'households_with_individuals_under_18_years', 
-                                        'households_with_individuals_age_65_plus', 'median_household_income_2021']
-            },
-            'fascility': {
-                'summary': ['year', 'county_name', 'fac_count', 'stations', 'prof_np', 'chain_own'],
-                'ratings': ['year', 'county_name', 'fac_star', 'xp_star', 'comm_scr', 'quality_scr', 'info_scr', 'phys_scr', 'staff_scr', 'fac_scr']
-            },
-            'medicare': {
-                'payments': ['year_1', 'county_name', 'pymt_amt', 'pymt_pct', 'pymt_pc', 'pymt_per_user', 'stdz_pymt_amt', 'stdz_pymt_pct', 'stdz_pymt_pc', 'stdz_pymt_per_user'],
-                'standardized_payments': ['year_1', 'county_name', 'stdz_pymt_amt', 'stdz_pymt_pct', 'stdz_pymt_pc', 'stdz_pymt_per_user'],
-                'visits': ['year_1', 'county_name', 'user_cnt', 'user_pct', 'visits_per_1000']
-            },
-            'voter': {
-                '2018': ['county_name', 'eligible_2018', 'total_registered_2018', 'democratic_2018', 'republican_2018', 'american_independent_2018', 'green_2018', 
-                        'libertarian_2018', 'peace_and_freedom_2018', 'unknown_2018', 'other_2018', 'no_party_preference_2018'],
-                '2020': ['county_name', 'eligible_2020', 'total_registered_2020', 'democratic_2020', 'republican_2020', 'american_independent_2020', 'green_2020', 
-                        'libertarian_2020', 'peace_and_freedom_2020', 'unknown_2020', 'other_2020', 'no_party_preference_2020'],
-                '2022': ['county_name', 'eligible_2022', 'total_registered_2022', 'democratic_2022', 'republican_2022', 'american_independent_2022', 'green_2022', 
-                        'libertarian_2022', 'peace_and_freedom_2022', 'unknown_2022', 'other_2022', 'no_party_preference_2022']
-            }
         }
         return views
 
@@ -230,28 +179,50 @@ class Database:
             raise ValueError(f"Table '{table_name}' not found")
         
     def merge_views(self, views_list: List[Tuple[str, str]]) -> pd.DataFrame:
-        """Concatenate multiple views from different tables."""
-        dfs_to_concat = [self.get_view(table_name, view_name) for table_name, view_name in views_list]
-        concatenated_df = pd.concat(dfs_to_concat, ignore_index=True)
+        """Merge multiple views from different tables using an outer join on 'year' and 'county_name'."""
+        dfs_to_merge = [self.get_view(table_name, view_name) for table_name, view_name in views_list]
         
-        # Move 'county_name' and 'year' to the front if they exist
-        cols_to_front = ['county_name', 'year']
-        for col in reversed(cols_to_front):
-            if col in concatenated_df.columns:
-                concatenated_df.insert(0, col, concatenated_df.pop(col))
-        return concatenated_df
+        # Ensure 'year' and 'county_name' columns exist in all dataframes
+        for df in dfs_to_merge:
+            if 'year' not in df.columns:
+                df['year'] = pd.NaT
+            if 'county_name' not in df.columns:
+                df['county_name'] = ''
+        
+        # Perform outer join on 'year' and 'county_name'
+        merged_df = dfs_to_merge[0]
+        for df in dfs_to_merge[1:]:
+            merged_df = pd.merge(merged_df, df, on=['year', 'county_name'], how='outer')
+        
+        # Move 'county_name' and 'year' to the front
+        cols = merged_df.columns.tolist()
+        cols = ['county_name', 'year'] + [col for col in cols if col not in ['county_name', 'year']]
+        merged_df = merged_df[cols]
+        
+        return merged_df
 
     def merge_all(self) -> pd.DataFrame:
-        """Concatenate all tables into a single dataframe."""
-        dfs_to_concat = [df for df in self.dataframes.values()]
-        concatenated_df = pd.concat(dfs_to_concat, ignore_index=True)
+        """Merge all tables into a single dataframe using an outer join on 'year' and 'county_name'."""
+        dfs_to_merge = list(self.dataframes.values())
         
-        # Move 'county_name' and 'year' to the front if they exist
-        cols_to_front = ['county_name', 'year']
-        for col in reversed(cols_to_front):
-            if col in concatenated_df.columns:
-                concatenated_df.insert(0, col, concatenated_df.pop(col))
-        return concatenated_df
+        # Ensure 'year' and 'county_name' columns exist in all dataframes
+        for df in dfs_to_merge:
+            if 'year' not in df.columns:
+                df['year'] = pd.NaT
+            if 'county_name' not in df.columns:
+                df['county_name'] = ''
+        
+        # Perform outer join on 'year' and 'county_name'
+        merged_df = dfs_to_merge[0]
+        for df in dfs_to_merge[1:]:
+            merged_df = pd.merge(merged_df, df, on=['year', 'county_name'], how='outer')
+        
+        # Move 'county_name' and 'year' to the front
+        cols = merged_df.columns.tolist()
+        cols = ['county_name', 'year'] + [col for col in cols if col not in ['county_name', 'year']]
+        merged_df = merged_df[cols]
+        
+        return merged_df
 
     def query(self, conditions: Dict[str, Any], columns: Optional[List[str]] = None) -> pd.DataFrame:
         """
