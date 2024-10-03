@@ -1,0 +1,426 @@
+```{r}
+library(tidyverse)
+library(nanoparquet)
+library(brms)
+library(bayesplot)
+```
+
+Reading in the merged CMS dataframes for the assembly districts and cities.
+
+```{r}
+assembly_df <- read_parquet("../003_data/003_merged-data/merged_cms_ballot-measures_by-assembly-district.parquet")
+
+city_df <- read_parquet("../003_data/003_merged-data/merged_cms_ballot-measures_by-city.parquet")
+```
+
+Imputing missing district_id and city values in the dataframes by filling in the most recent non-NA district_id/city value for each provider yields the same number of unique provider_numbers as the number of unique provider_numbers in the assembly_df dataframe with no missing district_id values.
+
+So, this imputation method does not introduce any new provider_numbers into the dataset and so isn't necessary. 
+
+```{r}
+(assembly_df
+|> filter(!is.na(district_id))
+|> select(provider_number)
+|> distinct()
+|> nrow()
+)
+
+(assembly_df |>
+  # Group by provider_number
+  group_by(provider_number) |>
+  # Arrange by year in descending order to get the most recent non-NA district_id
+  arrange(desc(year)) |>
+  # Fill NA district_id values with the most recent non-NA value for each provider
+  fill(district_id, .direction = "down") |>
+  # Ungroup to perform operations on the entire dataset
+  ungroup() |>
+  # Filter for non-NA district_id and specific years
+  filter(!is.na(district_id), year %in% c("2018", "2020", "2022")) |>
+  # Select only the provider_number column
+  select(provider_number) |>
+  # Keep only distinct provider numbers
+  distinct() |>
+  # Count the number of rows (distinct providers)
+  nrow()
+)
+
+```
+
+```{r}
+(city_df
+|> filter(!is.na(city))
+|> select(provider_number)
+|> distinct()
+|> nrow()
+)
+
+(city_df 
+  # Group by provider_number
+  |> group_by(provider_number)
+  # Arrange by year in descending order to get the most recent non-NA district_id
+  |> arrange(desc(year))
+  # Fill NA district_id values with the most recent non-NA value for each provider
+  |> fill(city, .direction = "down")
+  # Ungroup to perform operations on the entire dataset
+  |> ungroup()
+  # Group by provider_number and year
+  |>  group_by(provider_number, year)
+  |> ungroup()
+  |> filter(!is.na(city))
+  |> select(provider_number)
+  |> distinct()
+  |> nrow()
+)
+```
+
+```{r}
+filtered_assembly_df <- (assembly_df 
+ |> filter(vote_type == "yes", !is.na(district_id), !is.na(five_star), !is.na(mortality_rate_facility), five_star_data_availability_code == 1)
+ |> select(county, district_id, five_star, mortality_rate_facility, `_of_dialysis_stations`, vote_count)
+)
+
+std_assembly_df <- (
+  filtered_assembly_df
+  # Convert five_star to ordered factor
+  |> mutate(five_star = factor(five_star, levels = 1:5, ordered = TRUE))
+  # Keep original data types for numeric variables
+  |> mutate(mortality_rate_facility = as.numeric(mortality_rate_facility),
+            n_dialysis_stations = as.numeric(`_of_dialysis_stations`))
+  # Standardize numeric variables
+  |> mutate(across(
+    c(mortality_rate_facility, n_dialysis_stations),
+    list(z = ~scale(.)),
+    .names = "{col}_z"
+  )) 
+)
+
+# Check the structure of five_star
+print(str(std_assembly_df$five_star))
+```
+
+```{r}
+# Model Specification
+model_formula_1 <- bf(
+  formula = vote_count ~ mo(five_star) + 
+                       mortality_rate_facility_z + 
+                       n_dialysis_stations_z + 
+                       (1 | district_id) + 
+                       (1 | county)
+)
+
+model_1 <- brm(
+  formula = model_formula_1,
+  family = negbinomial(),
+  data = std_assembly_df,
+  cores = 4,
+  chains = 4,
+  iter = 2000,
+  warmup = 1000,
+  file = "../006_models/dialysis_model_1"
+)
+```
+
+```{r}
+summary(model_1)
+
+```
+
+```{r}
+pp_check(model_1)
+```
+```{r}
+loo_result <- loo(model_1)
+print(loo_result)
+```
+
+```{r}
+ce <- conditional_effects(model_1, 
+                          effects = "mortality_rate_facility_z:five_star",
+                          re_formula = NA)
+
+# Plot the conditional effects
+plot(ce, plot = FALSE)[[1]] +
+  labs(title = "Conditional Effect of Mortality Rate by Five-Star Rating",
+       x = "Mortality Rate (z-score)",
+       y = "Predicted Vote Count",
+       color = "Five-Star Rating") +
+  theme_minimal()
+```
+
+```{r}
+ce[[1]]
+```
+
+
+
+```{r}
+plot(model_1)
+```
+```{r}
+mcmc_areas(model_1, pars = c("b_mortality_rate_facility_z", "b_n_dialysis_stations_z"))
+```
+
+```{r}
+plot(conditional_effects(model_1))
+```
+
+```{r}
+residuals <- residuals(model_1)
+plot(fitted(model_1), residuals, main="Residuals vs Fitted")
+abline(h=0, col="red")
+
+# 7. R-squared
+print(bayes_R2(model_1))
+
+# 8. MCMC Diagnostics
+plot(model_1, type = "trace")
+
+# 9. Posterior Predictive Distribution
+predictions <- predict(model_1)
+head(predictions)
+```
+
+```{r}
+library(ggdist)
+
+county_effects <- ranef(model_1)$county[, , "Intercept"]
+
+county_effects_df <- data.frame(
+  county = rownames(county_effects),
+  estimate = county_effects[, "Estimate"],
+  lower = county_effects[, "Q2.5"],
+  upper = county_effects[, "Q97.5"]
+)
+
+# 1. Pointrange plot (similar to a caterpillar plot)
+ggplot(county_effects_df, aes(y = reorder(county, estimate))) +
+  stat_pointinterval(aes(x = estimate, xmin = lower, xmax = upper)) +
+  labs(title = "County Random Effects", 
+       x = "Effect Estimate", 
+       y = "County") +
+  theme_minimal()
+
+# 2. Density plot of county random effects
+ggplot(county_effects_df, aes(x = estimate)) +
+  stat_halfeye() +
+  labs(title = "Distribution of County Random Effects",
+       x = "Effect Estimate",
+       y = "Density") +
+  theme_minimal()
+
+# 3. Ridgeline plot
+# For this, we need to simulate draws from the posterior
+# county_effects_draws <- as_draws_df(model_1, variable = county
+# )
+# county_effects_long <- county_effects_draws %>%
+#   pivot_longer(cols = starts_with("r_county"), 
+#                names_to = "county", 
+#                values_to = "effect") %>%
+#   mutate(county = gsub("r_county\\[(.+),Intercept\\]", "\\1", county))
+# 
+# ggplot(county_effects_long, aes(x = effect, y = county)) +
+#   stat_density_ridges(quantile_lines = TRUE, quantiles = 2) +
+#   labs(title = "Distribution of County Random Effects",
+#        x = "Effect Estimate",
+#        y = "County") +
+#   theme_minimal()
+
+# 4. Interval plot
+ggplot(county_effects_df, aes(y = reorder(county, estimate))) +
+  stat_interval(aes(x = estimate, xmin = lower, xmax = upper)) +
+  labs(title = "County Random Effects with Uncertainty",
+       x = "Effect Estimate",
+       y = "County") +
+  theme_minimal()
+
+```
+```{r}
+district_effects <- ranef(model_1)$district_id[, , "Intercept"]
+
+district_effects_df <- data.frame(
+  district_id = rownames(district_effects),
+  estimate = district_effects[, "Estimate"],
+  lower = district_effects[, "Q2.5"],
+  upper = district_effects[, "Q97.5"]
+)
+
+# 1. Pointrange plot (similar to a caterpillar plot)
+ggplot(district_effects_df, aes(y = reorder(district_id, estimate))) +
+  stat_pointinterval(aes(x = estimate, xmin = lower, xmax = upper)) +
+  labs(title = "District Random Effects", 
+       x = "Effect Estimate", 
+       y = "District") +
+  theme_minimal()
+
+# 2. Density plot of county random effects
+ggplot(district_effects_df, aes(x = estimate)) +
+  stat_halfeye() +
+  labs(title = "Distribution of District Random Effects",
+       x = "Effect Estimate",
+       y = "Density") +
+  theme_minimal()
+
+# 3. Ridgeline plot
+# For this, we need to simulate draws from the posterior
+# county_effects_draws <- as_draws_df(model_1, variable = county
+# )
+# county_effects_long <- county_effects_draws %>%
+#   pivot_longer(cols = starts_with("r_county"), 
+#                names_to = "county", 
+#                values_to = "effect") %>%
+#   mutate(county = gsub("r_county\\[(.+),Intercept\\]", "\\1", county))
+# 
+# ggplot(county_effects_long, aes(x = effect, y = county)) +
+#   stat_density_ridges(quantile_lines = TRUE, quantiles = 2) +
+#   labs(title = "Distribution of County Random Effects",
+#        x = "Effect Estimate",
+#        y = "County") +
+#   theme_minimal()
+
+# 4. Interval plot
+ggplot(district_effects_df, aes(y = reorder(district_id, estimate))) +
+  stat_interval(aes(x = estimate, xmin = lower, xmax = upper)) +
+  labs(title = "District Random Effects with Uncertainty",
+       x = "Effect Estimate",
+       y = "County") +
+  theme_minimal()
+
+
+```
+
+
+
+```{r}
+filtered_city_df <- (city_df 
+ |> filter(vote_type == "yes", !is.na(city), !is.na(five_star), !is.na(mortality_rate_facility), five_star_data_availability_code == 1)
+ |> select(county, city, five_star, mortality_rate_facility, `_of_dialysis_stations`, vote_count)
+)
+
+std_city_df <- (
+  filtered_city_df
+  # Convert five_star to ordered factor
+  |> mutate(five_star = factor(five_star, levels = 1:5, ordered = TRUE))
+  # Keep original data types for numeric variables
+  |> mutate(mortality_rate_facility = as.numeric(mortality_rate_facility),
+            n_dialysis_stations = as.numeric(`_of_dialysis_stations`))
+  # Standardize numeric variables
+  |> mutate(across(
+    c(mortality_rate_facility, n_dialysis_stations),
+    list(z = ~scale(.)),
+    .names = "{col}_z"
+  )) 
+)
+
+# Check the structure of five_star
+print(str(std_city_df$five_star))
+```
+
+```{r}
+# Model Specification
+model_formula_2 <- bf(
+  formula = vote_count ~ mo(five_star) + 
+                       mortality_rate_facility_z + 
+                       n_dialysis_stations_z + 
+                       (1 | city) + 
+                       (1 | county)
+)
+
+model_2 <- brm(
+  formula = model_formula_2,
+  family = negbinomial(),
+  data = std_city_df,
+  cores = 4,
+  chains = 4,
+  iter = 2000,
+  warmup = 1000,
+  file = "../006_models/dialysis_model_2"
+)
+```
+
+```{r}
+print(summary(model_2))
+
+# 2. Posterior Predictive Checks
+pp_check(model_2)
+
+# 3. LOOIC
+loo_result <- loo(model_2)
+print(loo_result)
+
+# 4. Posterior Distributions
+plot(model_2)
+
+# Custom posterior plot
+mcmc_areas(model_2, pars = c("b_mortality_rate_facility_z", "b_n_dialysis_stations_z"))
+
+# 5. Conditional Effects
+plot(conditional_effects(model_2))
+
+# 6. Residual Diagnostics
+residuals <- residuals(model_2)
+plot(fitted(model_2), residuals, main="Residuals vs Fitted")
+abline(h=0, col="red")
+
+# 7. R-squared
+print(bayes_R2(model_2))
+
+# 8. MCMC Diagnostics
+plot(model_2, type = "trace")
+
+# 9. Posterior Predictive Distribution
+predictions <- predict(model_2)
+head(predictions)
+```
+
+```{r}
+filtered_assembly_df_2 <- (assembly_df 
+ |> filter(vote_type == "yes", !is.na(district_id))
+ |> select(county, district_id, five_star, ich_cahps_survey_of_patients_experiences_star_rating, linearized_score_of_rating_of_the_dialysis_center_staff, mortality_rate_facility, `_of_dialysis_stations`, vote_count)
+)
+
+std_assembly_df_2 <- (
+  filtered_assembly_df_2
+  # Convert five_star to ordered factor
+  |> mutate(five_star = factor(five_star, levels = 1:5, ordered = TRUE),
+            cahps_rating = factor(ich_cahps_survey_of_patients_experiences_star_rating, levels = 1:5, ordered = TRUE))
+  # Keep original data types for numeric variables
+  |> mutate(mortality_rate_facility = as.numeric(mortality_rate_facility),
+            n_dialysis_stations = as.numeric(`_of_dialysis_stations`),
+            staff_rating = as.numeric(linearized_score_of_rating_of_the_dialysis_center_staff))
+  # Standardize numeric variables
+  |> mutate(across(
+    c(mortality_rate_facility,staff_rating, n_dialysis_stations),
+    list(z = ~scale(.)),
+    .names = "{col}_z"
+  )) 
+)
+
+# Check the structure of five_star
+print(str(std_assembly_df_2$five_star))
+```
+
+```{r}
+# Model Specification
+model_formula_3 <- bf(
+  formula = vote_count ~ mo(five_star) + 
+                       mortality_rate_facility_z + 
+                       n_dialysis_stations_z + 
+                       gp(year) + 
+                       (1 | district_id) + 
+                       (1 | county)
+)
+
+
+
+model_1 <- brm(
+  formula = model_formula_1,
+  family = negbinomial(),
+  data = std_assembly_df,
+  cores = 4,
+  chains = 4,
+  iter = 2000,
+  warmup = 1000,
+  file = "../006_models/dialysis_model_3"
+)
+```
+
