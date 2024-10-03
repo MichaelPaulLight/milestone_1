@@ -16,6 +16,14 @@ city_df <- read_parquet("../003_data/003_merged-data/merged_cms_ballot-measures_
 Imputing missing district_id and city values in the dataframes by filling in the most recent non-NA district_id/city value for each provider yields the same number of unique provider_numbers as the number of unique provider_numbers in the assembly_df dataframe with no missing district_id values.
 
 So, this imputation method does not introduce any new provider_numbers into the dataset and so isn't necessary. 
+```{r}
+test <- city_df |> filter(vote_type == "yes") |> select(county, city, provider_number, vote_count)
+
+test2 <- assembly_df |> filter(vote_type == "yes") |> select(county, district_id, provider_number, vote_count)
+
+```
+
+
 
 ```{r}
 (assembly_df
@@ -96,6 +104,28 @@ std_assembly_df <- (
 
 # Check the structure of five_star
 print(str(std_assembly_df$five_star))
+
+filtered_assembly_df_1.1 <- (
+  assembly_df 
+  |> mutate(mortality_rate_facility = as.numeric(mortality_rate_facility),
+            n_dialysis_stations = as.numeric(`_of_dialysis_stations`))
+  |> filter(vote_type == "yes", !is.na(district_id), !is.na(mortality_rate_facility), five_star_data_availability_code == 1, year %in%
+              c(2022,2020,2018))
+  |> select(year, provider_number, county, city, district_id, five_star, mortality_rate_facility, n_dialysis_stations, vote_count)
+  |> distinct()
+) 
+
+std_assembly_df_1.1 <- (
+  filtered_assembly_df_1.1
+  # Convert five_star to ordered factor
+  |> mutate(five_star = factor(five_star, levels = 1:5, ordered = TRUE))
+  # Standardize numeric variables
+  |> mutate(across(
+    c(mortality_rate_facility, n_dialysis_stations),
+    list(z = ~scale(.)),
+    .names = "{col}_z"
+  )) 
+)
 ```
 
 ```{r}
@@ -118,7 +148,35 @@ model_1 <- brm(
   warmup = 1000,
   file = "../006_models/dialysis_model_1"
 )
+
+
+
 ```
+```{r}
+# Model Specification
+model_formula_1.1 <- bf(
+  formula = vote_count ~ mo(five_star) + 
+                       mortality_rate_facility_z + 
+                       n_dialysis_stations_z + 
+                       (1 | district_id) + 
+                       (1 | county) + 
+                       (1 | city)
+)
+
+model_1 <- brm(
+  formula = model_formula_1.1,
+  family = negbinomial(),
+  data = std_assembly_df_1.1,
+  cores = 4,
+  chains = 4,
+  iter = 2000,
+  warmup = 1000,
+  file = "../006_models/dialysis_model_1.1"
+)
+
+
+```
+
 
 ```{r}
 summary(model_1)
@@ -400,6 +458,29 @@ print(str(std_assembly_df_2$five_star))
 ```
 
 ```{r}
+filtered_assembly_df_3 <- (assembly_df 
+ |> filter(vote_type == "yes", !is.na(district_id))
+ |> select(year, county, district_id, five_star, ich_cahps_survey_of_patients_experiences_star_rating, mortality_rate_facility, `_of_dialysis_stations`, linearized_score_of_rating_of_the_dialysis_center_staff, vote_count)
+)
+
+std_assembly_df_3 <- (
+  filtered_assembly_df_3
+  # Convert five_star to ordered factor
+  |> mutate(five_star = factor(five_star, levels = 1:5, ordered = TRUE),
+            cahps_rating = factor(ich_cahps_survey_of_patients_experiences_star_rating, levels = 1:5, ordered = TRUE),
+            year = as.numeric(year) - 2018)
+  # Keep original data types for numeric variables
+  |> mutate(mortality_rate_facility = as.numeric(mortality_rate_facility),
+            n_dialysis_stations = as.numeric(`_of_dialysis_stations`),
+            staff_rating = as.numeric(linearized_score_of_rating_of_the_dialysis_center_staff))
+  # Standardize numeric variables
+  |> mutate(across(
+    c(mortality_rate_facility,staff_rating, n_dialysis_stations),
+    list(z = ~scale(.)),
+    .names = "{col}_z"
+  )) 
+)
+
 # Model Specification
 model_formula_3 <- bf(
   formula = vote_count ~ mo(five_star) + 
@@ -412,15 +493,108 @@ model_formula_3 <- bf(
 
 
 
-model_1 <- brm(
-  formula = model_formula_1,
+model_3 <- brm(
+  formula = model_formula_3,
   family = negbinomial(),
-  data = std_assembly_df,
+  data = std_assembly_df_3,
   cores = 4,
   chains = 4,
   iter = 2000,
   warmup = 1000,
   file = "../006_models/dialysis_model_3"
 )
+```
+
+```{r}
+print(summary(model_3))
+
+# 2. Posterior Predictive Checks
+pp_check(model_3)
+
+# 3. LOOIC
+loo_result <- loo(model_3)
+print(loo_result)
+
+# 4. Posterior Distributions
+plot(model_3)
+
+# Custom posterior plot
+mcmc_areas(model_3, pars = c("b_mortality_rate_facility_z", "b_n_dialysis_stations_z"))
+
+# 5. Conditional Effects
+plot(conditional_effects(model_3))
+
+# 6. Residual Diagnostics
+residuals <- residuals(model_3)
+plot(fitted(model_3), residuals, main="Residuals vs Fitted")
+abline(h=0, col="red")
+
+# 7. R-squared
+print(bayes_R2(model_3))
+
+# 9. Posterior Predictive Distribution
+predictions <- predict(model_3)
+head(predictions)
+```
+
+```{r}
+filtered_assembly_df_4 <- (assembly_df 
+ |> filter(vote_type == "yes", !is.na(district_id))
+ |> select(year, provider_number, county, district_id, five_star, ich_cahps_survey_of_patients_experiences_star_rating, mortality_rate_facility, `_of_dialysis_stations`, linearized_score_of_rating_of_the_dialysis_center_staff, vote_count)
+)
+
+std_assembly_df_4 <- (
+  filtered_assembly_df_4
+  # Convert five_star to ordered factor
+  |> mutate(five_star = factor(five_star, levels = 1:5, ordered = TRUE),
+            cahps_rating = factor(ich_cahps_survey_of_patients_experiences_star_rating, levels = 1:5, ordered = TRUE),
+            year = as.numeric(year) - 2018)
+  # Keep original data types for numeric variables
+  |> mutate(mortality_rate_facility = as.numeric(mortality_rate_facility),
+            n_dialysis_stations = as.numeric(`_of_dialysis_stations`),
+            staff_rating = as.numeric(linearized_score_of_rating_of_the_dialysis_center_staff))
+  # Standardize numeric variables
+  |> mutate(across(
+    c(mortality_rate_facility,staff_rating, n_dialysis_stations),
+    list(z = ~scale(.)),
+    .names = "{col}_z"
+  )) 
+)
+
+
+```
+
+```{r}
+model_1.1 <- model_1
+
+print(summary(model_1.1))
+
+# 2. Posterior Predictive Checks
+pp_check(model_1.1)
+
+# 3. LOOIC
+loo_result <- loo(model_1.1)
+print(loo_result)
+
+# 4. Posterior Distributions
+plot(model_1.1)
+
+# Custom posterior plot
+mcmc_areas(model_1.1, pars = c("b_mortality_rate_facility_z", "b_n_dialysis_stations_z"))
+
+# 5. Conditional Effects
+plot(conditional_effects(model_1.1))
+
+# 6. Residual Diagnostics
+residuals <- residuals(model_1.1)
+plot(fitted(model_1.1), residuals, main="Residuals vs Fitted")
+abline(h=0, col="red")
+
+# 7. R-squared
+print(bayes_R2(model_1.1))
+
+# 9. Posterior Predictive Distribution
+predictions <- predict(model_1.1)
+head(predictions)
 ```
 
