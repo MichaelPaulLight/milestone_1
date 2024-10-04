@@ -177,6 +177,51 @@ model_1 <- brm(
 
 ```
 
+```{r}
+filtered_city_df_1.1 <- (
+  city_df 
+  |> mutate(mortality_rate_facility = as.numeric(mortality_rate_facility),
+            n_dialysis_stations = as.numeric(`_of_dialysis_stations`))
+  |> filter(vote_type == "yes", !is.na(city), !is.na(mortality_rate_facility), five_star_data_availability_code == 1, year %in%
+              c(2022,2020,2018))
+  |> select(year, provider_number, county, city, five_star, mortality_rate_facility, n_dialysis_stations, vote_count)
+  |> distinct()
+) 
+
+std_city_df_1.1 <- (
+  filtered_assembly_df_1.1
+  # Convert five_star to ordered factor
+  |> mutate(five_star = factor(five_star, levels = 1:5, ordered = TRUE))
+  # Standardize numeric variables
+  |> mutate(across(
+    c(mortality_rate_facility, n_dialysis_stations),
+    list(z = ~scale(.)),
+    .names = "{col}_z"
+  )) 
+)
+```
+```{r}
+model_formula_1.1_city <- bf(
+  formula = vote_count ~ mo(five_star) + 
+                       mortality_rate_facility_z + 
+                       n_dialysis_stations_z + 
+                       (1 | county) + 
+                       (1 | city)
+)
+
+model_1.1_city <- brm(
+  formula = model_formula_1.1_city,
+  family = negbinomial(),
+  data = std_city_df_1.1,
+  cores = 4,
+  chains = 4,
+  iter = 2000,
+  warmup = 1000,
+  file = "../006_models/dialysis_model_1.1_city"
+)
+```
+
+
 
 ```{r}
 summary(model_1)
@@ -595,6 +640,922 @@ print(bayes_R2(model_1.1))
 
 # 9. Posterior Predictive Distribution
 predictions <- predict(model_1.1)
+head(predictions)
+```
+
+```{r}
+
+
+model_1.1 <- model_1.1_city
+
+print(summary(model_1.1))
+
+# 2. Posterior Predictive Checks
+pp_check(model_1.1)
+
+# 3. LOOIC
+loo_result <- loo(model_1.1)
+print(loo_result)
+
+# 4. Posterior Distributions
+plot(model_1.1)
+
+# Custom posterior plot
+mcmc_areas(model_1.1, pars = c("b_mortality_rate_facility_z", "b_n_dialysis_stations_z"))
+
+# 5. Conditional Effects
+plot(conditional_effects(model_1.1))
+
+# 6. Residual Diagnostics
+residuals <- residuals(model_1.1)
+plot(fitted(model_1.1), residuals, main="Residuals vs Fitted")
+abline(h=0, col="red")
+
+# 7. R-squared
+print(bayes_R2(model_1.1))
+
+# 9. Posterior Predictive Distribution
+predictions <- predict(model_1.1)
+head(predictions)
+```
+
+```{r}
+filtered_city_df_2 <- (
+  city_df 
+  |> mutate(mortality_rate_facility = as.numeric(mortality_rate_facility),
+            n_dialysis_stations = as.numeric(`_of_dialysis_stations`),
+            staff_rating = as.numeric(linearized_score_of_rating_of_the_dialysis_center_staff))
+  |> mutate(five_star = factor(five_star, levels = 1:5, ordered = TRUE),
+            patient_experience_rating = factor(ich_cahps_survey_of_patients_experiences_star_rating, levels = 1:5, ordered = TRUE),
+            hospital_readmission = factor(patient_hospital_readmission_category,
+                              levels = c("Worse than Expected", 
+                                         "As Expected", 
+                                         "Better than Expected", 
+                                         "Not Available"),
+                              ordered = TRUE))
+  |> filter(vote_type == "yes", !is.na(city), year %in%
+              c(2022,2020,2018))
+  |> select(year, provider_number, county, city, five_star, mortality_rate_facility, staff_rating, patient_experience_rating, patient_experience_rating, n_dialysis_stations, vote_count)
+  |> distinct()
+) 
+
+std_city_df_2_complete_case <- (
+  filtered_city_df_2
+  # Standardize numeric variables
+  |> mutate(across(
+    c(mortality_rate_facility, n_dialysis_stations, staff_rating),
+    list(z = ~scale(.)),
+    .names = "{col}_z"
+  ))
+  |> drop_na() 
+)
+
+std_city_df_2 <- (
+  filtered_city_df_2
+  # Standardize numeric variables
+  |> mutate(across(
+    c(mortality_rate_facility, n_dialysis_stations, staff_rating),
+    list(z = ~scale(.)),
+    .names = "{col}_z"
+  ))
+)
+
+```
+
+
+```{r}
+model_formula_2_city_complete_case <- bf(
+  formula = vote_count ~ mo(five_star) + 
+                       mo(patient_experience_rating) +
+                       mortality_rate_facility_z + 
+                       n_dialysis_stations_z + 
+                       staff_rating_z +
+                       (1 | county) + 
+                       (1 | city)
+)
+
+model_2_city_complete_case <- brm(
+  formula = model_formula_2_city_complete_case,
+  family = negbinomial(),
+  data = std_city_df_2_complete_case,
+  cores = 4,
+  chains = 4,
+  iter = 2000,
+  warmup = 1000,
+  file = "../006_models/dialysis_model_2_city_complete_case"
+)
+```
+
+```{r}
+print(summary(model_2_city_complete_case))
+
+# 2. Posterior Predictive Checks
+pp_check(model_2_city_complete_case)
+
+# 3. LOOIC
+loo_result <- loo(model_2_city_complete_case)
+print(loo_result)
+
+# 4. Posterior Distributions
+plot(model_2_city_complete_case)
+
+# Custom posterior plot
+mcmc_areas(model_2_city_complete_case, pars = c("b_mortality_rate_facility_z", "b_n_dialysis_stations_z"))
+
+# 5. Conditional Effects
+plot(conditional_effects(model_2_city_complete_case))
+
+# 6. Residual Diagnostics
+residuals <- residuals(model_2_city_complete_case)
+plot(fitted(model_2_city_complete_case), residuals, main="Residuals vs Fitted")
+abline(h=0, col="red")
+
+# 7. R-squared
+print(bayes_R2(model_2_city_complete_case))
+
+# 9. Posterior Predictive Distribution
+predictions <- predict(model_2_city_complete_case)
+head(predictions)
+
+```
+
+
+
+```{r}
+filtered_city_df_3 <- (
+  city_df 
+  |> mutate(mortality_rate_facility = as.numeric(mortality_rate_facility),
+            n_dialysis_stations = as.numeric(`_of_dialysis_stations`),
+            staff_rating = as.numeric(linearized_score_of_rating_of_the_dialysis_center_staff),
+            five_star = as.numeric(five_star),
+            patient_experience_rating = as.numeric(ich_cahps_survey_of_patients_experiences_star_rating))
+  |> mutate(hospital_readmission = factor(patient_hospital_readmission_category,
+                              levels = c("Worse than Expected", 
+                                         "As Expected", 
+                                         "Better than Expected", 
+                                         "Not Available"),
+                              ordered = TRUE))
+  |> filter(vote_type == "yes", !is.na(city), year %in%
+              c(2022,2020,2018))
+  |> select(year, provider_number, county, city, five_star, mortality_rate_facility, staff_rating, patient_experience_rating, patient_experience_rating, n_dialysis_stations, hospital_readmission, vote_count)
+  |> distinct()
+) 
+
+std_city_df_3_complete_case <- (
+  filtered_city_df_3
+  # Standardize numeric variables
+  |> mutate(across(
+    c(five_star, patient_experience_rating, mortality_rate_facility, n_dialysis_stations, staff_rating),
+    list(z = ~scale(.)),
+    .names = "{col}_z"
+  ))
+  |> drop_na() 
+)
+
+model_formula_3_city_complete_case <- bf(
+  formula = vote_count ~ five_star_z + 
+                       patient_experience_rating_z +
+                       mortality_rate_facility_z + 
+                       n_dialysis_stations_z + 
+                       staff_rating_z +
+                       mo(hospital_readmission) +
+                       (1 | county) + 
+                       (1 | city)
+)
+
+model_3_city_complete_case <- brm(
+  formula = model_formula_3_city_complete_case,
+  family = negbinomial(),
+  data = std_city_df_3_complete_case,
+  cores = 4,
+  chains = 4,
+  iter = 2000,
+  warmup = 1000,
+  file = "../006_models/dialysis_model_3_city_complete_case"
+)
+```
+
+```{r}
+print(summary(model_3_city_complete_case))
+
+# 2. Posterior Predictive Checks
+pp_check(model_3_city_complete_case)
+
+# 3. LOOIC
+loo_result <- loo(model_3_city_complete_case)
+print(loo_result)
+
+# 4. Posterior Distributions
+plot(model_3_city_complete_case)
+
+# Custom posterior plot
+mcmc_areas(model_3_city_complete_case, pars = c("b_mortality_rate_facility_z", "b_n_dialysis_stations_z", "b_five_star_z", "b_patient_experience_rating_z", "b_staff_rating_z"))
+
+# 5. Conditional Effects
+plot(conditional_effects(model_3_city_complete_case))
+
+# 6. Residual Diagnostics
+residuals <- residuals(model_3_city_complete_case)
+plot(fitted(model_3_city_complete_case), residuals, main="Residuals vs Fitted")
+abline(h=0, col="red")
+
+# 7. R-squared
+print(bayes_R2(model_3_city_complete_case))
+
+# 9. Posterior Predictive Distribution
+predictions <- predict(model_3_city_complete_case)
+head(predictions)
+
+```
+
+```{r}
+library(ggdist)
+
+county_effects <- ranef(model_3_city_complete_case)$county[, , "Intercept"]
+
+county_effects_df <- data.frame(
+  county = rownames(county_effects),
+  estimate = county_effects[, "Estimate"],
+  lower = county_effects[, "Q2.5"],
+  upper = county_effects[, "Q97.5"]
+)
+
+# 1. Pointrange plot (similar to a caterpillar plot)
+ggplot(county_effects_df, aes(y = reorder(county, estimate))) +
+  stat_slabinterval(aes(x = estimate), point_interval = "median_qi") +
+  labs(title = "County Random Effects", 
+       x = "Effect Estimate", 
+       y = "County") +
+  theme_minimal()
+
+# 2. Density plot of county random effects
+ggplot(county_effects_df, aes(x = estimate)) +
+  stat_halfeye() +
+  labs(title = "Distribution of County Random Effects",
+       x = "Effect Estimate",
+       y = "Density") +
+  theme_minimal()
+
+# 3. Ridgeline plot
+# For this, we need to simulate draws from the posterior
+# county_effects_draws <- as_draws_df(model_1, variable = county
+# )
+# county_effects_long <- county_effects_draws %>%
+#   pivot_longer(cols = starts_with("r_county"), 
+#                names_to = "county", 
+#                values_to = "effect") %>%
+#   mutate(county = gsub("r_county\\[(.+),Intercept\\]", "\\1", county))
+# 
+# ggplot(county_effects_long, aes(x = effect, y = county)) +
+#   stat_density_ridges(quantile_lines = TRUE, quantiles = 2) +
+#   labs(title = "Distribution of County Random Effects",
+#        x = "Effect Estimate",
+#        y = "County") +
+#   theme_minimal()
+
+# 4. Interval plot
+ggplot(county_effects_df, aes(y = reorder(county, estimate))) +
+  stat_interval(aes(x = estimate, xmin = lower, xmax = upper)) +
+  labs(title = "County Random Effects with Uncertainty",
+       x = "Effect Estimate",
+       y = "County") +
+  theme_minimal()
+
+```
+
+```{r}
+library(ggdist)
+
+city_effects <- ranef(model_3_city_complete_case)$city[, , "Intercept"]
+
+city_effects_df <- data.frame(
+  city = rownames(city_effects),
+  estimate = city_effects[, "Estimate"],
+  lower = city_effects[, "Q2.5"],
+  upper = city_effects[, "Q97.5"]
+)
+
+# 1. Pointrange plot (similar to a caterpillar plot)
+ggplot(city_effects_df, aes(y = reorder(city, estimate))) +
+  stat_slabinterval(aes(x = estimate)) +
+  labs(title = "City Random Effects", 
+       x = "Effect Estimate", 
+       y = "City") +
+  theme_minimal()
+
+# 2. Density plot of county random effects
+ggplot(city_effects_df, aes(x = estimate)) +
+  stat_slabinterval() +
+  labs(title = "Distribution of County Random Effects",
+       x = "Effect Estimate",
+       y = "Density") +
+  theme_minimal()
+
+# 3. Ridgeline plot
+# For this, we need to simulate draws from the posterior
+# county_effects_draws <- as_draws_df(model_1, variable = county
+# )
+# county_effects_long <- county_effects_draws %>%
+#   pivot_longer(cols = starts_with("r_county"), 
+#                names_to = "county", 
+#                values_to = "effect") %>%
+#   mutate(county = gsub("r_county\\[(.+),Intercept\\]", "\\1", county))
+# 
+# ggplot(county_effects_long, aes(x = effect, y = county)) +
+#   stat_density_ridges(quantile_lines = TRUE, quantiles = 2) +
+#   labs(title = "Distribution of County Random Effects",
+#        x = "Effect Estimate",
+#        y = "County") +
+#   theme_minimal()
+
+# 4. Interval plot
+ggplot(county_effects_df, aes(y = reorder(county, estimate))) +
+  stat_interval(aes(x = estimate, xmin = lower, xmax = upper)) +
+  labs(title = "County Random Effects with Uncertainty",
+       x = "Effect Estimate",
+       y = "County") +
+  theme_minimal()
+```
+
+```{r}
+library(mice)
+
+filtered_city_df_3 <- (
+  city_df 
+  |> mutate(mortality_rate_facility = as.numeric(mortality_rate_facility),
+            n_dialysis_stations = as.numeric(`_of_dialysis_stations`),
+            staff_rating = as.numeric(linearized_score_of_rating_of_the_dialysis_center_staff),
+            five_star = as.numeric(five_star),
+            patient_experience_rating = as.numeric(ich_cahps_survey_of_patients_experiences_star_rating))
+  |> mutate(hospital_readmission = factor(patient_hospital_readmission_category,
+                              levels = c("Worse than Expected", 
+                                         "As Expected", 
+                                         "Better than Expected", 
+                                         "Not Available"),
+                              ordered = TRUE))
+  |> filter(vote_type == "yes", !is.na(city), year %in%
+              c(2022,2020,2018))
+  |> select(year, provider_number, county, city, five_star, mortality_rate_facility, staff_rating, patient_experience_rating, patient_experience_rating, n_dialysis_stations, hospital_readmission, vote_count)
+  |> distinct()
+) 
+
+std_city_df_4 <- (
+  filtered_city_df_3
+  # Standardize numeric variables
+  |> mutate(across(
+    c(five_star, patient_experience_rating, mortality_rate_facility, n_dialysis_stations, staff_rating),
+    list(z = ~scale(.)),
+    .names = "{col}_z"
+  ))
+)
+
+imp <- mice(filtered_city_df_3, m = 5, seed = 123)
+```
+
+```{r}
+ model_4_formula <- bf(
+  formula = vote_count ~ five_star + 
+                       patient_experience_rating +
+                       mortality_rate_facility + 
+                       n_dialysis_stations + 
+                       staff_rating +
+                       (1 | county) + 
+                       (1 | city)
+)
+
+
+model_4_imputed <- brm_multiple(
+  formula = model_4_formula,
+  family = negbinomial(),
+  data = imp,
+  cores = 4,
+  chains = 4,
+  iter = 2000,
+  warmup = 1000,
+  file = "../006_models/dialysis_model_4_imputed"
+)
+
+```
+
+```{r}
+
+print(summary(model_4_imputed))
+
+# 2. Posterior Predictive Checks
+pp_check(model_4_imputed)
+
+# 3. LOOIC
+loo_result <- loo(model_4_imputed)
+print(loo_result)
+
+# 4. Posterior Distributions
+plot(model_4_imputed)
+
+# Custom posterior plot
+mcmc_areas(model_4_imputed, pars = c("b_mortality_rate_facility", "b_n_dialysis_stations", "b_five_star", "b_patient_experience_rating", "b_staff_rating"))
+
+# 5. Conditional Effects
+plot(conditional_effects(model_4_imputed))
+
+# 6. Residual Diagnostics
+residuals <- residuals(model_4_imputed)
+plot(fitted(model_4_imputed), residuals, main="Residuals vs Fitted")
+abline(h=0, col="red")
+
+# 7. R-squared
+print(bayes_R2(model_4_imputed))
+
+# 9. Posterior Predictive Distribution
+predictions <- predict(model_4_imputed)
+head(predictions)
+
+
+
+```
+
+```{r}
+imp_30 <- mice(filtered_city_df_3, m = 30, seed = 123)
+
+model_5_imputed <- brm_multiple(
+  formula = model_4_formula,
+  family = negbinomial(),
+  data = imp_30,
+  cores = 4,
+  chains = 4,
+  iter = 2000,
+  warmup = 1000,
+  file = "../006_models/dialysis_model_5_imputed"
+)
+
+```
+
+```{r}
+print(summary(model_5_imputed))
+
+# 2. Posterior Predictive Checks
+pp_check(model_5_imputed)
+
+# 3. LOOIC
+loo_result <- loo(model_5_imputed)
+print(loo_result)
+
+# 4. Posterior Distributions
+plot(model_5_imputed)
+
+# Custom posterior plot
+mcmc_areas(model_5_imputed, pars = c("b_mortality_rate_facility", "b_n_dialysis_stations", "b_five_star", "b_patient_experience_rating", "b_staff_rating"))
+
+# 5. Conditional Effects
+plot(conditional_effects(model_5_imputed))
+
+# 6. Residual Diagnostics
+residuals <- residuals(model_5_imputed)
+plot(fitted(model_5_imputed), residuals, main="Residuals vs Fitted")
+abline(h=0, col="red")
+
+# 7. R-squared
+print(bayes_R2(model_5_imputed))
+
+# 9. Posterior Predictive Distribution
+predictions <- predict(model_5_imputed)
+head(predictions)
+
+
+```
+
+```{r}
+
+library(ggdist)
+
+city_effects <- ranef(model_5_imputed)$city[, , "Intercept"]
+
+city_effects_df <- data.frame(
+  city = rownames(city_effects),
+  estimate = city_effects[, "Estimate"],
+  lower = city_effects[, "Q2.5"],
+  upper = city_effects[, "Q97.5"]
+)
+
+# 1. Pointrange plot (similar to a caterpillar plot)
+ggplot(city_effects_df, aes(y = reorder(city, estimate))) +
+  stat_slabinterval(aes(x = estimate)) +
+  labs(title = "City Random Effects", 
+       x = "Effect Estimate", 
+       y = "City") +
+  theme_minimal()
+
+# 2. Density plot of county random effects
+ggplot(city_effects_df, aes(x = estimate)) +
+  stat_slabinterval() +
+  labs(title = "Distribution of County Random Effects",
+       x = "Effect Estimate",
+       y = "Density") +
+  theme_minimal()
+
+# 3. Ridgeline plot
+# For this, we need to simulate draws from the posterior
+# county_effects_draws <- as_draws_df(model_1, variable = county
+# )
+# county_effects_long <- county_effects_draws %>%
+#   pivot_longer(cols = starts_with("r_county"), 
+#                names_to = "county", 
+#                values_to = "effect") %>%
+#   mutate(county = gsub("r_county\\[(.+),Intercept\\]", "\\1", county))
+# 
+# ggplot(county_effects_long, aes(x = effect, y = county)) +
+#   stat_density_ridges(quantile_lines = TRUE, quantiles = 2) +
+#   labs(title = "Distribution of County Random Effects",
+#        x = "Effect Estimate",
+#        y = "County") +
+#   theme_minimal()
+
+# 4. Interval plot
+ggplot(county_effects_df, aes(y = reorder(county, estimate))) +
+  stat_interval(aes(x = estimate, xmin = lower, xmax = upper)) +
+  labs(title = "County Random Effects with Uncertainty",
+       x = "Effect Estimate",
+       y = "County") +
+  theme_minimal()
+
+```
+
+```{r}
+county_effects <- ranef(model_5_imputed)$county[, , "Intercept"]
+
+county_effects_df <- data.frame(
+  county = rownames(county_effects),
+  estimate = county_effects[, "Estimate"],
+  lower = county_effects[, "Q2.5"],
+  upper = county_effects[, "Q97.5"]
+)
+
+# 1. Pointrange plot (similar to a caterpillar plot)
+ggplot(county_effects_df, aes(y = reorder(county, estimate))) +
+  stat_slabinterval(aes(x = estimate), point_interval = "median_qi") +
+  labs(title = "County Random Effects", 
+       x = "Effect Estimate", 
+       y = "County") +
+  theme_minimal()
+
+# 2. Density plot of county random effects
+ggplot(county_effects_df, aes(x = estimate)) +
+  stat_halfeye() +
+  labs(title = "Distribution of County Random Effects",
+       x = "Effect Estimate",
+       y = "Density") +
+  theme_minimal()
+
+# 4. Interval plot
+ggplot(county_effects_df, aes(y = reorder(county, estimate))) +
+  stat_interval(aes(x = estimate, xmin = lower, xmax = upper)) +
+  labs(title = "County Random Effects with Uncertainty",
+       x = "Effect Estimate",
+       y = "County") +
+  theme_minimal()
+
+```
+
+```{r}
+county_effects_df
+```
+
+```{r}
+model_4.1_formula <- bf(
+  formula = vote_count ~ five_star + 
+                       patient_experience_rating +
+                       mortality_rate_facility + 
+                       n_dialysis_stations + 
+                       staff_rating +
+                       mo(hospital_readmission) +
+                       (1 | county) + 
+                       (1 | city)
+)
+
+model_4.1_imputed <- brm_multiple(
+  formula = model_4.1_formula,
+  family = negbinomial(),
+  data = imp,
+  cores = 4,
+  chains = 4,
+  iter = 2000,
+  warmup = 1000,
+  file = "../006_models/dialysis_model_4.1_imputed"
+)
+```
+
+```{r}
+print(summary(model_4.1_imputed))
+
+# 2. Posterior Predictive Checks
+pp_check(model_4.1_imputed)
+
+# 3. LOOIC
+loo_result <- loo(model_4.1_imputed)
+print(loo_result)
+
+# 4. Posterior Distributions
+plot(model_4.1_imputed)
+
+# Custom posterior plot
+mcmc_areas(model_4.1_imputed, pars = c("b_mortality_rate_facility", "b_n_dialysis_stations", "b_five_star", "b_patient_experience_rating", "b_staff_rating"))
+
+# 5. Conditional Effects
+plot(conditional_effects(model_4.1_imputed))
+
+# 6. Residual Diagnostics
+residuals <- residuals(model_4.1_imputed)
+plot(fitted(model_4.1_imputed), residuals, main="Residuals vs Fitted")
+abline(h=0, col="red")
+
+# 7. R-squared
+# print(bayes_R2(model_5_imputed))
+
+# 9. Posterior Predictive Distribution
+predictions <- predict(model_4.1_imputed)
+head(predictions)
+
+```
+
+```{r}
+
+filtered_city_df_5 <- (
+  city_df 
+  |> mutate(mortality_rate_facility = as.numeric(mortality_rate_facility),
+            n_dialysis_stations = as.numeric(`_of_dialysis_stations`),
+            staff_rating = as.numeric(linearized_score_of_rating_of_the_dialysis_center_staff),
+            five_star = as.numeric(five_star),
+            patient_experience_rating = as.numeric(ich_cahps_survey_of_patients_experiences_star_rating))
+  |> mutate(hospital_readmission = factor(patient_hospital_readmission_category,
+                              levels = c("Worse than Expected", 
+                                         "As Expected", 
+                                         "Better than Expected", 
+                                         "Not Available"),
+                              ordered = TRUE))
+  |> filter(!is.na(city), year %in% c(2022, 2020, 2018))
+  |> group_by(year, provider_number, county, city)
+  |> summarize(
+    total_votes = sum(vote_count),
+    yes_votes = sum(vote_count[vote_type == "yes"]),
+    vote_perc = yes_votes / total_votes * 100,
+    five_star = first(five_star),
+    mortality_rate_facility = first(mortality_rate_facility),
+    staff_rating = first(staff_rating),
+    patient_experience_rating = first(patient_experience_rating),
+    n_dialysis_stations = first(n_dialysis_stations),
+    hospital_readmission = first(hospital_readmission)
+  )
+  |> ungroup()
+  |> select(year, provider_number, county, city, five_star, mortality_rate_facility, staff_rating, patient_experience_rating, n_dialysis_stations, hospital_readmission, vote_perc)
+  |> distinct()
+)
+
+imp_perc <- mice(filtered_city_df_5, m = 5, seed = 123)
+
+
+```
+
+```{r}
+model_6_formula <- bf(
+  formula = vote_perc ~ five_star + 
+                       patient_experience_rating +
+                       mortality_rate_facility + 
+                       n_dialysis_stations + 
+                       staff_rating +
+                       (1 | county) + 
+                       (1 | city)
+)
+
+model_6_imputed <- brm_multiple(
+  formula = model_6_formula,
+  family = gaussian(),
+  data = imp_perc,
+  cores = 4,
+  chains = 4,
+  iter = 2000,
+  warmup = 1000,
+  file = "../006_models/dialysis_model_6_imputed"
+)
+```
+
+```{r}
+print(summary(model_6_imputed))
+
+# 2. Posterior Predictive Checks
+pp_check(model_6_imputed)
+
+# 3. LOOIC
+loo_result <- loo(model_6_imputed)
+print(loo_result)
+
+# 4. Posterior Distributions
+plot(model_6_imputed)
+
+# Custom posterior plot
+mcmc_areas(model_6_imputed, pars = c("b_mortality_rate_facility", "b_n_dialysis_stations", "b_five_star", "b_patient_experience_rating", "b_staff_rating"))
+
+# 5. Conditional Effects
+plot(conditional_effects(model_6_imputed))
+
+# 6. Residual Diagnostics
+residuals <- residuals(model_6_imputed)
+plot(fitted(model_6_imputed), residuals, main="Residuals vs Fitted")
+abline(h=0, col="red")
+
+# 7. R-squared
+# print(bayes_R2(model_5_imputed))
+
+# 9. Posterior Predictive Distribution
+predictions <- predict(model_6_imputed)
+head(predictions)
+```
+
+```{r}
+model_7_imputed <- brm_multiple(
+  formula = model_6_formula,
+  family = student(),
+  data = imp_perc,
+  cores = 4,
+  chains = 4,
+  iter = 2000,
+  warmup = 1000,
+  file = "../006_models/dialysis_model_7_imputed"
+)
+
+
+```
+
+```{r}
+print(summary(model_7_imputed))
+
+# 2. Posterior Predictive Checks
+pp_check(model_7_imputed)
+
+# 3. LOOIC
+loo_result <- loo(model_7_imputed)
+print(loo_result)
+
+# 4. Posterior Distributions
+plot(model_7_imputed)
+
+# Custom posterior plot
+mcmc_areas(model_7_imputed, pars = c("b_mortality_rate_facility", "b_n_dialysis_stations", "b_five_star", "b_patient_experience_rating", "b_staff_rating"))
+
+# 5. Conditional Effects
+plot(conditional_effects(model_7_imputed))
+
+# 6. Residual Diagnostics
+residuals <- residuals(model_7_imputed)
+plot(fitted(model_7_imputed), residuals, main="Residuals vs Fitted")
+abline(h=0, col="red")
+
+# 7. R-squared
+# print(bayes_R2(model_5_imputed))
+
+# 9. Posterior Predictive Distribution
+predictions <- predict(model_7_imputed)
+head(predictions)
+
+
+```
+
+```{r}
+filtered_city_df_5_complete <- (
+  city_df 
+  |> mutate(mortality_rate_facility = as.numeric(mortality_rate_facility),
+            n_dialysis_stations = as.numeric(`_of_dialysis_stations`),
+            staff_rating = as.numeric(linearized_score_of_rating_of_the_dialysis_center_staff),
+            five_star = as.numeric(five_star),
+            patient_experience_rating = as.numeric(ich_cahps_survey_of_patients_experiences_star_rating))
+  |> mutate(hospital_readmission = factor(patient_hospital_readmission_category,
+                              levels = c("Worse than Expected", 
+                                         "As Expected", 
+                                         "Better than Expected", 
+                                         "Not Available"),
+                              ordered = TRUE))
+  |> filter(!is.na(city), year %in% c(2022, 2020, 2018))
+  |> group_by(year, provider_number, county, city)
+  |> summarize(
+    total_votes = sum(vote_count),
+    yes_votes = sum(vote_count[vote_type == "yes"]),
+    vote_perc = yes_votes / total_votes * 100,
+    five_star = first(five_star),
+    mortality_rate_facility = first(mortality_rate_facility),
+    staff_rating = first(staff_rating),
+    patient_experience_rating = first(patient_experience_rating),
+    n_dialysis_stations = first(n_dialysis_stations),
+    hospital_readmission = first(hospital_readmission)
+  )
+  |> ungroup()
+  |> select(year, provider_number, county, city, five_star, mortality_rate_facility, staff_rating, patient_experience_rating, n_dialysis_stations, hospital_readmission, vote_perc)
+  |> distinct()
+  |> drop_na()
+)
+
+
+```
+
+```{r}
+model_8 <- brm(
+  formula = model_6_formula,
+  family = student(),
+  data = filtered_city_df_5_complete,
+  cores = 4,
+  chains = 4,
+  iter = 2000,
+  warmup = 1000,
+  file = "../006_models/dialysis_model_8"
+)
+
+
+```
+
+```{r}
+print(summary(model_8))
+
+# 2. Posterior Predictive Checks
+pp_check(model_8)
+
+# 3. LOOIC
+loo_result <- loo(model_8)
+print(loo_result)
+
+# 4. Posterior Distributions
+plot(model_8)
+
+# Custom posterior plot
+mcmc_areas(model_8, pars = c("b_mortality_rate_facility", "b_n_dialysis_stations", "b_five_star", "b_patient_experience_rating", "b_staff_rating"))
+
+# 5. Conditional Effects
+plot(conditional_effects(model_8))
+
+# 6. Residual Diagnostics
+residuals <- residuals(model_8)
+plot(fitted(model_8), residuals, main="Residuals vs Fitted")
+abline(h=0, col="red")
+
+# 7. R-squared
+# print(bayes_R2(model_5_imputed))
+
+# 9. Posterior Predictive Distribution
+predictions <- predict(model_8)
+head(predictions)
+
+```
+
+```{r}
+model_7_formula <- bf(
+  formula = vote_perc ~ five_star + 
+                       patient_experience_rating +
+                       mortality_rate_facility + 
+                       n_dialysis_stations + 
+                       staff_rating +
+                       mo(hospital_readmission) +
+                       (1 | county) + 
+                       (1 | city)
+)
+
+
+model_9 <- brm(
+  formula = model_7_formula,
+  family = student(),
+  data = filtered_city_df_5_complete,
+  cores = 4,
+  chains = 4,
+  iter = 2000,
+  warmup = 1000,
+  file = "../006_models/dialysis_model_9"
+)
+```
+
+```{r}
+print(summary(model_9))
+
+# 2. Posterior Predictive Checks
+pp_check(model_9)
+
+# 3. LOOIC
+loo_result <- loo(model_9)
+print(loo_result)
+
+# 4. Posterior Distributions
+plot(model_9)
+
+# Custom posterior plot
+mcmc_areas(model_9, pars = c("b_mortality_rate_facility", "b_n_dialysis_stations", "b_five_star", "b_patient_experience_rating", "b_staff_rating"))
+
+# 5. Conditional Effects
+plot(conditional_effects(model_9))
+
+# 6. Residual Diagnostics
+residuals <- residuals(model_9)
+plot(fitted(model_9), residuals, main="Residuals vs Fitted")
+abline(h=0, col="red")
+
+# 7. R-squared
+# print(bayes_R2(model_5_imputed))
+
+# 9. Posterior Predictive Distribution
+predictions <- predict(model_9)
 head(predictions)
 ```
 
