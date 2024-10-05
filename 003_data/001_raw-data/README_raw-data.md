@@ -1,6 +1,5 @@
 This folder contains raw data files used in this project.
 
-
 2017-2024_national_cms_dialysis-facility_cahps-data.parquet
     - This file contains Center for Medicare and Medicaid Services (CMS) data from 2017 to 2024 on dialysis facilities and their CAHPS scores.
     - It is created by the script 004_data-processing-scripts/001_import-raw-data/michael/import-raw-data_cms_historical-facility-data.ipynb
