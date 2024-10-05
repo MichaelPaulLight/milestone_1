@@ -79,7 +79,7 @@ def read_dataframes(directory_path=None):
     
     if directory_path is None:
         # Default to the '003_data\002_clean-data' directory
-        directory_path = os.path.join(project_root, '003_data', '002_clean-data')
+        directory_path = os.path.join(project_root, '009_supplemental', 'cleaned data')
     else:
         # If a path is provided, make it absolute relative to the project root
         directory_path = os.path.abspath(os.path.join(project_root, directory_path))
