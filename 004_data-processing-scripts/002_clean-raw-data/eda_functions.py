@@ -1,6 +1,21 @@
 import plotly.express as px
 import json
 import requests
+import pandas as pd
+
+def get_california_fips():
+    """
+    Retrieve FIPS codes for California counties.
+    """
+    url = "https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json"
+    counties = json.loads(requests.get(url).text)
+    
+    california_fips = {
+        feature["properties"]["NAME"]: feature["id"]
+        for feature in counties["features"]
+        if feature["properties"]["STATE"] == "06"
+    }
+    return california_fips
 
 def choropleth(data, hue_column, slider_column=None, title=None):
     """
@@ -15,6 +30,12 @@ def choropleth(data, hue_column, slider_column=None, title=None):
     Returns:
     plotly.graph_objects.Figure: A Plotly figure object containing the choropleth map.
     """
+    # Get California FIPS codes
+    california_fips = get_california_fips()
+    
+    # Add FIPS codes to the dataframe
+    data['fips'] = data['county_name'].map(california_fips)
+    
     # Load GeoJSON data for California counties
     url = "https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json"
     counties = json.loads(requests.get(url).text)
@@ -24,12 +45,6 @@ def choropleth(data, hue_column, slider_column=None, title=None):
         "type": "FeatureCollection",
         "features": [feature for feature in counties["features"] if feature["properties"]["STATE"] == "06"]
     }
-    
-    # Create a mapping of county names to FIPS codes
-    county_to_fips = {feature["properties"]["NAME"]: feature["id"] for feature in california_counties["features"]}
-    
-    # Add FIPS codes to the dataframe
-    data['fips'] = data['county_name'].map(county_to_fips)
     
     # Filter the geojson to include only counties present in the data
     california_counties['features'] = [
@@ -50,7 +65,7 @@ def choropleth(data, hue_column, slider_column=None, title=None):
         "center": {"lat": 37.0, "lon": -120.0},
         "zoom": 5,
         "opacity": 0.7,
-        "color_continuous_scale": "Magma",
+        "color_continuous_scale": "Viridis",
         "range_color": [data[hue_column].min(), data[hue_column].max()],
         "labels": {hue_column: hue_column.replace('_', ' ').title()},
         "width": 900,
