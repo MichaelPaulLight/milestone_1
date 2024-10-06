@@ -73,11 +73,18 @@ def generate_column_name_mappings(column_names_dict):
 
 def read_dataframes(directory_path=None):
     
+
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.abspath(os.path.join(current_dir, '..', '..'))
+    
     if directory_path is None:
-        directory_path = os.path.dirname(os.path.abspath(__file__))
+        # Default to the '003_data\002_clean-data' directory
+        directory_path = os.path.join(project_root, '009_supplemental', 'cleaned data')
     else:
-        # Convert relative path to absolute path
-        directory_path = os.path.abspath(os.path.join(os.path.dirname(__file__), directory_path))
+        # If a path is provided, make it absolute relative to the project root
+        directory_path = os.path.abspath(os.path.join(project_root, directory_path))
+    if not os.path.exists(directory_path):
+        raise FileNotFoundError(f"Directory not found: {directory_path}")
     
     file_names = generate_file_names(directory_path)
     
