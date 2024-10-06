@@ -1742,6 +1742,12 @@ analyze_model <- function(model) {
 # Usage
 analyze_model(model_11)
 ```
+```{r}
+mcmc_areas(model_11, pars = c("b_mortality_rate_facility", "b_n_dialysis_stations", 
+                             "b_five_star", "b_patient_experience_rating", "b_staff_rating"))
+```
+
+
 
 ```{r}
 profit_effects <- ranef(model_11)$profit_or_nonprofit[, , "Intercept"]
@@ -1833,5 +1839,123 @@ county_effects_data <- analyze_random_effects(model_11, "county")
 ```{r}
 city_effects_data <- analyze_random_effects(model_11, "city")
 
+```
+
+```{r}
+library(dagitty)
+library(ggdag)
+
+model_dag <- dagitty("dag {
+    vote_perc [pos=\"0,0\"]
+    five_star [pos=\"-1,1\"]
+    patient_experience_rating [pos=\"-0.5,1\"]
+    mortality_rate_facility [pos=\"0,1\"]
+    n_dialysis_stations [pos=\"0.5,1\"]
+    staff_rating [pos=\"1,1\"]
+    hospital_readmission [pos=\"1.5,1\"]
+    county [pos=\"-1.5,-1\"]
+    city [pos=\"-0.5,-1\"]
+    profit_or_nonprofit [pos=\"0.5,-1\"]
+    std_chain_organization [pos=\"1.5,-1\"]
+    
+    five_star -> vote_perc
+    patient_experience_rating -> vote_perc
+    mortality_rate_facility -> vote_perc
+    n_dialysis_stations -> vote_perc
+    staff_rating -> vote_perc
+    hospital_readmission -> vote_perc
+    county -> vote_perc
+    city -> vote_perc
+    profit_or_nonprofit -> vote_perc
+    std_chain_organization -> vote_perc
+}")
+
+# Plot the DAG
+ggdag(model_dag) +
+  theme_dag() +
+  geom_dag_point(color = "lightblue", size = 10) +
+  geom_dag_text(color = "black", size = 3) +
+  geom_dag_edges(edge_color = "black") +
+  ggtitle("DAG for Dialysis Center Voting Model")
+
+```
+
+```{r}
+model_9_formula <- bf(
+  formula = vote_perc ~ five_star + 
+                       patient_experience_rating +
+                       mortality_rate_facility + 
+                       n_dialysis_stations + 
+                       staff_rating +
+                       mo(hospital_readmission) +
+                       gp(year) +
+                       (1 | county) + 
+                       (1 | city) +
+                       (1 | profit_or_nonprofit) +
+                       (1 | std_chain_organization)
+)
+
+
+model_12 <- brm(
+  formula = model_8_formula,
+  family = Beta(),
+  data = filtered_city_df_6_complete,
+  cores = 4,
+  chains = 4,
+  iter = 2000,
+  warmup = 1000,
+  file = "../006_models/dialysis_model_12_beta"
+)
+```
+
+```{r}
+analyze_model(model_12)
+
+```
+
+```{r}
+mcmc_areas(model_12, pars = c("b_mortality_rate_facility", "b_n_dialysis_stations", 
+                             "b_five_star", "b_patient_experience_rating", "b_staff_rating"))
+```
+
+```{r}
+mcmc_intervals(model_12, regex_pars = "b_.*", prob = 0.95)
+```
+
+```{r}
+
+
+pp_check(model_12, type = "dens_overlay", nsamples = 100)
+```
+
+```{r}
+# Load necessary libraries
+library(bayesplot)
+library(ggplot2)
+library(tidybayes)
+library(tidyverse)
+library(brms)
+
+# 1. Trace plots for MCMC diagnostics
+mcmc_trace(model_12, pars = c("b_mortality_rate_facility", "b_n_dialysis_stations", 
+                              "b_five_star", "b_patient_experience_rating", "b_staff_rating"))
+
+# Density plots for key parameters
+mcmc_dens_overlay(model_12, pars = c("b_mortality_rate_facility", "b_n_dialysis_stations", 
+                                     "b_five_star", "b_patient_experience_rating", "b_staff_rating"))
+
+# Posterior predictive intervals
+post_pred <- fitted(model_12, probs = c(0.025, 0.975))
+pred_plot <- ggplot(cbind(filtered_city_df_6_complete, post_pred), 
+                    aes(x = vote_perc, y = Estimate)) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
+  geom_errorbar(aes(ymin = Q2.5, ymax = Q97.5), alpha = 0.3) +
+  theme_minimal() +
+  ggtitle("Posterior Predictive Intervals")
+print(pred_plot)
+
+# Posterior distribution of profit/nonprofit
+pp_check(model_12, type = "dens_overlay_grouped", group = "profit_or_nonprofit", nsamples = 100)
 ```
 
