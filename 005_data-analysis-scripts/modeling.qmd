@@ -2086,8 +2086,33 @@ analyze_model(model_14)
 ```
 
 ```{r}
+model_10_formula <- bf(
+  formula = vote_perc ~ five_star + 
+                       patient_experience_rating +
+                       mortality_rate_facility + 
+                       n_dialysis_stations + 
+                       staff_rating +
+                       mo(hospital_readmission) +
+                       (1 | year) +
+                       (1 | county) + 
+                       (1 | city) +
+                       (1 | profit_or_nonprofit) +
+                       (1 | std_chain_organization)
+)
 
+model_15 <- brm(
+  formula = model_10_formula,
+  family = Beta(),
+  data = filtered_city_df_8_complete,
+  cores = 4,
+  chains = 4,
+  iter = 2000,
+  warmup = 1000,
+  file = "../006_models/dialysis-model_15_beta"
+)
+```
 
-
+```{r}
+analyze_model(model_15)
 ```
 
