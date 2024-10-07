@@ -76,7 +76,7 @@ def choropleth(data, hue_column, slider_column=None, title=None):
     if slider_column:
         choropleth_args["animation_frame"] = slider_column
         choropleth_args["labels"][slider_column] = slider_column.replace('_', ' ').title()
-        choropleth_args["title"] += f' (Animated by {slider_column})'
+        choropleth_args["title"] += f' (Grouped by {slider_column})'
     
     # Create the choropleth map
     fig = px.choropleth_mapbox(**choropleth_args)
