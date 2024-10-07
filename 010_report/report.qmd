@@ -5,7 +5,7 @@ format:
   html:
     toc: true
     code-fold: true
-    css: custom.css
+    css: styles.css
     theme: cosmo
 execute:
   echo: true
