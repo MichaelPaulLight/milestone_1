@@ -149,3 +149,11 @@ Observations of Quality of Care metrics in our data are categorized by:
 - Multiple geographic levels allow for aggregation and analysis at various scales
 - Combination of clinical data (CMS) with voting data (SOS) enables exploration of potential correlations between care quality and voting behavior
 - Supplementary geographic data enhances spatial analysis capabilities
+
+## Features of Interest 
+
+| Data Source | File Information | Features |
+|-------------|------------------|----------|
+| Center for Medicare and Medicaid Services Dialysis Facilities | Type: .zip & .xlsx<br>Years: 2017-2024<br>Combined Size: 5,684 rows, 173 columns<br>Link: [https://data.cms.gov/provider-data/topics/dialysis-facilities](https://data.cms.gov/provider-data/topics/dialysis-facilities) | - Facility Name<br>- County<br>- City<br>- Facility Quality of Care Rating<br>- Dialysis Center Staff Rating<br>- Patient Experience Rating<br>- Patient Readmission Category (Worse Than Expected, As Expected, Better Than Expected)<br>- Mortality Rate<br>- Number of Dialysis Stations<br>- Licensee Type (Non-Profit, For-Profit.)<br>- Organization Affiliation (Independent or Chain) |
+| California Secretary of State November Ballot Measures | Type: .xlsx<br>Years: 2018, 2020, 2022<br>Combined Size: 7,122 rows, 7 columns<br>Link: [https://www.sos.ca.gov/elections/prior-elections/statewide-election-results](https://www.sos.ca.gov/elections/prior-elections/statewide-election-results) | - County<br>- Congressional District<br>- City<br>- Ballot Proposition<br>- Yes Vote Count for Proposition<br>- No Vote Count for Proposition |
+| California Health and Human Services Speciality Care Clinic Complete Data Set | Type: .xlsx<br>Years: 2013-2023<br>Combined Size: 6,605 rows, 143 columns<br>Link: [https://data.chhs.ca.gov/dataset/specialty-care-clinic-complete-data-set](https://data.chhs.ca.gov/dataset/specialty-care-clinic-complete-data-set) | - Facility Name<br>- County<br>- Zip Code<br>- Assembly District<br>- Senate District<br>- Congressional District<br>- Census Tract<br>- Latitude and Longitude |
