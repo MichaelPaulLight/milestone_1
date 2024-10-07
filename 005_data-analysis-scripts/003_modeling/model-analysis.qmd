@@ -36,27 +36,10 @@ theme_report <- function() {
 # Define a color palette
 report_colors <- c("#3498db", "#e74c3c", "#2ecc71", "#f39c12", "#9b59b6", 
                    "#1abc9c", "#d35400", "#34495e", "#7f8c8d", "#2980b9", "#8e44ad")
-
-
-ggplot(predictions, aes(x = staff_rating, y = .epred)) +
-  stat_lineribbon(aes(y = .epred), .width = c(.95, .80, .50), alpha = 0.5) +
-  geom_jitter(data = filtered_city_df, aes(y = vote_perc), alpha = 0.2, color = report_colors[1]) +
-  labs(
-    title = "Effect of Staff Rating on Vote Percentage",
-    x = "Staff Rating",
-    y = "Predicted Vote Percentage",
-    caption = "Shaded areas represent 95%, 80%, and 50% credible intervals"
-  ) +
-  scale_x_continuous(limits = c(75, NA), expand = c(0, 0)) +
-  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
-  theme_report() +
-  scale_fill_manual(values = report_colors)
 ```
 
-
-
 ```{r}
-city_df <- read_parquet("../003_data/003_merged-data/merged_cms_ballot-measures_by-city.parquet")
+city_df <- read_parquet("../../003_data/003_merged-data/merged_cms_ballot-measures_by-city.parquet")
 
 city_df <- city_df  |> 
   # First, create a temporary dataframe with 2019 values for variables we need to impute
@@ -143,9 +126,8 @@ model <- brm(
 )
 ```
 
-
 ```{r}
-model = readRDS("../006_models/dialysis-model_18.rds")
+model = readRDS("../../006_models/dialysis-model_18.rds")
 ```
 
 You can add options to executable code like this
@@ -260,6 +242,7 @@ ggplot(predictions, aes(x = staff_rating, y = .epred)) +
   scale_fill_manual(values = report_colors)
 
 ```
+
 ```{r}
 new_data <- filtered_city_df %>%
   data_grid(
@@ -305,8 +288,6 @@ ggplot(predictions, aes(x = mortality_rate_facility, y = .epred)) +
     plot.caption = element_text(size = 8, color = "#666666")
   )
 ```
-
-
 
 ```{r}
 posterior_samples <- model |>
@@ -354,6 +335,7 @@ print(pred_plot)
 # Posterior distribution of profit/nonprofit
 pp_check(model, type = "dens_overlay", nsamples = 100)
 ```
+
 ```{r}
 # Trace plots
 mcmc_trace(model, pars = c("b_mortality_rate_facility", "b_n_dialysis_stations", 
@@ -437,12 +419,8 @@ pred_plot <- ggplot(cbind(filtered_city_df, post_pred),
 print(pred_plot)
 ```
 
-
-
-
 ```{r}
 
 conditional_effects(model)
 
 ```
-
