@@ -14,7 +14,6 @@ This folder contains raw data files used in this project.
     
 2018-2022_ballot-measure_sub-county_data.parquet
     - This file contains sub-county level data (city, district, census tract, etc.) on ballot measures from 2018 to 2022 in California.
-    - It is created by the script 004_data-processing-scripts/001_import-raw-data/import-raw-data_sos_ballot-measure-votes.ipynb
-
+    - It is created by the script 004_data-processing-scripts/001_import-raw-data/import-raw-data_sos_ballot-measure-votes.ipyn
 
 
