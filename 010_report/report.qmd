@@ -1,0 +1,13 @@
+---
+title: "Project Findings"
+author: "Your Name"
+format: 
+  html:
+    toc: true
+    code-fold: true
+    css: custom.css
+    theme: cosmo
+execute:
+  echo: true
+  warning: false
+---
