@@ -11,3 +11,141 @@ execute:
   echo: true
   warning: false
 ---
+
+# Project Motivation
+
+## Background on Dialysis and Proposition 29
+
+Dialysis is a lifesaving treatment that removes waste from blood, acting as an artificial kidney for those with chronic kidney disease. In recent years, California has seen multiple attempts to increase regulations on dialysis facilities through ballot initiatives:
+
+- Proposition 8 in 2018
+- Proposition 23 in 2020
+- Proposition 29 in 2022
+
+Proposition 29, which failed to pass, aimed to establish increased regulations for both staffing and operations for the roughly 600 dialysis facilities in California, an estimated $3.5 billion industry. A key provision of the proposition required the presence of a physician or licensed practitioner during all treatment hours, potentially increasing each facility's costs by several hundred thousand dollars annually.
+
+## Debate Surrounding Dialysis Regulations
+
+- **Proponents** argue that increased regulations improve patient safety and quality of care.
+- **Opponents** contend that the increase in healthcare costs is unwarranted and would limit care coverage by overwhelming facilities with costs and potentially forcing them to close.
+
+## Project Scope and Significance
+
+Our project explores trends in:
+
+1. Dialysis facility access
+2. Quality of care
+3. Ballot results in California
+
+Using publicly available data from:
+
+- Center for Medicare and Medicaid Services
+- Aggregated election results from California's Secretary of State
+
+We analyze associations between dialysis care and voting behaviors, specifically those related to recent statewide ballot initiatives designed to regulate California's multibillion-dollar dialysis industry.
+
+## Relevance and Novelty
+
+- This project uses a novel approach to study an area of public interest relevant not just to California but the entire country.
+- To our knowledge, this is the first project of its kind to explore the possible association between voting patterns and the quality of dialysis care received.
+- The majority of dialysis treatments in California are covered by Medicare, making the Medicare and Medicaid datasets particularly relevant to our analysis.
+
+## Broader Context
+
+Investigative reporters, patient advocacy groups, and labor organizations have spent significant resources over the past decade to raise public awareness of the dialysis industry and its need for regulation. Our project contributes to this ongoing discussion by providing data-driven insights into the relationship between dialysis care quality and voting behavior.
+
+# Project Research Questions
+
+Our research questions are divided into two categories: primary and secondary. The primary question serves as the main focus of our analysis, while secondary questions provide additional insights through further investigation of the data.
+
+## Primary Research Question
+
+**Is the quality of care of dialysis facilities correlated with voting in favor of or against dialysis industry regulation?**
+
+### Key Assumptions
+
+1. The relationship between Quality of Care and Voting Behavior is not confounded.
+2. A vote in favor of any of the three propositions (Prop 8 in 2018, Prop 23 in 2020, Prop 29 in 2022) can be interpreted as support for dialysis industry regulation.
+
+### Quality of Care Metrics
+
+To test this relationship under the outlined assumptions, we approximate the quality of care using the following metrics:
+
+- Five-star rating
+- Patient experience rating
+- Facility mortality rate
+- Number of available dialysis stations
+- Staff rating
+- Hospital readmission categorization (Worse than Expected, As Expected, Better than Expected)
+- Profit/non-profit designation
+- Parent company affiliation/independence
+
+### Facility Categorization
+
+Observations of Quality of Care metrics in our data are categorized by:
+
+- Year
+- County
+- City
+- Profit/Non-profit designation
+- Parent company affiliation/independence
+
+## Secondary Research Questions
+
+1. What is the geographic coverage of dialysis facilities in California?
+2. Is there any correlation between organizational structure (chain-owned, profit vs. non-profit) and the quality of care?
+3. Is there any association between the parent company of dialysis facilities and the quality of care?
+
+# Data Sources
+
+## Primary Data Sources
+
+### Center for Medicare and Medicaid Services (CMS) Quarterly Dialysis Facility Compare Dataset
+
+- **Time range**: 2017 to 2024
+- **Key features**:
+  - Star ratings for dialysis facilities
+  - Patient experience metrics
+  - Quality of care metrics
+- **Insights provided**:
+  - Patient satisfaction
+  - Clinical outcomes
+  - Doctor-patient communication
+  - Hospitalization rates
+  - Treatment effectiveness
+- **Rating calculation**:
+  - Patient experience star rating derived from bi-annual patient surveys
+  - Facility ratings based on metrics including:
+    - Unplanned hospital readmissions
+    - Total and expected transfusions
+    - Ratio of deaths to expected deaths
+    - Waste removal efficiency across patient types
+
+### California Secretary of State's (SOS) Statement of Vote for Ballot Measures
+
+- **Elections covered**: November 2022, 2020, and 2018
+- **Focus**: Propositions regarding dialysis clinic requirements
+- **Geographic levels**:
+  - Counties
+  - Sub-counties:
+    - Congressional districts
+    - State senate districts
+    - State assembly districts
+    - Cities
+
+## Secondary Data Source
+
+### California Health and Human Services Specialty Care Clinic Complete Data Set
+
+- **Time range**: 2013 through 2023
+- **Purpose**: Supplement CMS dataset with additional geographic data
+- **Additional facility-level features**:
+  - Senate district
+  - Congressional district
+  - Latitude and longitude
+
+## Data Integration and Analysis Potential
+
+- Multiple geographic levels allow for aggregation and analysis at various scales
+- Combination of clinical data (CMS) with voting data (SOS) enables exploration of potential correlations between care quality and voting behavior
+- Supplementary geographic data enhances spatial analysis capabilities
