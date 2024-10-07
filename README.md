@@ -8,5 +8,8 @@ Background:
 Our project explores trends in dialysis clinic access, quality of care, and ballot results in the state of California in recent years using data from the Center for Medicare and Medicaid Services (CMS), California Health and Human Services (CHHS), and California Secretary of State (SOS).
 
 Installation
+1. 001
+
 
 Usage
+1. Run 004/001
