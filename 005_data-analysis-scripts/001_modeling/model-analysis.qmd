@@ -9,6 +9,7 @@ editor: visual
 ```{r}
 library(tidyverse)
 library(ggthemes)
+library(patchwork)
 library(brms)
 library(ggdist)
 library(tidybayes)
@@ -134,104 +135,185 @@ The first plot below shows how the effect of staff rating varies across counties
 
 Whether each county's effect is significantly different from zero (outside the 80% credible interval, demarcated by the horizontal dashed lines). This plot helps identify counties where staff rating has a particularly strong or weak effect on the vote percentage, which useful for understanding regional variations in the impact of staff ratings on voting behavior.
 
-The second plot, which visualizes intercepts output by the model, helps identify counties that have particularly high or low baseline vote percentages, after accounting for other factors in the model. It's useful for understanding regional variations in voting behavior that aren't explained by the other predictors in the model.
+The second plot, which visualizes intercepts output by the model, helps identify counties that have particularly high or low baseline vote percentages, after accounting for other factors in the model. It's useful for understanding regional variations in voting behavior that aren't explained by the other predictors in the model. For example, San Francisco, Humboldt, Alameda
+Contra Costa, Imperial, Monterey, Santa Clara, and Santa Cruz (which are more urban counties) were among the counties with the highest baseline vote percentages, while Shasta, Tehama, and Kings (more rural counties) were among the counties with the lowest baseline vote percentages. 
 
 ```{r}
-# Creating a plot for County-Level Staff Rating Effects
-model |>
-  # Extract posterior samples for staff rating effect and county-specific random effects
-  spread_draws(b_staff_rating, r_county[county,]) |>
-  
-  # Calculate county-specific staff rating effect
-  mutate(county_mean = b_staff_rating + r_county) |>
-  
-  # Begin creating the plot
-  ggplot(aes(y = county, x = county_mean, fill = after_stat(abs(x) < .8))) +
-  
-  # Add half-eye plot (combination of density and point estimate)
-  stat_halfeye() +
-  
-  # Add vertical reference lines at -0.8 and 0.8
-  geom_vline(xintercept = c(-.8, .8), linetype = "dashed", color = "#2c3e50", alpha = 0.7) +
-  
-  # Set custom colors for the fill based on whether effect is within -0.8 to 0.8
-  scale_fill_manual(values = c(report_colors[2], report_colors[1])) +
-  
-  # Add labels to the plot
-  labs(title = "County-Level Staff Rating Effects",
-       subtitle = "Posterior distribution of county-specific staff rating effects",
-       x = "County Mean",
-       y = "County") +
-  
-  # Apply custom theme
-  theme_report() +
-  
-  # Adjust text size for county names on y-axis
-  theme(axis.text.y = element_text(size = 8))  # Smaller text for county names
+# Function to format county names
+format_county_name <- function(name) {
+  name |> 
+    str_replace_all("\\.", " ") |>   # Replace dots with spaces
+    str_to_title() |>               # Capitalize first letter of each word
+    str_replace(" County", "")       # Remove " County" if present
+}
 
-# Creating a first plot for the Intercept
-model |>
-  spread_draws(b_Intercept, r_county[county,]) |>
-  mutate(county_mean = b_Intercept + r_county) |>
-  ggplot(aes(y = county, x = county_mean, fill = after_stat(abs(x) < .8))) +
-  stat_halfeye() +
-  geom_vline(xintercept = c(-.8, .8), linetype = "dashed", color = "#2c3e50", alpha = 0.7) +
-  scale_fill_manual(values = c(report_colors[2], report_colors[1])) +
-  labs(title = "County-Level Intercepts",
-       subtitle = "Posterior distribution of county-specific effects",
-       x = "County Mean",
-       y = "County") +
-  theme_report() +
-  theme(axis.text.y = element_text(size = 8))  # Smaller text for county names
+# Function to create the plot with improved legend and y-axis labels
+create_county_effect_plot <- function(model, effect_type, title, subtitle) {
+  model |>
+    spread_draws(!!sym(effect_type), r_county[county,]) |>
+    mutate(
+      county_mean = !!sym(effect_type) + r_county,
+      county = format_county_name(county)  # Format county names
+    ) |>
+    ggplot(aes(y = county, x = county_mean, fill = after_stat(abs(x) < 0.8))) +
+    stat_halfeye() +
+    geom_vline(xintercept = c(-0.8, 0.8), linetype = "dashed", color = "#2c3e50", alpha = 0.7) +
+    scale_fill_manual(
+      values = c(report_colors[2], report_colors[1]),
+      name = "Effect Magnitude",
+      labels = c("Large", "Small")
+    ) +
+    labs(title = title,
+         subtitle = subtitle,
+         x = "County Mean",
+         y = "County") +
+    theme_report() +
+    theme(
+      axis.text.y = element_text(size = 8, hjust = 1),
+      axis.ticks.y = element_blank(),  # Remove y-axis ticks
+      panel.grid.major.y = element_line(color = "gray90", size = 0.1),  # Add light horizontal lines
+      plot.margin = margin(r = 20),  # Increase right margin for county names
+      legend.position = "bottom",
+      legend.box = "horizontal",
+      legend.margin = margin(t = 10, r = 0, b = 0, l = 0),
+      legend.title = element_text(size = 10),
+      legend.text = element_text(size = 8)
+    ) +
+    scale_y_discrete(expand = expansion(add = c(0.5, 1)))  # Increase spacing between county names
+}
 
+# Create plot for Staff Rating Effects
+staff_rating_plot <- create_county_effect_plot(
+  model,
+  "b_staff_rating",
+  "County-Level Staff Rating Effects",
+  "Posterior distribution of county-specific staff rating effects"
+)
 
+# Create plot for Intercepts
+intercept_plot <- create_county_effect_plot(
+  model,
+  "b_Intercept",
+  "County-Level Intercepts",
+  "Posterior distribution of county-specific effects"
+)
+
+# Display plots
+staff_rating_plot
+intercept_plot
 
 ```
+
+
+The plot below shows a posterior predictive check for the percentage of votes in favor of regulation across different standard chain organizations. This visualization compares the observed data (represented by red diamonds) with simulated data from the model (represented by boxplots).
+
+The boxplots display the distribution of simulated vote percentages for each standard chain organization, with the box representing the interquartile range (IQR) and the whiskers extending to 1.5 times the IQR. This allows us to assess how well the model captures the variability in voting patterns across different organizations.
+
+The red diamonds indicate the observed mean vote percentage for each organization, enabling a direct comparison between the model's predictions and the actual data. If the observed values fall within or close to the boxplots, it suggests that the model is performing well in capturing the voting patterns for that organization.
+
+This plot is particularly useful for identifying organizations where the model's predictions align well with observed data, as well as those where there might be discrepancies. For instance, we might observe that some organizations consistently have higher or lower vote percentages in favor of regulation, which could indicate differences in organizational culture, patient demographics, or other factors not explicitly included in the model.
+
+By comparing the positions of the boxplots relative to each other, we can also gain insights into how different standard chain organizations compare in terms of their tendency to receive votes in favor of regulation. Organizations with higher-positioned boxplots tend to receive more favorable votes, while those with lower-positioned boxplots tend to receive fewer favorable votes.
+This visualization helps in understanding the model's performance across different organizations and can highlight areas where the model might need improvement or where further investigation into organization-specific factors might be warranted.
 
 ```{r}
 pp_group <- function(data, pp_samples, group_var) {
   group_var <- enquo(group_var)
   
-  observed <- data %>%
-    group_by(!!group_var) %>%
+  observed <- data |>
+    group_by(!!group_var) |>
     summarise(vote_perc = mean(vote_perc))
   
   simulated <- apply(pp_samples, 1, function(x) {
-    data %>%
-      mutate(vote_perc = x) %>%
-      group_by(!!group_var) %>%
+    data |>
+      mutate(vote_perc = x) |>
+      group_by(!!group_var) |>
       summarise(vote_perc = mean(vote_perc))
-  }) %>% 
+  }) |> 
     bind_rows(.id = "simulation")
   
   group_name <- quo_name(group_var)
   
+  # Format group names for better readability
+  format_group_name <- function(name) {
+    name |>
+      str_replace_all("_", " ") |>
+      str_to_title()
+  }
+  
   ggplot() +
-    geom_boxplot(data = simulated, aes(x = !!group_var, y = vote_perc, fill = !!group_var), alpha = 0.7) +
-    geom_point(data = observed, aes(x = !!group_var, y = vote_perc), color = "#e74c3c", size = 3) +
+    # Use coord_flip() to make horizontal boxplots
+    coord_flip() +
+    geom_boxplot(data = simulated, 
+                 aes(x = factor(!!group_var, levels = rev(levels(factor(!!group_var)))), 
+                     y = vote_perc, 
+                     fill = !!group_var), 
+                 alpha = 0.7,
+                 width = 0.5) +  # Reduce width of boxplots
+    geom_point(data = observed, 
+               aes(x = !!group_var, y = vote_perc), 
+               color = "#e74c3c", 
+               size = 3,
+               shape = 18) +  # Use diamond shape for observed points
     theme_report() +
-    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-    labs(title = paste("Posterior Predictive Check:", group_name),
-         subtitle = "Percentage of Votes in Favor of Regulation",
-         x = group_name, 
-         y = "Vote Percentage") +
-    scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+    theme(
+      axis.text.y = element_text(size = 10),  # Increase text size
+      axis.title.y = element_blank(),  # Remove y-axis title
+      panel.grid.major.y = element_blank(),  # Remove horizontal grid lines
+      panel.grid.minor.y = element_blank(),
+      legend.position = "none"  # Remove legend
+    ) +
+    labs(
+      title = paste("Posterior Predictive Check:", format_group_name(group_name)),
+      subtitle = "Percentage of Votes in Favor of Regulation",
+      x = NULL,  # Remove x-axis label
+      y = "Vote Percentage",
+      caption = "Red diamonds represent observed mean values"
+    ) +
+    scale_y_continuous(
+      labels = scales::percent_format(accuracy = 1),
+      limits = c(0, 1),  # Set y-axis limits from 0% to 100%
+      expand = expansion(mult = c(0, 0.05))
+    ) +
     scale_fill_manual(values = report_colors) +
-    guides(fill = "none")  # Remove legend for more effective viewing
+    # Format y-axis labels
+    scale_x_discrete(labels = function(x) format_group_name(x))
 }
 
 pp_group(filtered_city_df, pp_samples, std_chain_organization)
 ```
 
+This plot visualizes the effect of staff rating, facility mortality rate, and patient experience rating on the predicted vote percentage in favor of regulation, while holding other variables constant at their mean or most common values. It combines observed data points with model predictions to provide a comprehensive view of the relationship between staff ratings and voting outcomes.
+
+The x-axis represents the staff rating, ranging from the minimum to the maximum observed values in the dataset. The y-axis shows the predicted vote percentage, formatted as a percentage for easy interpretation. The light grey dots scattered across the plot represent the actual observed data points, with each dot corresponding to a facility's staff rating and its associated vote percentage.
+
+The central line represents the model's predicted relationship between a given variable and vote percentage when marginalized over all the other variables in the model (i.e. 'controlling' for the other variables). The shaded areas around this line represent the uncertainty in these predictions, with three levels of credible intervals:
+1. The widest band (lightest shade) represents the 95% credible interval.
+2. The middle band represents the 80% credible interval.
+3. The narrowest band (darkest shade) represents the 50% credible interval.
+
+These credible intervals provide a visual representation of the model's certainty about its predictions. Where the bands are narrower, the model is more certain about its predictions; where they are wider, there is more uncertainty.
+
+Staff Rating: 
+The overall trend is that as staff rating increases, the predicted vote percentage in favor of regulation decreases. This suggests that in cities and counties where facilities have lower staff ratings, voters are more likely to vote in favor of regulating dialysis clinics.
+
+Mortality Rate: 
+The overall trend is that as mortality rate increases, the predicted vote percentage in favor of regulation increases This suggests that in cities and counties where facilities have higher mortality rates, voters are more likely to vote in favor of regulating dialysis clinics.
+
+Patient Experience Rating:
+The overall trend is that as patient experience rating increases, the predicted vote percentage in favor of regulation increases This suggests that in cities and counties where facilities have higher patient experience ratings, voters are more likely to vote in favor of regulating dialysis clinics.
+
+
+
 ```{r}
 # Create a new data frame with a range of staff ratings
-new_data <- filtered_city_df %>%
+new_data <- filtered_city_df |>
   data_grid(
     staff_rating = seq(from = min(filtered_city_df$staff_rating),
                        to = max(filtered_city_df$staff_rating),
                        length.out = 100),
     .model = model
-  ) %>%
+  ) |>
   # Set other variables to their mean or most common value
   mutate(
     five_star = mean(filtered_city_df$five_star),
@@ -246,7 +328,7 @@ new_data <- filtered_city_df %>%
   )
 
 # Add predicted draws
-predictions <- new_data %>%
+predictions <- new_data |>
   add_epred_draws(model, ndraws = 1000)
 
 # Create the plot
@@ -254,26 +336,32 @@ ggplot(predictions, aes(x = staff_rating, y = .epred)) +
   geom_jitter(data = filtered_city_df, aes(y = vote_perc), alpha = 0.2, color = report_colors[9]) +
   stat_lineribbon(aes(y = .epred), .width = c(.95, .80, .50), alpha = 0.5) +
   labs(
-    title = "Effect of Staff Rating on Vote Percentage",
+    title = "Effect of Staff Rating on Predicted Vote Percentage",
+    subtitle = "Controlling for other variables at their mean or most common values",
     x = "Staff Rating",
     y = "Predicted Vote Percentage",
-    caption = "Shaded areas represent 95%, 80%, and 50% credible intervals"
+    caption = "Shaded areas represent 95%, 80%, and 50% credible intervals\nGrey dots represent observed data"
   ) +
   scale_x_continuous(limits = c(75, NA), expand = c(0, 0)) +
   scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
   theme_report() +
-  scale_fill_manual(values = report_colors)
+  scale_fill_manual(values = report_colors[1:3]) +
+  theme(
+    legend.position = "none",
+    plot.caption = element_text(hjust = 0, size = 8, color = "#7f8c8d"),
+    plot.subtitle = element_text(size = 10, color = "#7f8c8d")
+  )
 
 ```
 
 ```{r}
-new_data <- filtered_city_df %>%
+new_data <- filtered_city_df |>
   data_grid(
     mortality_rate_facility = seq(from = min(filtered_city_df$mortality_rate_facility),
                        to = max(filtered_city_df$mortality_rate_facility),
                        length.out = 100),
     .model = model
-  ) %>%
+  ) |>
   # Set other variables to their mean or most common value
   mutate(
     five_star = mean(filtered_city_df$five_star),
@@ -288,7 +376,7 @@ new_data <- filtered_city_df %>%
   )
 
 # Adding predicted draws
-predictions <- new_data %>%
+predictions <- new_data |>
   add_epred_draws(model, ndraws = 1000)
 
 # Creating the plot
@@ -296,45 +384,119 @@ ggplot(predictions, aes(x = mortality_rate_facility, y = .epred)) +
   geom_jitter(data = filtered_city_df, aes(y = vote_perc), alpha = 0.2, color = report_colors[9]) +
   stat_lineribbon(aes(y = .epred), .width = c(.95, .80, .50), alpha = 0.5) +
   labs(
-    title = "Effect of Mortality Rate on Vote Percentage",
-    subtitle = "Predicted vote percentage based on facility mortality rate",
+    title = "Effect of Mortality Rate on Predicted Vote Percentage",
+    subtitle = "Controlling for other variables at their mean or most common values",
     x = "Mortality Rate",
     y = "Predicted Vote Percentage",
-    caption = "Shaded areas represent 95%, 80%, and 50% credible intervals"
+    caption = "Shaded areas represent 95%, 80%, and 50% credible intervals\nGrey dots represent observed data"
   ) +
   scale_x_continuous(expand = c(0, 0)) +
   scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
-  scale_fill_manual(values = c(report_colors[1], report_colors[2], report_colors[4])) +
+  scale_fill_manual(values = report_colors[1:3]) +
   theme_report() +
   theme(
     legend.position = "none",
-    plot.caption = element_text(size = 8, color = "#666666")
+    plot.caption = element_text(hjust = 0, size = 8, color = "#7f8c8d"),
+    plot.subtitle = element_text(size = 10, color = "#7f8c8d")
   )
 ```
+
+```{r}
+new_data <- filtered_city_df |>
+  data_grid(
+    patient_experience_rating = seq(from = min(filtered_city_df$patient_experience_rating),
+                       to = max(filtered_city_df$patient_experience_rating),
+                       length.out = 100),
+    .model = model
+  ) |>
+  # Set other variables to their mean or most common value
+  mutate(
+    five_star = mean(filtered_city_df$five_star),
+    mortality_rate_facility = mean(filtered_city_df$mortality_rate_facility),
+    staff_rating = mean(filtered_city_df$staff_rating),
+    n_dialysis_stations = mean(filtered_city_df$n_dialysis_stations),
+    hospital_readmission = names(which.max(table(filtered_city_df$hospital_readmission))),
+    county = names(which.max(table(filtered_city_df$county))),
+    city = names(which.max(table(filtered_city_df$city))),
+    profit_or_nonprofit = names(which.max(table(filtered_city_df$profit_or_nonprofit))),
+    std_chain_organization = names(which.max(table(filtered_city_df$std_chain_organization)))
+  )
+
+# Adding predicted draws
+predictions <- new_data |>
+  add_epred_draws(model, ndraws = 1000)
+
+# Creating the plot
+ggplot(predictions, aes(x = patient_experience_rating, y = .epred)) +
+  geom_jitter(data = filtered_city_df, aes(y = vote_perc), alpha = 0.2, color = report_colors[9]) +
+  stat_lineribbon(aes(y = .epred), .width = c(.95, .80, .50), alpha = 0.5) +
+  labs(
+    title = "Effect of Patient Experience Rating on Predicted Vote Percentage",
+    subtitle = "Controlling for other variables at their mean or most common values",
+    x = "Patient Experience Rating",
+    y = "Predicted Vote Percentage",
+    caption = "Shaded areas represent 95%, 80%, and 50% credible intervals\nGrey dots represent observed data"
+  ) +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_fill_manual(values = report_colors[1:3]) +
+  theme_report() +
+  theme(
+    legend.position = "none",
+    plot.caption = element_text(hjust = 0, size = 8, color = "#7f8c8d"),
+    plot.subtitle = element_text(size = 10, color = "#7f8c8d")
+  )
+```
+
 
 ```{r}
 posterior_samples <- model |>
   spread_draws(b_staff_rating, b_mortality_rate_facility, b_five_star, b_patient_experience_rating, b_n_dialysis_stations) |>
   pivot_longer(cols = starts_with("b_"), names_to = "parameter", values_to = "value") |>
-  mutate(parameter = str_remove(parameter, "b_"))
+  mutate(
+    parameter = str_remove(parameter, "b_"),
+    parameter = case_when(
+      parameter == "staff_rating" ~ "Staff Rating",
+      parameter == "mortality_rate_facility" ~ "Mortality Rate",
+      parameter == "five_star" ~ "Five Star Rating",
+      parameter == "patient_experience_rating" ~ "Patient Experience",
+      parameter == "n_dialysis_stations" ~ "Number of Dialysis Stations",
+      TRUE ~ parameter
+    ),
+    parameter = fct_reorder(parameter, value)
+  )
 
 # Create the plot
 ggplot(posterior_samples, aes(y = parameter, x = value, fill = parameter)) +
-  stat_halfeye() +
+  stat_halfeye(
+    point_interval = "median_qi",
+    .width = c(0.5, 0.8, 0.95),
+    interval_color = "black",
+    interval_alpha = 0.5,
+    slab_alpha = 0.5
+  ) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "#2c3e50", alpha = 0.7) +
   scale_fill_manual(values = report_colors[1:5]) +
   labs(
     title = "Posterior Distributions of Model Parameters",
-    subtitle = "Areas represent the density of posterior samples",
+    subtitle = "Median and credible intervals shown",
     x = "Parameter Estimate",
-    y = "Parameter"
+    y = NULL,
+    caption = "Thick bar: 50% CI | Thin bar: 95% CI | Dashed line: No effect"
   ) +
   theme_report() +
   theme(
     legend.position = "none",
-    axis.text.y = element_text(hjust = 1)
+    axis.text.y = element_text(hjust = 1),
+    plot.caption = element_text(hjust = 0, size = 8, color = "#7f8c8d"),
+    plot.subtitle = element_text(size = 10, color = "#7f8c8d")
+  ) +
+  scale_x_continuous(
+    labels = scales::label_number(accuracy = 0.01),
+    breaks = scales::pretty_breaks(n = 6)
   )
 ```
+
 
 ```{r}
 mcmc_trace(model, pars = c("b_mortality_rate_facility", "b_n_dialysis_stations", 
@@ -489,5 +651,50 @@ combined_plot <- wrap_plots(plots, ncol = 2) +
 
 # Print the combined plot
 print(combined_plot)
+```
+
+```{r}
+param_names <- c(
+  b_mortality_rate_facility = "Mortality Rate",
+  b_n_dialysis_stations = "Number of Dialysis Stations",
+  b_five_star = "Five Star Rating",
+  b_patient_experience_rating = "Patient Experience Rating",
+  b_staff_rating = "Staff Rating"
+)
+
+mcmc_areas(
+  model, 
+  pars = c("b_mortality_rate_facility", "b_n_dialysis_stations", 
+           "b_five_star", "b_patient_experience_rating", "b_staff_rating"),
+  prob = 0.95,  # 95% credible interval
+  prob_outer = 0.99  # 99% credible interval
+) +
+  scale_fill_manual(values = report_colors[1:5]) +
+  scale_y_discrete(labels = param_names) +  # Use readable parameter names
+  labs(
+    title = "Posterior Distributions of Model Parameters",
+    subtitle = "Shaded areas represent 95% and 99% credible intervals",
+    x = "Parameter Estimate",
+    y = NULL  # Remove y-axis label as parameter names are self-explanatory
+  ) +
+  theme_report() +
+  theme(
+    legend.position = "none",
+    axis.text.y = element_text(hjust = 1, size = 10),
+    axis.text.x = element_text(size = 9),
+    plot.subtitle = element_text(size = 10, color = "#7f8c8d"),
+    panel.grid.major.y = element_line(color = "gray90", size = 0.1),
+    panel.grid.minor = element_blank()
+  ) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "#2c3e50", alpha = 0.7) +
+  scale_x_continuous(
+    labels = scales::label_number(accuracy = 0.01),
+    breaks = scales::pretty_breaks(n = 6)
+  )
+```
+
+
+```{r}
+conditional_effects(model)
 ```
 
