@@ -1,6 +1,6 @@
 ---
 title: "Project Findings"
-author: "Your Name"
+author: "Iris Lin, Kasra Afzali, Michael Light"
 format: 
   html:
     toc: true
@@ -27,7 +27,7 @@ Proposition 29, which failed to pass, aimed to establish increased regulations f
 ## Debate Surrounding Dialysis Regulations
 
 - **Proponents** argue that increased regulations improve patient safety and quality of care.
-- **Opponents** contend that the increase in healthcare costs is unwarranted and would limit care coverage by overwhelming facilities with costs and potentially forcing them to close.
+- **Opponents** contend that the increase in healthcare costs is unwarranted and would limit care coverage by overwhelming facilities with costs and potentially [forcing them to close](https://www.latimes.com/california/story/2022-11-08/2022-california-election-prop-29-vote-dialysis-clinic-results).
 
 ## Project Scope and Significance
 
@@ -48,7 +48,7 @@ We analyze associations between dialysis care and voting behaviors, specifically
 
 - This project uses a novel approach to study an area of public interest relevant not just to California but the entire country.
 - To our knowledge, this is the first project of its kind to explore the possible association between voting patterns and the quality of dialysis care received.
-- The majority of dialysis treatments in California are covered by Medicare, making the Medicare and Medicaid datasets particularly relevant to our analysis.
+- The majority of dialysis treatments in California [are covered by Medicare](https://lao.ca.gov/BallotAnalysis/Proposition?number=29&year=2022), making the Medicare and Medicaid datasets particularly relevant to our analysis.
 
 ## Broader Context
 
