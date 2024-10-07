@@ -1,0 +1,217 @@
+---
+title: "model-visualization"
+format: html
+editor: visual
+---
+
+## Quarto
+
+```{r}
+library(tidyverse)
+library(brms)
+library(ggdist)
+library(tidybayes)
+library(modelr)
+```
+
+
+```{r}
+city_df <- read_parquet("../003_data/003_merged-data/merged_cms_ballot-measures_by-city.parquet")
+
+city_df <- city_df  |> 
+  # First, create a temporary dataframe with 2019 values for variables we need to impute
+  left_join(
+    city_df |> 
+      filter(year == 2019) |>
+      select(
+        provider_number, 
+        ich_cahps_survey_of_patients_experiences_star_rating_2019 = ich_cahps_survey_of_patients_experiences_star_rating,
+        patient_hospital_readmission_category_2019 = patient_hospital_readmission_category
+      ),
+    by = "provider_number"
+  ) |>
+  # Then, replace 2018 values with 2019 values for both variables
+  mutate(
+    ich_cahps_survey_of_patients_experiences_star_rating = case_when(
+      year == 2018 ~ ich_cahps_survey_of_patients_experiences_star_rating_2019,
+      TRUE ~ ich_cahps_survey_of_patients_experiences_star_rating
+    ),
+    patient_hospital_readmission_category = case_when(
+      year == 2018 ~ patient_hospital_readmission_category_2019,
+      TRUE ~ patient_hospital_readmission_category
+    )
+  ) |>
+  # Finally, remove the temporary columns
+  select(-ends_with("_2019"))
+
+filtered_city_df <- (
+  city_df 
+  |> mutate(mortality_rate_facility = as.numeric(mortality_rate_facility),
+            n_dialysis_stations = as.numeric(`_of_dialysis_stations`),
+            staff_rating = as.numeric(linearized_score_of_rating_of_the_dialysis_center_staff),
+            five_star = as.numeric(five_star),
+            patient_experience_rating = as.numeric(ich_cahps_survey_of_patients_experiences_star_rating))
+  |> mutate(hospital_readmission = factor(patient_hospital_readmission_category,
+                              levels = c("Worse than Expected",
+                                         "As Expected",
+                                         "Better than Expected",
+                                         "Not Available"),
+                              ordered = TRUE))
+  |> filter(!is.na(city), year %in% c(2022, 2020, 2018))
+  |> group_by(year, provider_number, county, city, profit_or_nonprofit, std_chain_organization)
+  |> summarize(
+    total_votes = sum(vote_count),
+    yes_votes = sum(vote_count[vote_type == "yes"]),
+    vote_perc = yes_votes / total_votes,
+    five_star = first(five_star),
+    mortality_rate_facility = first(mortality_rate_facility),
+    staff_rating = first(staff_rating),
+    patient_experience_rating = first(patient_experience_rating),
+    n_dialysis_stations = first(n_dialysis_stations),
+    hospital_readmission = first(hospital_readmission)
+  )
+  |> ungroup()
+  |> select(year, provider_number, profit_or_nonprofit, std_chain_organization, county, city, five_star, mortality_rate_facility, staff_rating, patient_experience_rating, n_dialysis_stations, hospital_readmission, vote_perc)
+  |> distinct()
+  |> drop_na()
+)
+```
+
+```{r}
+model_formula <- bf(
+  formula = vote_perc ~ five_star + 
+                       patient_experience_rating +
+                       mortality_rate_facility + 
+                       n_dialysis_stations + 
+                       staff_rating +
+                       mo(hospital_readmission) +
+                       (1 | county) + 
+                       (1 | city) +
+                       (1 | profit_or_nonprofit) +
+                       (1 | std_chain_organization)
+)
+
+model <- brm(
+  formula = model_formula,
+  family = Beta(),
+  data = filtered_city_df,
+  cores = 4,
+  chains = 4,
+  iter = 2000,
+  warmup = 1000,
+  file = "../006_models/dialysis-model_18"
+)
+```
+
+
+```{r}
+model = readRDS("../006_models/dialysis-model_15_beta.rds")
+```
+
+You can add options to executable code like this
+
+```{r}
+
+model |> 
+  spread_draws(b_staff_rating, r_county[county,]) |> 
+  median_qi(condition_mean = b_staff_rating + r_county, .width = c(.95, .66)) %>%
+  ggplot(aes(y = county, x = condition_mean, xmin = .lower, xmax = .upper)) +
+  stat_halfeye()
+
+model %>%
+  spread_draws(b_staff_rating, r_county[county,]) %>%
+  mutate(county_mean = b_staff_rating + r_county) %>%
+  ggplot(aes(y = county, x = county_mean)) +
+  stat_halfeye()
+
+model %>%
+  spread_draws(b_Intercept, r_county[county,]) %>%
+  mutate(county_mean = b_Intercept + r_county) %>%
+  ggplot(aes(y = county, x = county_mean, fill = after_stat(abs(x) < .8))) +
+  stat_halfeye() +
+  geom_vline(xintercept = c(-.8, .8), linetype = "dashed") +
+  scale_fill_manual(values = c("gray80", "skyblue")) 
+
+
+model %>%
+  spread_draws(b_staff_rating, r_county[county,]) %>%
+  mutate(county_mean = b_staff_rating + r_county) %>%
+  ggplot(aes(y = county, x = county_mean, fill = after_stat(abs(x) < .8))) +
+  stat_halfeye() +
+  geom_vline(xintercept = c(-.8, .8), linetype = "dashed") +
+  scale_fill_manual(values = c("gray80", "skyblue"))
+
+get_variables(model)
+```
+```{r}
+model %>%
+  spread_draws(b_Intercept, r_county[county,]) %>%
+  mutate(county_mean = b_Intercept + r_county) %>%
+  ggplot(aes(y = county, x = county_mean, fill = after_stat(abs(x) < .8))) +
+  stat_halfeye() +
+  geom_vline(xintercept = c(-.8, .8), linetype = "dashed") +
+  scale_fill_manual(values = c("gray80", "skyblue")) 
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
+```{r}
+grid = filtered_city_df |>
+  data_grid(year, city, staff_rating)
+
+means = grid %>%
+  add_epred_draws(model)
+
+filtered_city_df |> 
+  add_epred_draws(model) 
+
+filtered_city_df |>
+  group_by(city, county, profit_or_nonprofit, std_chain_organization, five_star, patient_experience_rating, ) |>
+  data_grid(staff_rating = seq_range(staff_rating, n = 50)) |>
+  add_epred_draws(model) 
+```
+```{r}
+filtered_city_df |> 
+  add_linpred_draws(model, dpar = TRUE, ndraws = 100) |> 
+  ggplot(aes(x = .linpred, y = std_chain_organization)) +
+  stat_halfeye()
+
+filtered_city_df |> 
+  add_epred_draws(model, dpar = TRUE, ndraws = 100) |> 
+  ggplot(aes(x = .epred, y = std_chain_organization)) +
+  stat_halfeye()
+
+filtered_city_df |> 
+  add_predicted_draws(model, dpar = TRUE, ndraws = 100) |> 
+  ggplot(aes(x = .prediction, y = std_chain_organization)) +
+  stat_halfeye()
+```
+
+```{r}
+pp_group <- function(data, pp_samples, group_var) {
+  group_var <- enquo(group_var)
+  
+  observed <- data %>%
+    group_by(!!group_var) %>%
+    summarise(vote_perc = mean(vote_perc))
+  
+  simulated <- apply(pp_samples, 1, function(x) {
+    data %>%
+      mutate(vote_perc = x) %>%
+      group_by(!!group_var) %>%
+      summarise(vote_perc = mean(vote_perc))
+  }) %>% 
+    bind_rows(.id = "simulation")
+  
+  group_name <- quo_name(group_var)
+  
+  ggplot() +
+    geom_boxplot(data = simulated, aes(x = !!group_var, y = vote_perc), alpha = 0.3) +
+    geom_point(data = observed, aes(x = !!group_var, y = vote_perc), color = "red", size = 3) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+    labs(title = paste("Posterior Predictive Check: Percentage of Votes in Favor of Regulation by", group_name),
+         x = group_name, y = "Vote Percentage") 
+}
+
+pp_group(filtered_city_df, pp_samples, std_chain_organization)
+```
+
