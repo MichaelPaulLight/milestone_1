@@ -157,3 +157,92 @@ Observations of Quality of Care metrics in our data are categorized by:
 | Center for Medicare and Medicaid Services Dialysis Facilities | Type: .zip & .xlsx<br>Years: 2017-2024<br>Combined Size: 5,684 rows, 173 columns<br>Link: [https://data.cms.gov/provider-data/topics/dialysis-facilities](https://data.cms.gov/provider-data/topics/dialysis-facilities) | - Facility Name<br>- County<br>- City<br>- Facility Quality of Care Rating<br>- Dialysis Center Staff Rating<br>- Patient Experience Rating<br>- Patient Readmission Category (Worse Than Expected, As Expected, Better Than Expected)<br>- Mortality Rate<br>- Number of Dialysis Stations<br>- Licensee Type (Non-Profit, For-Profit.)<br>- Organization Affiliation (Independent or Chain) |
 | California Secretary of State November Ballot Measures | Type: .xlsx<br>Years: 2018, 2020, 2022<br>Combined Size: 7,122 rows, 7 columns<br>Link: [https://www.sos.ca.gov/elections/prior-elections/statewide-election-results](https://www.sos.ca.gov/elections/prior-elections/statewide-election-results) | - County<br>- Congressional District<br>- City<br>- Ballot Proposition<br>- Yes Vote Count for Proposition<br>- No Vote Count for Proposition |
 | California Health and Human Services Speciality Care Clinic Complete Data Set | Type: .xlsx<br>Years: 2013-2023<br>Combined Size: 6,605 rows, 143 columns<br>Link: [https://data.chhs.ca.gov/dataset/specialty-care-clinic-complete-data-set](https://data.chhs.ca.gov/dataset/specialty-care-clinic-complete-data-set) | - Facility Name<br>- County<br>- Zip Code<br>- Assembly District<br>- Senate District<br>- Congressional District<br>- Census Tract<br>- Latitude and Longitude |
+
+# Data Manipulation Methods
+
+Our workflow was broken down into five stages:
+
+1. Data Collection
+2. Data Preparation
+3. Database Management
+4. Exploratory Data Analysis
+5. Statistical Analysis
+
+## Data Collection and Preparation
+
+### CMS Dialysis Facility Dataset
+
+#### Organization and Import
+- Dataset structure: .zip files (one per year), containing multiple Excel files
+- Focus: Excel files relevant to facility general information, ratings, and patient survey results
+- Import result: Two separate parquet files at the facility level
+  1. Patient survey responses
+  2. Facility ratings and measurements
+
+#### Challenges and Solutions
+1. Inconsistent File Naming Conventions
+   - Issue: 2021 files named differently (e.g., patient survey data file named '59mq-zhts')
+   - Solution: Created a list of exact file names for selection, rather than using pattern matching
+
+2. Missing Data
+   - Expected missing data: Survey non-responses
+   - Unexpected missing data: Administrative errors (e.g., missing columns in recent ICHPS raw data files)
+   - Solution for specific cases: Simple imputation during analysis (e.g., substituting 2018 'nan' values with 2019 values at the facility level)
+
+### SOS Ballot Data
+
+#### Import and Selection
+- Data imported via URL for each relevant proposition year (2018, 2020, 2022)
+- Selected columns containing 'Kidney' or 'Dialysis' for analysis
+- Geographic column manipulation:
+  - Renamed columns
+  - Backfilled rows to address multi-level index (sub-counties under counties)
+- Final output: Single ballot data parquet file
+  - Includes year column
+  - Count and sub-county vote counts for each Dialysis Requirements Initiative proposition
+
+#### Challenges and Solutions
+- Inconsistent naming conventions across years
+  - 2020 and 2022: 'County Supervisorial'
+  - 2018: 'Supervisorial District'
+- Solution: Standardized naming across all years
+
+### CHHS Specialty Care Clinic Complete Data Set
+
+#### Import and Alignment
+- Downloaded Excel files for 2013 through 2023 (one per year)
+- Main challenge: Aligning pre-2018 data with 2018-forward structure
+- Process:
+  1. Separated data into two dataframes: 2013-2017 and 2018-2023
+  2. Used CHHS mapping dictionary to rename 2013-2017 columns
+  3. Ensured consistent data types across both dataframes
+  4. Merged dataframes using outer join on common columns
+  5. Dropped rows with missing FAC_NO (facility data)
+
+## Database Management
+
+### Data Merging and Standardization
+- Standardized data types and column names across all datasets
+- Merged datasets:
+  1. CMS facility rating dataset with CMS patient survey dataset
+  2. Filtered CHHS dataset (dialysis clinics only) with merged CMS data
+  3. Reshaped CMS and CHHS data by geographic level
+  4. Merged geographic-level data with SOS Ballot Measures dataset
+
+### Final Output
+- Two parquet files:
+  1. Data aggregated at city level
+  2. Data aggregated at assembly district level
+
+### Custom Relational Database System
+
+- We developed a custom Python-based relational database system to centralize our datasets and facilitate efficient data access and analysis. Key features include:
+
+  1. **Table and View Structure**: Distinct tables for datasets with multiple views for focused data access.
+  2. **Dynamic View Creation and Merging**: On-the-fly creation of custom views and combination of multiple views for complex analysis.
+  3. **Conditional Querying**: User-defined conditions for precise data retrieval and filtering.
+  4. **Efficient Data Access**: Quick and reliable access across the entire database.
+  5. **Code Quality**: Object-oriented design with consistent naming conventions for improved maintainability and adaptability.
+
+- For detailed functionality, refer to the included database demo (Milestone_1/004_data-processing-scripts/002_clean-raw-data/database_demo.ipynb).
+

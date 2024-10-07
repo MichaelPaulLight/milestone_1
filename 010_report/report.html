@@ -79,6 +79,21 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#data-integration-and-analysis-potential" id="toc-data-integration-and-analysis-potential" class="nav-link" data-scroll-target="#data-integration-and-analysis-potential">Data Integration and Analysis Potential</a></li>
   <li><a href="#features-of-interest" id="toc-features-of-interest" class="nav-link" data-scroll-target="#features-of-interest">Features of Interest</a></li>
   </ul></li>
+  <li><a href="#data-manipulation-methods" id="toc-data-manipulation-methods" class="nav-link" data-scroll-target="#data-manipulation-methods">Data Manipulation Methods</a>
+  <ul class="collapse">
+  <li><a href="#data-collection-and-preparation" id="toc-data-collection-and-preparation" class="nav-link" data-scroll-target="#data-collection-and-preparation">Data Collection and Preparation</a>
+  <ul class="collapse">
+  <li><a href="#cms-dialysis-facility-dataset" id="toc-cms-dialysis-facility-dataset" class="nav-link" data-scroll-target="#cms-dialysis-facility-dataset">CMS Dialysis Facility Dataset</a></li>
+  <li><a href="#sos-ballot-data" id="toc-sos-ballot-data" class="nav-link" data-scroll-target="#sos-ballot-data">SOS Ballot Data</a></li>
+  <li><a href="#chhs-specialty-care-clinic-complete-data-set" id="toc-chhs-specialty-care-clinic-complete-data-set" class="nav-link" data-scroll-target="#chhs-specialty-care-clinic-complete-data-set">CHHS Specialty Care Clinic Complete Data Set</a></li>
+  </ul></li>
+  <li><a href="#database-management" id="toc-database-management" class="nav-link" data-scroll-target="#database-management">Database Management</a>
+  <ul class="collapse">
+  <li><a href="#data-merging-and-standardization" id="toc-data-merging-and-standardization" class="nav-link" data-scroll-target="#data-merging-and-standardization">Data Merging and Standardization</a></li>
+  <li><a href="#final-output" id="toc-final-output" class="nav-link" data-scroll-target="#final-output">Final Output</a></li>
+  <li><a href="#custom-relational-database-system" id="toc-custom-relational-database-system" class="nav-link" data-scroll-target="#custom-relational-database-system">Custom Relational Database System</a></li>
+  </ul></li>
+  </ul></li>
   </ul>
 </nav>
 </div>
@@ -310,6 +325,140 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 </tbody>
 </table>
+</section>
+</section>
+<section id="data-manipulation-methods" class="level1">
+<h1>Data Manipulation Methods</h1>
+<p>Our workflow was broken down into five stages:</p>
+<ol type="1">
+<li>Data Collection</li>
+<li>Data Preparation</li>
+<li>Database Management</li>
+<li>Exploratory Data Analysis</li>
+<li>Statistical Analysis</li>
+</ol>
+<section id="data-collection-and-preparation" class="level2">
+<h2 class="anchored" data-anchor-id="data-collection-and-preparation">Data Collection and Preparation</h2>
+<section id="cms-dialysis-facility-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="cms-dialysis-facility-dataset">CMS Dialysis Facility Dataset</h3>
+<section id="organization-and-import" class="level4">
+<h4 class="anchored" data-anchor-id="organization-and-import">Organization and Import</h4>
+<ul>
+<li>Dataset structure: .zip files (one per year), containing multiple Excel files</li>
+<li>Focus: Excel files relevant to facility general information, ratings, and patient survey results</li>
+<li>Import result: Two separate parquet files at the facility level
+<ol type="1">
+<li>Patient survey responses</li>
+<li>Facility ratings and measurements</li>
+</ol></li>
+</ul>
+</section>
+<section id="challenges-and-solutions" class="level4">
+<h4 class="anchored" data-anchor-id="challenges-and-solutions">Challenges and Solutions</h4>
+<ol type="1">
+<li>Inconsistent File Naming Conventions
+<ul>
+<li>Issue: 2021 files named differently (e.g., patient survey data file named ‘59mq-zhts’)</li>
+<li>Solution: Created a list of exact file names for selection, rather than using pattern matching</li>
+</ul></li>
+<li>Missing Data
+<ul>
+<li>Expected missing data: Survey non-responses</li>
+<li>Unexpected missing data: Administrative errors (e.g., missing columns in recent ICHPS raw data files)</li>
+<li>Solution for specific cases: Simple imputation during analysis (e.g., substituting 2018 ‘nan’ values with 2019 values at the facility level)</li>
+</ul></li>
+</ol>
+</section>
+</section>
+<section id="sos-ballot-data" class="level3">
+<h3 class="anchored" data-anchor-id="sos-ballot-data">SOS Ballot Data</h3>
+<section id="import-and-selection" class="level4">
+<h4 class="anchored" data-anchor-id="import-and-selection">Import and Selection</h4>
+<ul>
+<li>Data imported via URL for each relevant proposition year (2018, 2020, 2022)</li>
+<li>Selected columns containing ‘Kidney’ or ‘Dialysis’ for analysis</li>
+<li>Geographic column manipulation:
+<ul>
+<li>Renamed columns</li>
+<li>Backfilled rows to address multi-level index (sub-counties under counties)</li>
+</ul></li>
+<li>Final output: Single ballot data parquet file
+<ul>
+<li>Includes year column</li>
+<li>Count and sub-county vote counts for each Dialysis Requirements Initiative proposition</li>
+</ul></li>
+</ul>
+</section>
+<section id="challenges-and-solutions-1" class="level4">
+<h4 class="anchored" data-anchor-id="challenges-and-solutions-1">Challenges and Solutions</h4>
+<ul>
+<li>Inconsistent naming conventions across years
+<ul>
+<li>2020 and 2022: ‘County Supervisorial’</li>
+<li>2018: ‘Supervisorial District’</li>
+</ul></li>
+<li>Solution: Standardized naming across all years</li>
+</ul>
+</section>
+</section>
+<section id="chhs-specialty-care-clinic-complete-data-set" class="level3">
+<h3 class="anchored" data-anchor-id="chhs-specialty-care-clinic-complete-data-set">CHHS Specialty Care Clinic Complete Data Set</h3>
+<section id="import-and-alignment" class="level4">
+<h4 class="anchored" data-anchor-id="import-and-alignment">Import and Alignment</h4>
+<ul>
+<li>Downloaded Excel files for 2013 through 2023 (one per year)</li>
+<li>Main challenge: Aligning pre-2018 data with 2018-forward structure</li>
+<li>Process:
+<ol type="1">
+<li>Separated data into two dataframes: 2013-2017 and 2018-2023</li>
+<li>Used CHHS mapping dictionary to rename 2013-2017 columns</li>
+<li>Ensured consistent data types across both dataframes</li>
+<li>Merged dataframes using outer join on common columns</li>
+<li>Dropped rows with missing FAC_NO (facility data)</li>
+</ol></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="database-management" class="level2">
+<h2 class="anchored" data-anchor-id="database-management">Database Management</h2>
+<section id="data-merging-and-standardization" class="level3">
+<h3 class="anchored" data-anchor-id="data-merging-and-standardization">Data Merging and Standardization</h3>
+<ul>
+<li>Standardized data types and column names across all datasets</li>
+<li>Merged datasets:
+<ol type="1">
+<li>CMS facility rating dataset with CMS patient survey dataset</li>
+<li>Filtered CHHS dataset (dialysis clinics only) with merged CMS data</li>
+<li>Reshaped CMS and CHHS data by geographic level</li>
+<li>Merged geographic-level data with SOS Ballot Measures dataset</li>
+</ol></li>
+</ul>
+</section>
+<section id="final-output" class="level3">
+<h3 class="anchored" data-anchor-id="final-output">Final Output</h3>
+<ul>
+<li>Two parquet files:
+<ol type="1">
+<li>Data aggregated at city level</li>
+<li>Data aggregated at assembly district level</li>
+</ol></li>
+</ul>
+</section>
+<section id="custom-relational-database-system" class="level3">
+<h3 class="anchored" data-anchor-id="custom-relational-database-system">Custom Relational Database System</h3>
+<ul>
+<li><p>We developed a custom Python-based relational database system to centralize our datasets and facilitate efficient data access and analysis. Key features include:</p>
+<ol type="1">
+<li><strong>Table and View Structure</strong>: Distinct tables for datasets with multiple views for focused data access.</li>
+<li><strong>Dynamic View Creation and Merging</strong>: On-the-fly creation of custom views and combination of multiple views for complex analysis.</li>
+<li><strong>Conditional Querying</strong>: User-defined conditions for precise data retrieval and filtering.</li>
+<li><strong>Efficient Data Access</strong>: Quick and reliable access across the entire database.</li>
+<li><strong>Code Quality</strong>: Object-oriented design with consistent naming conventions for improved maintainability and adaptability.</li>
+</ol></li>
+<li><p>For detailed functionality, refer to the included database demo <a href="../004_data-processing-scripts/002_clean-raw-data/database_demo.ipynb">Jupyter notebook</a>.</p></li>
+</ul>
+</section>
 </section>
 </section>
 
