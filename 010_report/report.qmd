@@ -95,3 +95,57 @@ Observations of Quality of Care metrics in our data are categorized by:
 1. What is the geographic coverage of dialysis facilities in California?
 2. Is there any correlation between organizational structure (chain-owned, profit vs. non-profit) and the quality of care?
 3. Is there any association between the parent company of dialysis facilities and the quality of care?
+
+# Data Sources
+
+## Primary Data Sources
+
+### Center for Medicare and Medicaid Services (CMS) Quarterly Dialysis Facility Compare Dataset
+
+- **Time range**: 2017 to 2024
+- **Key features**:
+  - Star ratings for dialysis facilities
+  - Patient experience metrics
+  - Quality of care metrics
+- **Insights provided**:
+  - Patient satisfaction
+  - Clinical outcomes
+  - Doctor-patient communication
+  - Hospitalization rates
+  - Treatment effectiveness
+- **Rating calculation**:
+  - Patient experience star rating derived from bi-annual patient surveys
+  - Facility ratings based on metrics including:
+    - Unplanned hospital readmissions
+    - Total and expected transfusions
+    - Ratio of deaths to expected deaths
+    - Waste removal efficiency across patient types
+
+### California Secretary of State's (SOS) Statement of Vote for Ballot Measures
+
+- **Elections covered**: November 2022, 2020, and 2018
+- **Focus**: Propositions regarding dialysis clinic requirements
+- **Geographic levels**:
+  - Counties
+  - Sub-counties:
+    - Congressional districts
+    - State senate districts
+    - State assembly districts
+    - Cities
+
+## Secondary Data Source
+
+### California Health and Human Services Specialty Care Clinic Complete Data Set
+
+- **Time range**: 2013 through 2023
+- **Purpose**: Supplement CMS dataset with additional geographic data
+- **Additional facility-level features**:
+  - Senate district
+  - Congressional district
+  - Latitude and longitude
+
+## Data Integration and Analysis Potential
+
+- Multiple geographic levels allow for aggregation and analysis at various scales
+- Combination of clinical data (CMS) with voting data (SOS) enables exploration of potential correlations between care quality and voting behavior
+- Supplementary geographic data enhances spatial analysis capabilities
