@@ -75,7 +75,7 @@ def read_dataframes(directory_path=None):
     
 
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.abspath(os.path.join(current_dir, '..', '..'))
+    project_root = os.path.abspath(os.path.join(current_dir, '..', '..', '..'))
     
     if directory_path is None:
         # Default to the '003_data\002_clean-data' directory
