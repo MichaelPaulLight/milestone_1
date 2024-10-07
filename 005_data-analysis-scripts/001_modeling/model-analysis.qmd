@@ -101,38 +101,74 @@ filtered_city_df <- (
 ```
 
 ```{r}
-model_formula <- bf(
-  formula = vote_perc ~ five_star + 
-                       patient_experience_rating +
-                       mortality_rate_facility + 
-                       n_dialysis_stations + 
-                       staff_rating +
-                       mo(hospital_readmission) +
-                       (1 | county) + 
-                       (1 | city) +
-                       (1 | profit_or_nonprofit) +
-                       (1 | std_chain_organization)
-)
-
-model <- brm(
-  formula = model_formula,
-  family = Beta(),
-  data = filtered_city_df,
-  cores = 4,
-  chains = 4,
-  iter = 2000,
-  warmup = 1000,
-  file = "../006_models/dialysis-model_18"
-)
+# model_formula <- bf(
+#   formula = vote_perc ~ five_star + 
+#                        patient_experience_rating +
+#                        mortality_rate_facility + 
+#                        n_dialysis_stations + 
+#                        staff_rating +
+#                        mo(hospital_readmission) +
+#                        (1 | county) + 
+#                        (1 | city) +
+#                        (1 | profit_or_nonprofit) +
+#                        (1 | std_chain_organization)
+# )
+# 
+# model <- brm(
+#   formula = model_formula,
+#   family = Beta(),
+#   data = filtered_city_df,
+#   cores = 4,
+#   chains = 4,
+#   iter = 2000,
+#   warmup = 1000,
+#   file = "../006_models/dialysis-model_18"
+# )
 ```
 
 ```{r}
 model = readRDS("../../006_models/dialysis-model_18.rds")
 ```
 
-You can add options to executable code like this
+The first plot below shows how the effect of staff rating varies across counties, as well as the uncertainty in each county's effect represented by the width of a given distribution.
+
+Whether each county's effect is significantly different from zero (outside the 80% credible interval, demarcated by the horizontal dashed lines). This plot helps identify counties where staff rating has a particularly strong or weak effect on the vote percentage, which useful for understanding regional variations in the impact of staff ratings on voting behavior.
+
+The second plot, which visualizes intercepts output by the model, helps identify counties that have particularly high or low baseline vote percentages, after accounting for other factors in the model. It's useful for understanding regional variations in voting behavior that aren't explained by the other predictors in the model.
 
 ```{r}
+# Creating a plot for County-Level Staff Rating Effects
+model |>
+  # Extract posterior samples for staff rating effect and county-specific random effects
+  spread_draws(b_staff_rating, r_county[county,]) |>
+  
+  # Calculate county-specific staff rating effect
+  mutate(county_mean = b_staff_rating + r_county) |>
+  
+  # Begin creating the plot
+  ggplot(aes(y = county, x = county_mean, fill = after_stat(abs(x) < .8))) +
+  
+  # Add half-eye plot (combination of density and point estimate)
+  stat_halfeye() +
+  
+  # Add vertical reference lines at -0.8 and 0.8
+  geom_vline(xintercept = c(-.8, .8), linetype = "dashed", color = "#2c3e50", alpha = 0.7) +
+  
+  # Set custom colors for the fill based on whether effect is within -0.8 to 0.8
+  scale_fill_manual(values = c(report_colors[2], report_colors[1])) +
+  
+  # Add labels to the plot
+  labs(title = "County-Level Staff Rating Effects",
+       subtitle = "Posterior distribution of county-specific staff rating effects",
+       x = "County Mean",
+       y = "County") +
+  
+  # Apply custom theme
+  theme_report() +
+  
+  # Adjust text size for county names on y-axis
+  theme(axis.text.y = element_text(size = 8))  # Smaller text for county names
+
 # Creating a first plot for the Intercept
 model |>
   spread_draws(b_Intercept, r_county[county,]) |>
@@ -148,20 +184,7 @@ model |>
   theme_report() +
   theme(axis.text.y = element_text(size = 8))  # Smaller text for county names
 
-# Creating a second plot for Staff Rating
-model |>
-  spread_draws(b_staff_rating, r_county[county,]) |>
-  mutate(county_mean = b_staff_rating + r_county) |>
-  ggplot(aes(y = county, x = county_mean, fill = after_stat(abs(x) < .8))) +
-  stat_halfeye() +
-  geom_vline(xintercept = c(-.8, .8), linetype = "dashed", color = "#2c3e50", alpha = 0.7) +
-  scale_fill_manual(values = c(report_colors[2], report_colors[1])) +
-  labs(title = "County-Level Staff Rating Effects",
-       subtitle = "Posterior distribution of county-specific staff rating effects",
-       x = "County Mean",
-       y = "County") +
-  theme_report() +
-  theme(axis.text.y = element_text(size = 8))  # Smaller text for county names
+
 
 ```
 
@@ -424,3 +447,47 @@ print(pred_plot)
 conditional_effects(model)
 
 ```
+
+```{r}
+library(patchwork)
+
+# Get conditional effects
+ce <- conditional_effects(model)
+
+# Function to create a styled plot for each effect
+plot_effect <- function(effect_data, effect_name) {
+  ggplot(effect_data, aes(x = .data[[effect_name]], y = estimate__)) +
+    geom_ribbon(aes(ymin = lower__, ymax = upper__), fill = report_colors[1], alpha = 0.3) +
+    geom_line(color = report_colors[2], size = 1) +
+    labs(
+      title = paste("Effect of", gsub("_", " ", effect_name)),
+      x = gsub("_", " ", effect_name),
+      y = "Predicted Vote Percentage"
+    ) +
+    scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+    theme_report() +
+    theme(
+      plot.title = element_text(size = 10),
+      axis.title = element_text(size = 8),
+      axis.text = element_text(size = 7)
+    )
+}
+
+# Create a list of plots
+plots <- map2(ce, names(ce), plot_effect)
+
+# Combine plots using patchwork
+combined_plot <- wrap_plots(plots, ncol = 2) +
+  plot_annotation(
+    title = "Conditional Effects of Model Parameters",
+    subtitle = "Shaded areas represent 95% credible intervals",
+    theme = theme(
+      plot.title = element_text(size = 16, face = "bold"),
+      plot.subtitle = element_text(size = 12)
+    )
+  )
+
+# Print the combined plot
+print(combined_plot)
+```
+
