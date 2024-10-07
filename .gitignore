@@ -2,3 +2,4 @@
 004_data-processing-scripts/002_clean-raw-data/__pycache__/eda_functions.cpython-311.pyc
 004_data-processing-scripts/002_clean-raw-data/__pycache__/database_functions.cpython-311.pyc
 __pycache__/
+*.icloud
