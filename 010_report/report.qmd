@@ -16,24 +16,24 @@ execute:
 
 ## Background on Dialysis and Proposition 29
 
-Dialysis is a lifesaving treatment that removes waste from blood, acting as an artificial kidney for those with chronic kidney disease. In recent years, California has seen multiple attempts to increase regulations on dialysis clinics through ballot initiatives:
+Dialysis is a lifesaving treatment that removes waste from blood, acting as an artificial kidney for those with chronic kidney disease. In recent years, California has seen multiple attempts to increase regulations on dialysis facilities through ballot initiatives:
 
 - Proposition 8 in 2018
 - Proposition 23 in 2020
 - Proposition 29 in 2022
 
-Proposition 29, which failed to pass, aimed to establish increased regulations for both staffing and operations for the roughly 600 dialysis clinics in California, an estimated $3.5 billion industry. A key provision of the proposition required the presence of a physician or licensed practitioner during all treatment hours, potentially increasing each clinic's costs by several hundred thousand dollars annually.
+Proposition 29, which failed to pass, aimed to establish increased regulations for both staffing and operations for the roughly 600 dialysis facilities in California, an estimated $3.5 billion industry. A key provision of the proposition required the presence of a physician or licensed practitioner during all treatment hours, potentially increasing each facility's costs by several hundred thousand dollars annually.
 
 ## Debate Surrounding Dialysis Regulations
 
 - **Proponents** argue that increased regulations improve patient safety and quality of care.
-- **Opponents** contend that the increase in healthcare costs is unwarranted and would limit care coverage by overwhelming clinics with costs and potentially forcing them to close.
+- **Opponents** contend that the increase in healthcare costs is unwarranted and would limit care coverage by overwhelming facilities with costs and potentially forcing them to close.
 
 ## Project Scope and Significance
 
 Our project explores trends in:
 
-1. Dialysis clinic access
+1. Dialysis facility access
 2. Quality of care
 3. Ballot results in California
 
@@ -54,4 +54,44 @@ We analyze associations between dialysis care and voting behaviors, specifically
 
 Investigative reporters, patient advocacy groups, and labor organizations have spent significant resources over the past decade to raise public awareness of the dialysis industry and its need for regulation. Our project contributes to this ongoing discussion by providing data-driven insights into the relationship between dialysis care quality and voting behavior.
 
+# Project Research Questions
 
+Our research questions are divided into two categories: primary and secondary. The primary question serves as the main focus of our analysis, while secondary questions provide additional insights through further investigation of the data.
+
+## Primary Research Question
+
+**Is the quality of care of dialysis facilities correlated with voting in favor of or against dialysis industry regulation?**
+
+### Key Assumptions
+
+1. The relationship between Quality of Care and Voting Behavior is not confounded.
+2. A vote in favor of any of the three propositions (Prop 8 in 2018, Prop 23 in 2020, Prop 29 in 2022) can be interpreted as support for dialysis industry regulation.
+
+### Quality of Care Metrics
+
+To test this relationship under the outlined assumptions, we approximate the quality of care using the following metrics:
+
+- Five-star rating
+- Patient experience rating
+- Facility mortality rate
+- Number of available dialysis stations
+- Staff rating
+- Hospital readmission categorization (Worse than Expected, As Expected, Better than Expected)
+- Profit/non-profit designation
+- Parent company affiliation/independence
+
+### Facility Categorization
+
+Observations of Quality of Care metrics in our data are categorized by:
+
+- Year
+- County
+- City
+- Profit/Non-profit designation
+- Parent company affiliation/independence
+
+## Secondary Research Questions
+
+1. What is the geographic coverage of dialysis facilities in California?
+2. Is there any correlation between organizational structure (chain-owned, profit vs. non-profit) and the quality of care?
+3. Is there any association between the parent company of dialysis facilities and the quality of care?
