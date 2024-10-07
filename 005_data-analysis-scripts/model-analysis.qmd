@@ -105,25 +105,12 @@ model <- brm(
 
 
 ```{r}
-model = readRDS("../006_models/dialysis-model_15_beta.rds")
+model = readRDS("../006_models/dialysis-model_18.rds")
 ```
 
 You can add options to executable code like this
 
 ```{r}
-
-model |> 
-  spread_draws(b_staff_rating, r_county[county,]) |> 
-  median_qi(condition_mean = b_staff_rating + r_county, .width = c(.95, .66)) %>%
-  ggplot(aes(y = county, x = condition_mean, xmin = .lower, xmax = .upper)) +
-  stat_halfeye()
-
-model %>%
-  spread_draws(b_staff_rating, r_county[county,]) %>%
-  mutate(county_mean = b_staff_rating + r_county) %>%
-  ggplot(aes(y = county, x = county_mean)) +
-  stat_halfeye()
-
 model %>%
   spread_draws(b_Intercept, r_county[county,]) %>%
   mutate(county_mean = b_Intercept + r_county) %>%
@@ -131,7 +118,6 @@ model %>%
   stat_halfeye() +
   geom_vline(xintercept = c(-.8, .8), linetype = "dashed") +
   scale_fill_manual(values = c("gray80", "skyblue")) 
-
 
 model %>%
   spread_draws(b_staff_rating, r_county[county,]) %>%
@@ -141,49 +127,6 @@ model %>%
   geom_vline(xintercept = c(-.8, .8), linetype = "dashed") +
   scale_fill_manual(values = c("gray80", "skyblue"))
 
-get_variables(model)
-```
-```{r}
-model %>%
-  spread_draws(b_Intercept, r_county[county,]) %>%
-  mutate(county_mean = b_Intercept + r_county) %>%
-  ggplot(aes(y = county, x = county_mean, fill = after_stat(abs(x) < .8))) +
-  stat_halfeye() +
-  geom_vline(xintercept = c(-.8, .8), linetype = "dashed") +
-  scale_fill_manual(values = c("gray80", "skyblue")) 
-```
-
-The `echo: false` option disables the printing of code (only output is displayed).
-```{r}
-grid = filtered_city_df |>
-  data_grid(year, city, staff_rating)
-
-means = grid %>%
-  add_epred_draws(model)
-
-filtered_city_df |> 
-  add_epred_draws(model) 
-
-filtered_city_df |>
-  group_by(city, county, profit_or_nonprofit, std_chain_organization, five_star, patient_experience_rating, ) |>
-  data_grid(staff_rating = seq_range(staff_rating, n = 50)) |>
-  add_epred_draws(model) 
-```
-```{r}
-filtered_city_df |> 
-  add_linpred_draws(model, dpar = TRUE, ndraws = 100) |> 
-  ggplot(aes(x = .linpred, y = std_chain_organization)) +
-  stat_halfeye()
-
-filtered_city_df |> 
-  add_epred_draws(model, dpar = TRUE, ndraws = 100) |> 
-  ggplot(aes(x = .epred, y = std_chain_organization)) +
-  stat_halfeye()
-
-filtered_city_df |> 
-  add_predicted_draws(model, dpar = TRUE, ndraws = 100) |> 
-  ggplot(aes(x = .prediction, y = std_chain_organization)) +
-  stat_halfeye()
 ```
 
 ```{r}
@@ -213,5 +156,121 @@ pp_group <- function(data, pp_samples, group_var) {
 }
 
 pp_group(filtered_city_df, pp_samples, std_chain_organization)
+```
+
+```{r}
+# Create a new data frame with a range of staff ratings
+new_data <- filtered_city_df %>%
+  data_grid(
+    staff_rating = seq(from = min(filtered_city_df$staff_rating),
+                       to = max(filtered_city_df$staff_rating),
+                       length.out = 100),
+    .model = model
+  ) %>%
+  # Set other variables to their mean or most common value
+  mutate(
+    five_star = mean(filtered_city_df$five_star),
+    patient_experience_rating = mean(filtered_city_df$patient_experience_rating),
+    mortality_rate_facility = mean(filtered_city_df$mortality_rate_facility),
+    n_dialysis_stations = mean(filtered_city_df$n_dialysis_stations),
+    hospital_readmission = names(which.max(table(filtered_city_df$hospital_readmission))),
+    county = names(which.max(table(filtered_city_df$county))),
+    city = names(which.max(table(filtered_city_df$city))),
+    profit_or_nonprofit = names(which.max(table(filtered_city_df$profit_or_nonprofit))),
+    std_chain_organization = names(which.max(table(filtered_city_df$std_chain_organization)))
+  )
+
+# Add predicted draws
+predictions <- new_data %>%
+  add_epred_draws(model, ndraws = 1000)
+
+# Create the plot
+ggplot(predictions, aes(x = staff_rating, y = .epred)) +
+  stat_lineribbon(aes(y = .epred), .width = c(.95, .80, .50), alpha = 0.5) +
+  geom_jitter(data = filtered_city_df, aes(y = vote_perc), alpha = 0.2) +
+  labs(
+    title = "Effect of Staff Rating on Vote Percentage",
+    x = "Staff Rating",
+    y = "Predicted Vote Percentage",
+    caption = "Shaded areas represent 95%, 80%, and 50% credible intervals"
+  ) +
+  scale_x_continuous(limits = c(75, NA), expand = c(0, 0)) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  theme_minimal()
+
+```
+```{r}
+new_data <- filtered_city_df %>%
+  data_grid(
+    mortality_rate_facility = seq(from = min(filtered_city_df$mortality_rate_facility),
+                       to = max(filtered_city_df$mortality_rate_facility),
+                       length.out = 100),
+    .model = model
+  ) %>%
+  # Set other variables to their mean or most common value
+  mutate(
+    five_star = mean(filtered_city_df$five_star),
+    patient_experience_rating = mean(filtered_city_df$patient_experience_rating),
+    staff_rating = mean(filtered_city_df$staff_rating),
+    n_dialysis_stations = mean(filtered_city_df$n_dialysis_stations),
+    hospital_readmission = names(which.max(table(filtered_city_df$hospital_readmission))),
+    county = names(which.max(table(filtered_city_df$county))),
+    city = names(which.max(table(filtered_city_df$city))),
+    profit_or_nonprofit = names(which.max(table(filtered_city_df$profit_or_nonprofit))),
+    std_chain_organization = names(which.max(table(filtered_city_df$std_chain_organization)))
+  )
+
+# Add predicted draws
+predictions <- new_data %>%
+  add_epred_draws(model, ndraws = 1000)
+
+# Create the plot
+ggplot(predictions, aes(x = mortality_rate_facility, y = .epred)) +
+  stat_lineribbon(aes(y = .epred), .width = c(.95, .80, .50), alpha = 0.5) +
+  geom_jitter(data = filtered_city_df, aes(y = vote_perc), alpha = 0.2) +
+  labs(
+    title = "Effect of Mortality Rate on Vote Percentage",
+    x = "Mortality Rate",
+    y = "Predicted Vote Percentage",
+    caption = "Shaded areas represent 95%, 80%, and 50% credible intervals"
+  ) +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  theme_minimal()
+```
+
+
+
+```{r}
+mcmc_areas(model, pars = c("b_staff_rating", "b_mortality_rate_facility", "b_five_star", "b_patient_experience_rating", "b_n_dialysis_stations"))
+```
+
+```{r}
+mcmc_trace(model, pars = c("b_mortality_rate_facility", "b_n_dialysis_stations", 
+                              "b_five_star", "b_patient_experience_rating", "b_staff_rating"))
+
+# Density plots for key parameters
+mcmc_dens_overlay(model, pars = c("b_mortality_rate_facility", "b_n_dialysis_stations", 
+                                     "b_five_star", "b_patient_experience_rating", "b_staff_rating"))
+
+# Posterior predictive intervals
+post_pred <- fitted(model, probs = c(0.025, 0.975))
+pred_plot <- ggplot(cbind(filtered_city_df, post_pred), 
+                    aes(x = vote_perc, y = Estimate)) +
+  geom_point() +
+  geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
+  geom_errorbar(aes(ymin = Q2.5, ymax = Q97.5), alpha = 0.3) +
+  theme_minimal() +
+  ggtitle("Posterior Predictive Intervals")
+print(pred_plot)
+
+# Posterior distribution of profit/nonprofit
+pp_check(model, type = "dens_overlay", nsamples = 100)
+```
+
+```{r}
+
+conditional_effects(model, "staff_rating:patient_experience_rating")
+
 ```
 
