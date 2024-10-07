@@ -94,6 +94,29 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#custom-relational-database-system" id="toc-custom-relational-database-system" class="nav-link" data-scroll-target="#custom-relational-database-system">Custom Relational Database System</a></li>
   </ul></li>
   </ul></li>
+  <li><a href="#analysis-and-insights" id="toc-analysis-and-insights" class="nav-link" data-scroll-target="#analysis-and-insights">Analysis and Insights</a>
+  <ul class="collapse">
+  <li><a href="#analysis-steps" id="toc-analysis-steps" class="nav-link" data-scroll-target="#analysis-steps">Analysis Steps</a>
+  <ul class="collapse">
+  <li><a href="#data-preparation" id="toc-data-preparation" class="nav-link" data-scroll-target="#data-preparation">Data Preparation</a></li>
+  <li><a href="#model-construction" id="toc-model-construction" class="nav-link" data-scroll-target="#model-construction">Model Construction</a></li>
+  <li><a href="#posterior-predictive-checks" id="toc-posterior-predictive-checks" class="nav-link" data-scroll-target="#posterior-predictive-checks">Posterior Predictive Checks:</a></li>
+  <li><a href="#visualization-of-effects" id="toc-visualization-of-effects" class="nav-link" data-scroll-target="#visualization-of-effects">Visualization of Effects:</a></li>
+  </ul></li>
+  <li><a href="#insights" id="toc-insights" class="nav-link" data-scroll-target="#insights">Insights</a>
+  <ul class="collapse">
+  <li><a href="#staff-rating-impact" id="toc-staff-rating-impact" class="nav-link" data-scroll-target="#staff-rating-impact">Staff Rating Impact:</a></li>
+  <li><a href="#mortality-rate-influence" id="toc-mortality-rate-influence" class="nav-link" data-scroll-target="#mortality-rate-influence">Mortality Rate Influence:</a></li>
+  <li><a href="#chain-organization-effects" id="toc-chain-organization-effects" class="nav-link" data-scroll-target="#chain-organization-effects">Chain Organization Effects:</a></li>
+  <li><a href="#facility-size-considerations" id="toc-facility-size-considerations" class="nav-link" data-scroll-target="#facility-size-considerations">Facility Size Considerations:</a></li>
+  </ul></li>
+  <li><a href="#challenges-and-limitations" id="toc-challenges-and-limitations" class="nav-link" data-scroll-target="#challenges-and-limitations">Challenges and Limitations</a>
+  <ul class="collapse">
+  <li><a href="#data-granularity" id="toc-data-granularity" class="nav-link" data-scroll-target="#data-granularity">Data Granularity:</a></li>
+  <li><a href="#temporal-alignment" id="toc-temporal-alignment" class="nav-link" data-scroll-target="#temporal-alignment">Temporal Alignment:</a></li>
+  <li><a href="#confounding-factors" id="toc-confounding-factors" class="nav-link" data-scroll-target="#confounding-factors">Confounding Factors:</a></li>
+  </ul></li>
+  </ul></li>
   </ul>
 </nav>
 </div>
@@ -456,8 +479,73 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>Efficient Data Access</strong>: Quick and reliable access across the entire database.</li>
 <li><strong>Code Quality</strong>: Object-oriented design with consistent naming conventions for improved maintainability and adaptability.</li>
 </ol></li>
-<li><p>For detailed functionality, refer to the included database demo <a href="../004_data-processing-scripts/002_clean-raw-data/database_demo.ipynb">Jupyter notebook</a>.</p></li>
+<li><p>For detailed functionality, refer to the included database demo (Milestone_1/004_data-processing-scripts/002_clean-raw-data/database_demo.ipynb).</p></li>
 </ul>
+</section>
+</section>
+</section>
+<section id="analysis-and-insights" class="level1">
+<h1>Analysis and Insights</h1>
+<p>This project employed a Bayesian approach to investigate the relationship between dialysis facility quality metrics and voting patterns on dialysis-related propositions in California. Our analysis uniquely combines two distinct data resources:</p>
+<ul>
+<li><h3 id="the-center-for-medicare-and-medicaid-services-cms-quarterly-dialysis-facility-compare-dataset" class="anchored">The Center for Medicare and Medicaid Services (CMS) Quarterly Dialysis Facility Compare Dataset</h3></li>
+<li><h3 id="the-california-secretary-of-states-sos-statement-of-vote-for-ballot-measures" class="anchored">The California Secretary of State’s (SOS) Statement of Vote for Ballot Measures</h3></li>
+</ul>
+<p>By integrating these datasets, we were able to explore potential relationships between dialysis facility quality metrics and voting outcomes on dialysis-related propositions, an analysis that would not have been possible with either dataset alone.</p>
+<p>To maximize the granularity of our analysis, we chose to focus on city-level data, which provided more detailed vote counts compared to assembly district level data. We encoded voting outcomes as the percentage of “Yes” votes in favor of the propositions, allowing for a nuanced examination of support for dialysis industry regulation across different localities.</p>
+<p>This novel approach enables us to investigate how various factors related to dialysis care quality might influence public opinion and voting behavior on healthcare policy initiatives, potentially offering valuable insights for policymakers, healthcare providers, and voters alike.</p>
+<section id="analysis-steps" class="level2">
+<h2 class="anchored" data-anchor-id="analysis-steps">Analysis Steps</h2>
+<section id="data-preparation" class="level3">
+<h3 class="anchored" data-anchor-id="data-preparation">Data Preparation</h3>
+<p>We first processed and standardized both datasets, then merged them based on geographic identifiers (county, city) and year. This step was crucial for aligning facility-level data with voting outcomes.</p>
+</section>
+<section id="model-construction" class="level3">
+<h3 class="anchored" data-anchor-id="model-construction">Model Construction</h3>
+<p>We constructed a Bayesian multilevel model using the brms package in R. This model allowed us to account for the hierarchical nature of our data (facilities nested within cities and counties) while examining the relationship between facility quality metrics and voting outcomes.</p>
+</section>
+<section id="posterior-predictive-checks" class="level3">
+<h3 class="anchored" data-anchor-id="posterior-predictive-checks">Posterior Predictive Checks:</h3>
+<p>We performed posterior predictive checks to assess model fit and explore relationships between key variables and voting outcomes.</p>
+</section>
+<section id="visualization-of-effects" class="level3">
+<h3 class="anchored" data-anchor-id="visualization-of-effects">Visualization of Effects:</h3>
+<p>We created visualizations to illustrate the effects of key variables on voting outcomes, such as staff rating and mortality rate.</p>
+</section>
+</section>
+<section id="insights" class="level2">
+<h2 class="anchored" data-anchor-id="insights">Insights</h2>
+<section id="staff-rating-impact" class="level3">
+<h3 class="anchored" data-anchor-id="staff-rating-impact">Staff Rating Impact:</h3>
+<p>Our analysis revealed a negative relationship between staff ratings and the percentage of votes in favor of dialysis regulation. This suggests that areas with lower-rated dialysis facility staff were more likely to support increased regulation.</p>
+</section>
+<section id="mortality-rate-influence" class="level3">
+<h3 class="anchored" data-anchor-id="mortality-rate-influence">Mortality Rate Influence:</h3>
+<p>We found a positive relationship between facility mortality rates and support for regulation.</p>
+</section>
+<section id="chain-organization-effects" class="level3">
+<h3 class="anchored" data-anchor-id="chain-organization-effects">Chain Organization Effects:</h3>
+<p>The posterior predictive check for chain organizations showed varying levels of support for regulation across different dialysis chains, indicating that organizational factors may play a role in shaping public opinion or voting behavior.</p>
+</section>
+<section id="facility-size-considerations" class="level3">
+<h3 class="anchored" data-anchor-id="facility-size-considerations">Facility Size Considerations:</h3>
+<p>The number of dialysis stations (a proxy for facility size) showed a slight positive relationship with voting in favor of regulation, suggesting that areas with larger facilities might be more supportive of increased oversight.</p>
+</section>
+</section>
+<section id="challenges-and-limitations" class="level2">
+<h2 class="anchored" data-anchor-id="challenges-and-limitations">Challenges and Limitations</h2>
+<section id="data-granularity" class="level3">
+<h3 class="anchored" data-anchor-id="data-granularity">Data Granularity:</h3>
+<p>While we had facility-level data for quality metrics, agregating voting data at the city and county level creates a mismatch in granularity, potentially obscuring some finer-grained relationships.</p>
+</section>
+<section id="temporal-alignment" class="level3">
+<h3 class="anchored" data-anchor-id="temporal-alignment">Temporal Alignment:</h3>
+<p>Our analysis assumed that facility metrics from a given year directly influenced voting in that year’s proposition. However, there may be lag effects or longer-term trends that our current model doesn’t capture.</p>
+</section>
+<section id="confounding-factors" class="level3">
+<h3 class="anchored" data-anchor-id="confounding-factors">Confounding Factors:</h3>
+<p>Despite our efforts to control for various factors, there may be unmeasured confounders influencing both facility quality and voting patterns that our model doesn’t account for.</p>
+<p>In conclusion, our analysis provides novel insights into the relationship between dialysis facility quality and public support for industry regulation. While we’ve uncovered several interesting patterns, the complexity of the issue and limitations in our data suggest that further research is needed to fully understand these relationships and their policy implications.</p>
 </section>
 </section>
 </section>

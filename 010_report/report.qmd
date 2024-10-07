@@ -246,3 +246,61 @@ Our workflow was broken down into five stages:
 
 - For detailed functionality, refer to the included database demo (Milestone_1/004_data-processing-scripts/002_clean-raw-data/database_demo.ipynb).
 
+# Analysis and Insights
+
+This project employed a Bayesian approach to investigate the relationship between dialysis facility quality metrics and voting patterns on dialysis-related propositions in California. Our analysis uniquely combines two distinct data resources:
+
+- ### The Center for Medicare and Medicaid Services (CMS) Quarterly Dialysis Facility Compare Dataset
+
+- ### The California Secretary of State's (SOS) Statement of Vote for Ballot Measures
+
+By integrating these datasets, we were able to explore potential relationships between dialysis facility quality metrics and voting outcomes on dialysis-related propositions, an analysis that would not have been possible with either dataset alone.
+
+To maximize the granularity of our analysis, we chose to focus on city-level data, which provided more detailed vote counts compared to assembly district level data. We encoded voting outcomes as the percentage of "Yes" votes in favor of the propositions, allowing for a nuanced examination of support for dialysis industry regulation across different localities.
+
+This novel approach enables us to investigate how various factors related to dialysis care quality might influence public opinion and voting behavior on healthcare policy initiatives, potentially offering valuable insights for policymakers, healthcare providers, and voters alike.
+
+## Analysis Steps
+
+### Data Preparation
+
+We first processed and standardized both datasets, then merged them based on geographic identifiers (county, city) and year. This step was crucial for aligning facility-level data with voting outcomes.
+
+### Model Construction
+
+We constructed a Bayesian multilevel model using the brms package in R. This model allowed us to account for the hierarchical nature of our data (facilities nested within cities and counties) while examining the relationship between facility quality metrics and voting outcomes.
+
+### Posterior Predictive Checks:
+
+We performed posterior predictive checks to assess model fit and explore relationships between key variables and voting outcomes.
+
+### Visualization of Effects:
+
+We created visualizations to illustrate the effects of key variables on voting outcomes, such as staff rating and mortality rate.
+
+## Insights
+
+### Staff Rating Impact: 
+Our analysis revealed a negative relationship between staff ratings and the percentage of votes in favor of dialysis regulation. This suggests that areas with lower-rated dialysis facility staff were more likely to support increased regulation.
+
+### Mortality Rate Influence: 
+We found a positive relationship between facility mortality rates and support for regulation.
+
+### Chain Organization Effects: 
+The posterior predictive check for chain organizations showed varying levels of support for regulation across different dialysis chains, indicating that organizational factors may play a role in shaping public opinion or voting behavior.
+
+### Facility Size Considerations: 
+The number of dialysis stations (a proxy for facility size) showed a slight positive relationship with voting in favor of regulation, suggesting that areas with larger facilities might be more supportive of increased oversight.
+
+## Challenges and Limitations
+
+### Data Granularity: 
+While we had facility-level data for quality metrics, agregating voting data at the city and county level creates a mismatch in granularity, potentially obscuring some finer-grained relationships.
+
+### Temporal Alignment: 
+Our analysis assumed that facility metrics from a given year directly influenced voting in that year's proposition. However, there may be lag effects or longer-term trends that our current model doesn't capture.
+
+### Confounding Factors: 
+Despite our efforts to control for various factors, there may be unmeasured confounders influencing both facility quality and voting patterns that our model doesn't account for.
+
+In conclusion, our analysis provides novel insights into the relationship between dialysis facility quality and public support for industry regulation. While we've uncovered several interesting patterns, the complexity of the issue and limitations in our data suggest that further research is needed to fully understand these relationships and their policy implications.
