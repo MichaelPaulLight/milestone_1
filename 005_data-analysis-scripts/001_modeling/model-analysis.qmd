@@ -4,7 +4,14 @@ format: html
 editor: visual
 ---
 
-## Quarto
+Built using r version 4.3.1.
+
+R was chosen for this analysis because of its integration with the STAN probabilistic programming language and suite of tools used to visualize uncertainty and Bayesian model outputs. 
+
+```{r}
+# install.packages(c("tidyverse", "ggthemes", "patchwork", "brms", "ggdist", "tidybayes", "modelr", "arrow", "scales", "sessioninfo"))
+```
+
 
 ```{r}
 library(tidyverse)
