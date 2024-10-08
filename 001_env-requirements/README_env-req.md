@@ -1,1 +1,1 @@
-This is where we explain what's in this folder.
+This folder contains the environemnt requirements for the project. 
