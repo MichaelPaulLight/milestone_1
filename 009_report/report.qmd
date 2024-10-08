@@ -281,6 +281,8 @@ Before modeling and analysis, we underwent several data preparation steps. These
 
 We constructed a Bayesian multilevel model using the brms package in R. This model allowed us to account for the hierarchical nature of our data (facilities nested within cities and counties) while examining the relationship between facility quality metrics and voting outcomes.
 
+R was chosen for this analysis because of its integration with the STAN probabilistic programming language and suite of tools used to visualize uncertainty and Bayesian model outputs. Alternatives in the Python ecosystem would include PyMC3 and ArviZ, but the R ecosystem is, in general, more mature for Bayesian/multi-level modeling and uncertainty visualization.
+
 ### Posterior Predictive Checks:
 
 We performed posterior predictive checks to assess model fit and explore relationships between key variables and voting outcomes. The following visualization provides a comprehensive overview of the model parameters and their effects on the predicted vote percentage in favor of regulation.
