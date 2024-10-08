@@ -310,6 +310,8 @@ We created visualizations to illustrate the effects of key variables on voting o
 
 Our analysis revealed a negative relationship between staff ratings and the percentage of votes in favor of dialysis regulation. This suggests that areas with lower-rated dialysis facility staff were more likely to support increased regulation. The effect of staff rating varied across counties, with some counties showing stronger negative relationships than others.
 
+![Effect of Staff Rating on Predicted Vote Percentage](../007_visualizations/staff_rating_effect.png)
+
 ### Mortality Rate Influence:
 
 We found a positive relationship between facility mortality rates and support for regulation. As mortality rates increased, the predicted vote percentage in favor of regulation also increased. This suggests that voters in areas with higher mortality rates at dialysis facilities were more likely to support increased oversight.
@@ -349,9 +351,3 @@ While our model reveals associations between facility metrics and voting pattern
 
 In conclusion, our analysis provides novel insights into the complex relationship between dialysis facility quality and public support for industry regulation. The varying effects across counties and organizations highlight the importance of considering local contexts when interpreting these results. While we've uncovered several interesting patterns, the complexity of the issue and limitations in our data suggest that further research is needed to fully understand these relationships and their policy implications.
 
-
-## Results
-
-### County-Level Effects
-
-![County-Level Staff Rating Effects](../005_data-analysis-scripts/001_modeling/model-analysis.qmd#fig-staff-rating-plot)

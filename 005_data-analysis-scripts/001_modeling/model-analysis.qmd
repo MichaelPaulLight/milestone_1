@@ -376,7 +376,7 @@ predictions <- new_data |>
 ```{r}
 #| label: fig-staff-rating-effect
 #| fig-cap: "Effect of Staff Rating on Predicted Vote Percentage"
-ggplot(predictions, aes(x = staff_rating, y = .epred)) +
+staff_rating_plot <- ggplot(predictions, aes(x = staff_rating, y = .epred)) +
   geom_jitter(data = filtered_city_df, aes(y = vote_perc), alpha = 0.2, color = report_colors[9]) +
   stat_lineribbon(aes(y = .epred), .width = c(.95, .80, .50), alpha = 0.5) +
   labs(
@@ -396,7 +396,11 @@ ggplot(predictions, aes(x = staff_rating, y = .epred)) +
     plot.subtitle = element_text(size = 10, color = "#7f8c8d")
   )
 
+ggsave("../../007_visualizations/staff_rating_effect.png", plot = staff_rating_plot, width = 10, height = 6, dpi = 300)
+
 ```
+
+
 
 ```{r}
 new_data <- filtered_city_df |>
