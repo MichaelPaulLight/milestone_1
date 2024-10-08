@@ -1,5 +1,6 @@
 ---
-title: "milestone 1 report"
+title: "An Exploration of Voting Drivers Behind Dialysis Regulation in California 
+"
 format: 
   html:
     toc: false
@@ -13,7 +14,11 @@ editor: visual
 
 ## Background on Dialysis and Proposition 29
 
-Dialysis is a lifesaving treatment that removes waste from blood—acting as an artificial kidney for those with chronic kidney disease. Prop. 29, which failed to pass, was the third attempt to increase regulations on dialysis clinics in the state—preceded by Prop. 8 in 2018 and Prop. 23 in 2020. Proposition 29—Dialysis Clinic Requirements Initiative—aimed to establish increased regulations for both staffing and operations for the roughly 600 dialysis clinics in California, an estimated $3.5 billion industry. Notably, the proposed regulation required the presence of a physician or licensed practitioner during all treatment hours, increasing each clinic costs by several hundred thousand annually.
+Dialysis is a lifesaving treatment that removes waste from blood—acting as an artificial kidney for those with chronic kidney disease. Prop. 29, which failed to pass, was the third attempt to increase regulations on dialysis clinics in the state—preceded by Prop. 8 in 2018 and Prop. 23 in 2020. 
+
+![Vote Percentages for Dialysis Regulation in California](../007_visualizations/Yes_Vote Percentages_Propositions_in_Californa.png){width=90%}
+
+Proposition 29—Dialysis Clinic Requirements Initiative—aimed to establish increased regulations for both staffing and operations for the roughly 600 dialysis clinics in California, an estimated $3.5 billion industry. Notably, the proposed regulation required the presence of a physician or licensed practitioner during all treatment hours, increasing each clinic costs by several hundred thousand annually.
 
 This project uses a novel approach to study an area of public interest relevant not just to California but the entire country. Investigative reporters, patient advocacy groups, and labor organizations have spent significant resources over the past decade to raise public awareness of the dialysis industry and its need for regulation.
 
@@ -76,8 +81,6 @@ Observations of Quality of Care metrics in our data are categorized by:
 ## Secondary Research Questions
 
 1.  What is the geographic coverage of dialysis facilities in California?
-2.  Is there any correlation between organizational structure (chain-owned, profit vs. non-profit) and the quality of care?
-3.  Is there any association between the parent company of dialysis facilities and the quality of care?
 
 # Data Sources
 
@@ -252,9 +255,7 @@ Given the limitations and challenges detailed below, we were able to gain some i
 
 We were also able to use visual analysis of the un-modeled data to gain some insights into the geographic coverage of dialysis facilities in the state.
 
-#| echo: false
-#| out.width: "100%"
-knitr::include_url("../007_visualizations/2022_missing_data_heatmap.html", height = "600px")
+![Dialysis Stations per capita 2022](../007_visualizations/2022_stations_per_capita_choropleth.png){width=90%}
 
 ## Analysis Steps
 
