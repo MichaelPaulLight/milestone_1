@@ -355,31 +355,3 @@ In conclusion, our analysis provides novel insights into the complex relationshi
 ### County-Level Effects
 
 ![County-Level Staff Rating Effects](../005_data-analysis-scripts/001_modeling/model-analysis.qmd#fig-staff-rating-plot)
-
-![County-Level Intercepts](../005_data-analysis-scripts/001_modeling/model-analysis.qmd#fig-intercept-plot)
-
-### Posterior Predictive Checks
-
-![Posterior Predictive Check for Chain Organizations](../005_data-analysis-scripts/001_modeling/model-analysis.qmd#fig-pp-group)
-
-### Effect of Key Variables on Predicted Vote Percentage
-
-![Effect of Staff Rating](../005_data-analysis-scripts/001_modeling/model-analysis.qmd#fig-staff-rating-effect)
-
-![Effect of Mortality Rate](../005_data-analysis-scripts/001_modeling/model-analysis.qmd#fig-mortality-rate-effect)
-
-![Effect of Patient Experience Rating](../005_data-analysis-scripts/001_modeling/model-analysis.qmd#fig-patient-experience-effect)
-
-### Posterior Distributions of Model Parameters
-
-![Posterior Distributions](../005_data-analysis-scripts/001_modeling/model-analysis.qmd#fig-posterior-distributions)
-
-### Model Diagnostics
-
-![MCMC Trace Plots](../005_data-analysis-scripts/001_modeling/model-analysis.qmd#fig-mcmc-trace)
-
-![Posterior Density Plots](../005_data-analysis-scripts/001_modeling/model-analysis.qmd#fig-posterior-density)
-
-![Posterior Predictive Intervals](../005_data-analysis-scripts/001_modeling/model-analysis.qmd#fig-pred-plot)
-
-![Posterior Predictive Check](../005_data-analysis-scripts/001_modeling/model-analysis.qmd#fig-pp-check)

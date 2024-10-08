@@ -1,0 +1,945 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  11pt,
+  letterpaper,
+  DIV=11,
+  numbers=noendperiod]{scrartcl}
+
+\usepackage{amsmath,amssymb}
+\usepackage{setspace}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else  
+    % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[top=30mm,left=20mm,right=20mm,bottom=30mm]{geometry}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{5}
+% Make \paragraph and \subparagraph free-standing
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+\KOMAoption{captions}{tableheading}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead[R]{\thepage}
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={model-visualization},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+\title{model-visualization}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\setstretch{1.15}
+\section{Project Motivation}\label{project-motivation}
+
+\subsection{Background on Dialysis and Proposition
+29}\label{background-on-dialysis-and-proposition-29}
+
+Dialysis is a lifesaving treatment that removes waste from blood, acting
+as an artificial kidney for those with chronic kidney disease. In recent
+years, California has seen multiple attempts to increase regulations on
+dialysis facilities through ballot initiatives:
+
+\begin{itemize}
+\tightlist
+\item
+  Proposition 8 in 2018
+\item
+  Proposition 23 in 2020
+\item
+  Proposition 29 in 2022
+\end{itemize}
+
+Proposition 29, which failed to pass, aimed to establish increased
+regulations for both staffing and operations for the roughly 600
+dialysis facilities in California, an estimated \$3.5 billion industry.
+A key provision of the proposition required the presence of a physician
+or licensed practitioner during all treatment hours, potentially
+increasing each facility's costs by several hundred thousand dollars
+annually.
+
+\subsection{Debate Surrounding Dialysis
+Regulations}\label{debate-surrounding-dialysis-regulations}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Proponents} argue that increased regulations improve patient
+  safety and quality of care.
+\item
+  \textbf{Opponents} contend that the increase in healthcare costs is
+  unwarranted and would limit care coverage by overwhelming facilities
+  with costs and potentially
+  \href{https://www.latimes.com/california/story/2022-11-08/2022-california-election-prop-29-vote-dialysis-clinic-results}{forcing
+  them to close}.
+\end{itemize}
+
+\subsection{Project Scope and
+Significance}\label{project-scope-and-significance}
+
+Our project explores trends in:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Dialysis facility access
+\item
+  Quality of care
+\item
+  Ballot results in California
+\end{enumerate}
+
+Using publicly available data from:
+
+\begin{itemize}
+\tightlist
+\item
+  Center for Medicare and Medicaid Services
+\item
+  Aggregated election results from California's Secretary of State
+\end{itemize}
+
+We analyze associations between dialysis care and voting behaviors,
+specifically those related to recent statewide ballot initiatives
+designed to regulate California's multibillion-dollar dialysis industry.
+
+\subsection{Relevance and Novelty}\label{relevance-and-novelty}
+
+\begin{itemize}
+\tightlist
+\item
+  This project uses a novel approach to study an area of public interest
+  relevant not just to California but the entire country.
+\item
+  To our knowledge, this is the first project of its kind to explore the
+  possible association between voting patterns and the quality of
+  dialysis care received.
+\item
+  The majority of dialysis treatments in California
+  \href{https://lao.ca.gov/BallotAnalysis/Proposition?number=29&year=2022}{are
+  covered by Medicare}, making the Medicare and Medicaid datasets
+  particularly relevant to our analysis.
+\end{itemize}
+
+\subsection{Broader Context}\label{broader-context}
+
+Investigative reporters, patient advocacy groups, and labor
+organizations have spent significant resources over the past decade to
+raise public awareness of the dialysis industry and its need for
+regulation. Our project contributes to this ongoing discussion by
+providing data-driven insights into the relationship between dialysis
+care quality and voting behavior.
+
+\section{Project Research Questions}\label{project-research-questions}
+
+Our research questions are divided into two categories: primary and
+secondary. The primary question serves as the main focus of our
+analysis, while secondary questions provide additional insights through
+further investigation of the data.
+
+\subsection{Primary Research Question}\label{primary-research-question}
+
+\textbf{Is the quality of care of dialysis facilities correlated with
+voting in favor of or against dialysis industry regulation?}
+
+\subsubsection{Key Assumptions}\label{key-assumptions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  The relationship between Quality of Care and Voting Behavior is not
+  confounded.
+\item
+  A vote in favor of any of the three propositions (Prop 8 in 2018, Prop
+  23 in 2020, Prop 29 in 2022) can be interpreted as support for
+  dialysis industry regulation.
+\end{enumerate}
+
+\subsubsection{Quality of Care Metrics}\label{quality-of-care-metrics}
+
+To test this relationship under the outlined assumptions, we approximate
+the quality of care using the following metrics:
+
+\begin{itemize}
+\tightlist
+\item
+  Five-star rating
+\item
+  Patient experience rating
+\item
+  Facility mortality rate
+\item
+  Number of available dialysis stations
+\item
+  Staff rating
+\item
+  Hospital readmission categorization (Worse than Expected, As Expected,
+  Better than Expected)
+\item
+  Profit/non-profit designation
+\item
+  Parent company affiliation/independence
+\end{itemize}
+
+\subsubsection{Facility Categorization}\label{facility-categorization}
+
+Observations of Quality of Care metrics in our data are categorized by:
+
+\begin{itemize}
+\tightlist
+\item
+  Year
+\item
+  County
+\item
+  City
+\item
+  Profit/Non-profit designation
+\item
+  Parent company affiliation/independence
+\end{itemize}
+
+\subsection{Secondary Research
+Questions}\label{secondary-research-questions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  What is the geographic coverage of dialysis facilities in California?
+\item
+  Is there any correlation between organizational structure
+  (chain-owned, profit vs.~non-profit) and the quality of care?
+\item
+  Is there any association between the parent company of dialysis
+  facilities and the quality of care?
+\end{enumerate}
+
+\section{Data Sources}\label{data-sources}
+
+\subsection{Primary Data Sources}\label{primary-data-sources}
+
+\subsubsection{Center for Medicare and Medicaid Services (CMS) Quarterly
+Dialysis Facility Compare
+Dataset}\label{center-for-medicare-and-medicaid-services-cms-quarterly-dialysis-facility-compare-dataset}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Source Details:}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Type: .zip \& .xlsx
+  \item
+    Years: 2017-2024
+  \item
+    Combined Size: 5,684 rows, 173 columns
+  \item
+    Link:
+    \href{https://data.cms.gov/provider-data/topics/dialysis-facilities}{CMS
+    Dialysis Facilities Data}
+  \end{itemize}
+\item
+  \textbf{Key features}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Star ratings for dialysis facilities
+  \item
+    Patient experience metrics
+  \item
+    Quality of care metrics
+  \end{itemize}
+\item
+  \textbf{Insights provided}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Patient satisfaction
+  \item
+    Clinical outcomes
+  \item
+    Doctor-patient communication
+  \item
+    Hospitalization rates
+  \item
+    Treatment effectiveness
+  \end{itemize}
+\item
+  \textbf{Rating calculation}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Patient experience star rating derived from bi-annual patient
+    surveys
+  \item
+    Facility ratings based on metrics including:
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Unplanned hospital readmissions
+    \item
+      Total and expected transfusions
+    \item
+      Ratio of deaths to expected deaths
+    \item
+      Waste removal efficiency across patient types
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\subsubsection{California Secretary of State's (SOS) Statement of Vote
+for Ballot
+Measures}\label{california-secretary-of-states-sos-statement-of-vote-for-ballot-measures}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Source Details:}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Type: .xlsx
+  \item
+    Years: 2018, 2020, 2022
+  \item
+    Combined Size: 7,122 rows, 7 columns
+  \item
+    Link:
+    \href{https://www.sos.ca.gov/elections/prior-elections/statewide-election-results}{CA
+    SOS Statewide Election Results}
+  \end{itemize}
+\item
+  \textbf{Elections covered}: November 2022, 2020, and 2018
+\item
+  \textbf{Focus}: Propositions regarding dialysis clinic requirements
+\item
+  \textbf{Geographic levels}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Counties
+  \item
+    Sub-counties:
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Congressional districts
+    \item
+      State senate districts
+    \item
+      State assembly districts
+    \item
+      Cities
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+\subsection{Secondary Data Source}\label{secondary-data-source}
+
+\subsubsection{California Health and Human Services Specialty Care
+Clinic Complete Data
+Set}\label{california-health-and-human-services-specialty-care-clinic-complete-data-set}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Source Details:}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Type: .xlsx
+  \item
+    Years: 2013-2023
+  \item
+    Combined Size: 6,605 rows, 143 columns
+  \item
+    Link:
+    \href{https://data.chhs.ca.gov/dataset/specialty-care-clinic-complete-data-set}{CHHS
+    Specialty Care Clinic Data}
+  \end{itemize}
+\item
+  \textbf{Time range}: 2013 through 2023
+\item
+  \textbf{Purpose}: Supplement CMS dataset with additional geographic
+  data
+\item
+  \textbf{Additional facility-level features}:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Senate district
+  \item
+    Congressional district
+  \item
+    Latitude and longitude
+  \end{itemize}
+\end{itemize}
+
+\subsection{Data Integration and Analysis
+Potential}\label{data-integration-and-analysis-potential}
+
+\begin{itemize}
+\tightlist
+\item
+  Multiple geographic levels allow for aggregation and analysis at
+  various scales
+\item
+  Combination of clinical data (CMS) with voting data (SOS) enables
+  exploration of potential correlations between care quality and voting
+  behavior
+\item
+  Supplementary geographic data enhances spatial analysis capabilities
+\end{itemize}
+
+\section{Data Manipulation Methods}\label{data-manipulation-methods}
+
+Our workflow was broken down into five stages:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Data Collection
+\item
+  Data Preparation
+\item
+  Database Management
+\item
+  Exploratory Data Analysis
+\item
+  Statistical Analysis
+\end{enumerate}
+
+\subsection{Data Collection and
+Preparation}\label{data-collection-and-preparation}
+
+\subsubsection{CMS Dialysis Facility
+Dataset}\label{cms-dialysis-facility-dataset}
+
+\paragraph{Organization and Import}\label{organization-and-import}
+
+\begin{itemize}
+\tightlist
+\item
+  Dataset structure: .zip files (one per year), containing multiple
+  Excel files
+\item
+  Focus: Excel files relevant to facility general information, ratings,
+  and patient survey results
+\item
+  Import result: Two separate parquet files at the facility level
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \tightlist
+  \item
+    Patient survey responses
+  \item
+    Facility ratings and measurements
+  \end{enumerate}
+\end{itemize}
+
+\paragraph{Challenges and Solutions}\label{challenges-and-solutions}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Inconsistent File Naming Conventions
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Issue: 2021 files named differently (e.g., patient survey data file
+    named `59mq-zhts')
+  \item
+    Solution: Created a list of exact file names for selection, rather
+    than using pattern matching
+  \end{itemize}
+\item
+  Missing Data
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Expected missing data: Survey non-responses
+  \item
+    Unexpected missing data: Administrative errors (e.g., missing
+    columns in recent ICHPS raw data files)
+  \item
+    Solution for specific cases: Simple imputation during analysis
+    (e.g., substituting 2018 `nan' values with 2019 values at the
+    facility level)
+  \end{itemize}
+\end{enumerate}
+
+\subsubsection{SOS Ballot Data}\label{sos-ballot-data}
+
+\paragraph{Import and Selection}\label{import-and-selection}
+
+\begin{itemize}
+\tightlist
+\item
+  Data imported via URL for each relevant proposition year (2018, 2020,
+  2022)
+\item
+  Selected columns containing `Kidney' or `Dialysis' for analysis
+\item
+  Geographic column manipulation:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Renamed columns
+  \item
+    Backfilled rows to address multi-level index (sub-counties under
+    counties)
+  \end{itemize}
+\item
+  Final output: Single ballot data parquet file
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Includes year column
+  \item
+    Count and sub-county vote counts for each Dialysis Requirements
+    Initiative proposition
+  \end{itemize}
+\end{itemize}
+
+\paragraph{Challenges and Solutions}\label{challenges-and-solutions-1}
+
+\begin{itemize}
+\tightlist
+\item
+  Inconsistent naming conventions across years
+
+  \begin{itemize}
+  \tightlist
+  \item
+    2020 and 2022: `County Supervisorial'
+  \item
+    2018: `Supervisorial District'
+  \end{itemize}
+\item
+  Solution: Standardized naming across all years
+\end{itemize}
+
+\subsubsection{CHHS Specialty Care Clinic Complete Data
+Set}\label{chhs-specialty-care-clinic-complete-data-set}
+
+\paragraph{Import and Alignment}\label{import-and-alignment}
+
+\begin{itemize}
+\tightlist
+\item
+  Downloaded Excel files for 2013 through 2023 (one per year)
+\item
+  Main challenge: Aligning pre-2018 data with 2018-forward structure
+\item
+  Process:
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \tightlist
+  \item
+    Separated data into two dataframes: 2013-2017 and 2018-2023
+  \item
+    Used CHHS mapping dictionary to rename 2013-2017 columns
+  \item
+    Ensured consistent data types across both dataframes
+  \item
+    Merged dataframes using outer join on common columns
+  \item
+    Dropped rows with missing FAC\_NO (facility data)
+  \end{enumerate}
+\end{itemize}
+
+\subsection{Database Management}\label{database-management}
+
+\subsubsection{Data Merging and
+Standardization}\label{data-merging-and-standardization}
+
+\begin{itemize}
+\tightlist
+\item
+  Standardized data types and column names across all datasets
+\item
+  Merged datasets:
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \tightlist
+  \item
+    CMS facility rating dataset with CMS patient survey dataset
+  \item
+    Filtered CHHS dataset (dialysis clinics only) with merged CMS data
+  \item
+    Reshaped CMS and CHHS data by geographic level
+  \item
+    Merged geographic-level data with SOS Ballot Measures dataset
+  \end{enumerate}
+\end{itemize}
+
+\subsubsection{Final Output}\label{final-output}
+
+\begin{itemize}
+\tightlist
+\item
+  Two parquet files:
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \tightlist
+  \item
+    Data aggregated at city level
+  \item
+    Data aggregated at assembly district level
+  \end{enumerate}
+\end{itemize}
+
+\subsubsection{Custom Relational Database
+System}\label{custom-relational-database-system}
+
+\begin{itemize}
+\item
+  We developed a custom Python-based relational database system to
+  centralize our datasets and facilitate efficient data access and
+  analysis. Key features include:
+
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \tightlist
+  \item
+    \textbf{Table and View Structure}: Distinct tables for datasets with
+    multiple views for focused data access.
+  \item
+    \textbf{Dynamic View Creation and Merging}: On-the-fly creation of
+    custom views and combination of multiple views for complex analysis.
+  \item
+    \textbf{Conditional Querying}: User-defined conditions for precise
+    data retrieval and filtering.
+  \item
+    \textbf{Efficient Data Access}: Quick and reliable access across the
+    entire database.
+  \item
+    \textbf{Code Quality}: Object-oriented design with consistent naming
+    conventions for improved maintainability and adaptability.
+  \end{enumerate}
+\item
+  For detailed functionality, refer to the included database demo
+  (Milestone\_1/004\_data-processing-scripts/002\_clean-raw-data/database\_demo.ipynb).
+\end{itemize}
+
+\section{Analysis and Insights}\label{analysis-and-insights}
+
+This project employed a Bayesian approach to investigate the
+relationship between dialysis facility quality metrics and voting
+patterns on dialysis-related propositions in California.
+
+By integrating these datasets, we were able to explore possible
+relationships between dialysis facility quality metrics and voting
+outcomes on dialysis-related propositions, an analysis that would not
+have been possible with either dataset alone.
+
+To maximize the granularity of our analysis, we chose to focus on
+city-level data, which provided more detailed vote counts compared to
+assembly district level data. We encoded voting outcomes as the
+percentage of ``Yes'' votes in favor of the propositions, allowing for a
+nuanced examination of support for dialysis industry regulation across
+different localities.
+
+This novel approach enabled us to investigate how various factors
+related to dialysis care quality might influence public opinion and
+voting behavior on healthcare policy initiatives, potentially offering
+valuable insights for policymakers, healthcare providers, and voters
+alike.
+
+\subsection{Analysis Steps}\label{analysis-steps}
+
+\subsection{Data Preparation}\label{data-preparation}
+
+Before modeling and analysis, we underwent several data preparation
+steps. These were kept until the analysis stage in the interest of
+transparency. Steps taken included
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Imputing missing 2018 values using 2019 data for select variables.
+\item
+  Converting datatypes.\\
+\item
+  Calculating vote percentages in favor of regulation for each
+  facility's city.
+\item
+  Filtering data to include years 2018, 2020, and 2022.
+\item
+  Aggregating data at the facility level, summarizing vote outcomes and
+  facility characteristics.
+\item
+  Removing rows with missing values to perform a complete case analysis.
+\end{enumerate}
+
+\subsubsection{Model Construction}\label{model-construction}
+
+We constructed a Bayesian multilevel model using the brms package in R.
+This model allowed us to account for the hierarchical nature of our data
+(facilities nested within cities and counties) while examining the
+relationship between facility quality metrics and voting outcomes.
+
+\subsubsection{Posterior Predictive
+Checks:}\label{posterior-predictive-checks}
+
+We performed posterior predictive checks to assess model fit and explore
+relationships between key variables and voting outcomes.
+
+\subsubsection{Visualization of
+Effects:}\label{visualization-of-effects}
+
+We created visualizations to illustrate the effects of key variables on
+voting outcomes, such as staff rating and mortality rate.
+
+\subsection{Insights}\label{insights}
+
+\subsubsection{Staff Rating Impact:}\label{staff-rating-impact}
+
+Our analysis revealed a negative relationship between staff ratings and
+the percentage of votes in favor of dialysis regulation. This suggests
+that areas with lower-rated dialysis facility staff were more likely to
+support increased regulation. The effect of staff rating varied across
+counties, with some counties showing stronger negative relationships
+than others.
+
+\subsubsection{Mortality Rate
+Influence:}\label{mortality-rate-influence}
+
+We found a positive relationship between facility mortality rates and
+support for regulation. As mortality rates increased, the predicted vote
+percentage in favor of regulation also increased. This suggests that
+voters in areas with higher mortality rates at dialysis facilities were
+more likely to support increased oversight.
+
+\subsubsection{Patient Experience
+Rating:}\label{patient-experience-rating}
+
+Interestingly, our analysis showed a positive relationship between
+patient experience ratings and support for regulation. This
+counterintuitive finding suggests that even in areas where patients
+report better experiences, there is still support for increased
+regulation.
+
+\subsubsection{Five Star Rating and Stations per
+Facility:}\label{five-star-rating-and-stations-per-facility}
+
+The associations of these metrics on voting behavior were weaker
+compared to staff ratings, mortality rates, and patient experience
+ratings. The estimated effects suggested by the posterior predictive
+checks were clustered around zero.
+
+\subsubsection{Chain Organization
+Effects:}\label{chain-organization-effects}
+
+The posterior predictive check for chain organizations showed varying
+levels of support for regulation across different dialysis chains,
+indicating that organizational factors may play a role in shaping public
+opinion or voting behavior.
+
+\subsubsection{Facility Size
+Considerations:}\label{facility-size-considerations}
+
+The number of dialysis stations (a proxy for facility size) showed a
+slight positive relationship with voting in favor of regulation,
+suggesting that areas with larger facilities might be more supportive of
+increased oversight.
+
+\subsection{Challenges and
+Limitations}\label{challenges-and-limitations}
+
+\subsubsection{Data Granularity:}\label{data-granularity}
+
+While we had facility-level data for quality metrics, aggregating voting
+data at the city and county level creates a mismatch in granularity,
+potentially obscuring some finer-grained relationships.
+
+\subsubsection{Temporal Alignment:}\label{temporal-alignment}
+
+Our analysis assumed that facility metrics from a given year directly
+influenced voting in that year's proposition. However, there may be lag
+effects or longer-term trends that our current model doesn't capture.
+
+\subsubsection{Confounding Factors:}\label{confounding-factors}
+
+Despite our efforts to control for various factors, there may be
+unmeasured confounders influencing both facility quality and voting
+patterns that our model doesn't account for.
+
+\subsubsection{Causal Interpretation:}\label{causal-interpretation}
+
+While our model reveals associations between facility metrics and voting
+patterns, caution should be exercised in interpreting these
+relationships as causal. Further research, possibly including
+quasi-experimental designs, would be needed to establish causal links.
+
+In conclusion, our analysis provides novel insights into the complex
+relationship between dialysis facility quality and public support for
+industry regulation. The varying effects across counties and
+organizations highlight the importance of considering local contexts
+when interpreting these results. While we've uncovered several
+interesting patterns, the complexity of the issue and limitations in our
+data suggest that further research is needed to fully understand these
+relationships and their policy implications.
+
+\subsection{Results}\label{results}
+
+\subsubsection{County-Level Effects}\label{county-level-effects}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{../005_data-analysis-scripts/001_modeling/model-analysis.qmd\#fig-staff-rating-plot}
+
+}
+
+\caption{County-Level Staff Rating Effects}
+
+\end{figure}%
+
+
+
+\end{document}
