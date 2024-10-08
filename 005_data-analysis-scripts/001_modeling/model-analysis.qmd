@@ -6,7 +6,7 @@ editor: visual
 
 Built using r version 4.3.1.
 
-R was chosen for this analysis because of its integration with the STAN probabilistic programming language and suite of tools used to visualize uncertainty and Bayesian model outputs. 
+R was chosen for this analysis because of its integration with the STAN probabilistic programming language and suite of tools used to visualize uncertainty and Bayesian model outputs. Alternatives in the Python ecosystem would include PyMC3 and ArviZ, but the R ecosystem is, in general, more mature for Bayesian/multi-level modeling and uncertainty visualization.
 
 ```{r}
 # install.packages(c("tidyverse", "ggthemes", "patchwork", "brms", "ggdist", "tidybayes", "modelr", "arrow", "scales", "sessioninfo"))
@@ -132,7 +132,7 @@ filtered_city_df <- (
 This section defines the model formula and fits the Bayesian regression model using brms.
 The model predicts vote percentage based on various variables of interest, including quality metrics (staff rating, mortality rate, patient experience rating), facility characteristics (number of dialysis stations), and other factors (hospital readmission category).
 
-It's commented out because the model has already been fitted and saved as an RDS file, which is loaded in the next code chunk for further analysis.
+It's commented out because the model has already been fit and saved as an RDS file, which is loaded in the next code chunk for further analysis.
 
 ```{r}
 # model_formula <- bf(
