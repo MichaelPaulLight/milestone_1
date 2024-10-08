@@ -1,6 +1,5 @@
 ---
-title: "An Exploration of Voting Drivers Behind Dialysis Regulation in California 
-"
+title: "An Exploration of Voting Drivers Behind Dialysis Regulation in California"
 format: 
   html:
     toc: false
