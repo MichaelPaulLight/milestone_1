@@ -28,4 +28,4 @@ Key operations:
     - merged_cms_ballot-measures_by-city.parquet
     - merged_cms_ballot-measures_by-assembly-district.parquet
 
-The merged data files are saved in the '../../003_data/003_merged-data/' directory. They are used subsequently in analysis/modeling notebooks.
+The merged data files are saved in the '../../003_data/003_merged-data/' directory. They are used subsequently in analysis notebooks.
