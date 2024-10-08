@@ -178,7 +178,7 @@ Our workflow was broken down into four stages:
     -   Unexpected missing data: Administrative errors (e.g., missing columns in recent ICHPS raw data files, including patient hospital readmission categorization and overall patient experience ratings)
     -   Solution for specific cases: Simple imputation during analysis (e.g., substituting 2018 'nan' values with 2019 values at the facility level)
 
-![](../007_visualizations/001_missing_data_heatmap.png){width=90%}
+![](../007_visualizations/001_missing_data_heatmap.png){width=85%}
 
 ### SOS Ballot Data
 
@@ -264,7 +264,7 @@ Given the limitations and challenges detailed below, we were able to gain some i
 
 We were also able to use visual analysis of the un-modeled data to gain some insights into the geographic coverage of dialysis facilities in the state.
 
-![Dialysis Stations per capita 2022](../007_visualizations/2022_stations_per_capita_choropleth.png){width=90%}
+![Dialysis Stations per capita 2022](../007_visualizations/2022_stations_per_capita_choropleth.png){width=85%}
 
 ## Analysis Steps
 
@@ -287,13 +287,11 @@ We constructed a Bayesian multilevel model using the brms package in R. This mod
 
 We performed posterior predictive checks to assess model fit and explore relationships between key variables and voting outcomes. The following visualization provides a comprehensive overview of the model parameters and their effects on the predicted vote percentage in favor of regulation.
 
-![Posterior Predictive Check for Chain Organizations](../007_visualizations/posterior_effects.png){width=90%}
-
-This half-eye plot (also known as a ridgeline plot) displays the posterior distributions of the model parameters.
+![Posterior Predictive Check for Chain Organizations](../007_visualizations/posterior_effects.png){width=80%}
 
 To assess the overall performance of our model in capturing the relationship between voting behavior and quality of care metrics, we conducted a posterior predictive check for the entire model. This check allows us to compare the observed data with simulated data from the fitted model, providing insight into how well the model represents the underlying patterns in our dataset.
 
-![Posterior Predictive Check for Entire Model](../007_visualizations/pp_check.png){width=90%}
+![Posterior Predictive Check for Entire Model](../007_visualizations/pp_check.png){width=80%}
 
 ## Insights
 
@@ -301,19 +299,19 @@ To assess the overall performance of our model in capturing the relationship bet
 
 Our analysis revealed a negative relationship between staff ratings and the percentage of votes in favor of dialysis regulation. This suggests that areas with lower-rated dialysis facility staff were more likely to support increased regulation. The effect of staff rating varied across counties, with some counties showing stronger negative relationships than others.
 
-![Effect of Staff Rating on Predicted Vote Percentage](../007_visualizations/staff_rating_effect.png){width=90%}
+![Effect of Staff Rating on Predicted Vote Percentage](../007_visualizations/staff_rating_effect.png){width=85%}
 
 ### Mortality Rate Influence:
 
 We found a positive relationship between facility mortality rates and support for regulation. As mortality rates increased, the predicted vote percentage in favor of regulation also increased. This suggests that voters in areas with higher mortality rates at dialysis facilities were more likely to support increased oversight.
 
-![Effect of Mortality Rate on Predicted Vote Percentage](../007_visualizations/mortality_rate_effect.png){width=90%}
+![Effect of Mortality Rate on Predicted Vote Percentage](../007_visualizations/mortality_rate_effect.png){width=85%}
 
 ### Patient Experience Rating:
 
 Interestingly, our analysis showed a positive relationship between patient experience ratings and support for regulation. This counterintuitive finding suggests that even in areas where patients report better experiences, there is still support for increased regulation.
 
-![Effect of Patient Experience Rating on Predicted Vote Percentage](../007_visualizations/patient_experience_effect.png){width=90%}
+![Effect of Patient Experience Rating on Predicted Vote Percentage](../007_visualizations/patient_experience_effect.png){width=85%}
 
 ### Five Star Rating and Stations per Facility: 
 The associations of these metrics on voting behavior were weaker compared to staff ratings, mortality rates, and patient experience ratings. The estimated effects suggested by the posterior predictive checks were clustered around zero.
@@ -322,7 +320,7 @@ The associations of these metrics on voting behavior were weaker compared to sta
 
 The posterior predictive check for chain organizations showed varying levels of support for regulation across different dialysis chains, indicating that organizational factors may play a role in shaping public opinion or voting behavior.
 
-![Posterior Predictive Check for Chain Organizations](../007_visualizations/pp_chain_org.png){width=90%}
+![Posterior Predictive Check for Chain Organizations](../007_visualizations/pp_chain_org.png){width=85%}
 
 ### Facility Size Considerations:
 
