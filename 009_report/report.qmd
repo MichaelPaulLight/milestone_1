@@ -348,3 +348,38 @@ Despite our efforts to control for various factors, there may be unmeasured conf
 While our model reveals associations between facility metrics and voting patterns, caution should be exercised in interpreting these relationships as causal. Further research, possibly including quasi-experimental designs, would be needed to establish causal links.
 
 In conclusion, our analysis provides novel insights into the complex relationship between dialysis facility quality and public support for industry regulation. The varying effects across counties and organizations highlight the importance of considering local contexts when interpreting these results. While we've uncovered several interesting patterns, the complexity of the issue and limitations in our data suggest that further research is needed to fully understand these relationships and their policy implications.
+
+
+## Results
+
+### County-Level Effects
+
+![County-Level Staff Rating Effects](../005_data-analysis-scripts/001_modeling/model-analysis.qmd#fig-staff-rating-plot)
+
+![County-Level Intercepts](../005_data-analysis-scripts/001_modeling/model-analysis.qmd#fig-intercept-plot)
+
+### Posterior Predictive Checks
+
+![Posterior Predictive Check for Chain Organizations](../005_data-analysis-scripts/001_modeling/model-analysis.qmd#fig-pp-group)
+
+### Effect of Key Variables on Predicted Vote Percentage
+
+![Effect of Staff Rating](../005_data-analysis-scripts/001_modeling/model-analysis.qmd#fig-staff-rating-effect)
+
+![Effect of Mortality Rate](../005_data-analysis-scripts/001_modeling/model-analysis.qmd#fig-mortality-rate-effect)
+
+![Effect of Patient Experience Rating](../005_data-analysis-scripts/001_modeling/model-analysis.qmd#fig-patient-experience-effect)
+
+### Posterior Distributions of Model Parameters
+
+![Posterior Distributions](../005_data-analysis-scripts/001_modeling/model-analysis.qmd#fig-posterior-distributions)
+
+### Model Diagnostics
+
+![MCMC Trace Plots](../005_data-analysis-scripts/001_modeling/model-analysis.qmd#fig-mcmc-trace)
+
+![Posterior Density Plots](../005_data-analysis-scripts/001_modeling/model-analysis.qmd#fig-posterior-density)
+
+![Posterior Predictive Intervals](../005_data-analysis-scripts/001_modeling/model-analysis.qmd#fig-pred-plot)
+
+![Posterior Predictive Check](../005_data-analysis-scripts/001_modeling/model-analysis.qmd#fig-pp-check)

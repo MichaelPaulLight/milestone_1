@@ -154,7 +154,7 @@ It's commented out because the model has already been fitted and saved as an RDS
 ```
 
 ```{r}
-model = readRDS("../../006_models/dialysis-model_18.rds")
+model = readRDS("dialysis-model_18.rds")
 ```
 
 The first plot below shows how the effect of staff rating varies across counties, as well as the uncertainty in each county's effect represented by the width of a given distribution.
@@ -165,6 +165,9 @@ The second plot, which visualizes intercepts output by the model, helps identify
 Contra Costa, Imperial, Monterey, Santa Clara, and Santa Cruz (which are more urban counties) were among the counties with the highest baseline vote percentages, while Shasta, Tehama, and Kings (more rural counties) were among the counties with the lowest baseline vote percentages. 
 
 ```{r}
+#| label: fig-staff-rating-plot
+#| fig-cap: "County-Level Staff Rating Effects"
+
 # Function to format county names
 format_county_name <- function(name) {
   name |> 
@@ -223,13 +226,20 @@ intercept_plot <- create_county_effect_plot(
   "County-Level Intercepts",
   "Posterior distribution of county-specific effects"
 )
-
-# Display plots
-staff_rating_plot
-intercept_plot
-
 ```
 
+```{r}
+#| label: fig-staff-rating-plot
+#| fig-cap: "County-Level Staff Rating Effects"
+staff_rating_plot
+```
+
+
+```{r}
+#| label: fig-intercept-plot
+#| fig-cap: "County-Level Intercepts"
+intercept_plot
+```
 
 The plot below shows a posterior predictive check for the percentage of votes in favor of regulation across different standard chain organizations. This visualization compares the observed data (represented by red diamonds) with simulated data from the model (represented by boxplots).
 
@@ -306,6 +316,11 @@ pp_group <- function(data, pp_samples, group_var) {
     scale_x_discrete(labels = function(x) format_group_name(x))
 }
 
+```
+
+```{r}
+#| label: fig-pp-group
+#| fig-cap: "Posterior Predictive Check for Chain Organizations"
 pp_group(filtered_city_df, pp_samples, std_chain_organization)
 ```
 
@@ -356,8 +371,11 @@ new_data <- filtered_city_df |>
 # Add predicted draws
 predictions <- new_data |>
   add_epred_draws(model, ndraws = 1000)
+```
 
-# Create the plot
+```{r}
+#| label: fig-staff-rating-effect
+#| fig-cap: "Effect of Staff Rating on Predicted Vote Percentage"
 ggplot(predictions, aes(x = staff_rating, y = .epred)) +
   geom_jitter(data = filtered_city_df, aes(y = vote_perc), alpha = 0.2, color = report_colors[9]) +
   stat_lineribbon(aes(y = .epred), .width = c(.95, .80, .50), alpha = 0.5) +
@@ -404,8 +422,11 @@ new_data <- filtered_city_df |>
 # Adding predicted draws
 predictions <- new_data |>
   add_epred_draws(model, ndraws = 1000)
+```
 
-# Creating the plot
+```{r}
+#| label: fig-mortality-rate-effect
+#| fig-cap: "Effect of Mortality Rate on Predicted Vote Percentage"
 ggplot(predictions, aes(x = mortality_rate_facility, y = .epred)) +
   geom_jitter(data = filtered_city_df, aes(y = vote_perc), alpha = 0.2, color = report_colors[9]) +
   stat_lineribbon(aes(y = .epred), .width = c(.95, .80, .50), alpha = 0.5) +
@@ -451,8 +472,11 @@ new_data <- filtered_city_df |>
 # Adding predicted draws
 predictions <- new_data |>
   add_epred_draws(model, ndraws = 1000)
+```
 
-# Creating the plot
+```{r}
+#| label: fig-patient-experience-effect
+#| fig-cap: "Effect of Patient Experience Rating on Predicted Vote Percentage"
 ggplot(predictions, aes(x = patient_experience_rating, y = .epred)) +
   geom_jitter(data = filtered_city_df, aes(y = vote_perc), alpha = 0.2, color = report_colors[9]) +
   stat_lineribbon(aes(y = .epred), .width = c(.95, .80, .50), alpha = 0.5) +
@@ -503,7 +527,11 @@ posterior_samples <- model |>
     parameter = fct_reorder(parameter, value)
   )
 
-# Create the plot
+```
+
+```{r}
+#| label: fig-posterior-distributions
+#| fig-cap: "Posterior Distributions of Model Parameters"
 ggplot(posterior_samples, aes(y = parameter, x = value, fill = parameter)) +
   stat_halfeye(
     point_interval = "median_qi",
@@ -537,7 +565,8 @@ ggplot(posterior_samples, aes(y = parameter, x = value, fill = parameter)) +
 
 
 ```{r}
-# Trace plots
+#| label: fig-mcmc-trace
+#| fig-cap: "MCMC Trace Plots"
 mcmc_trace(model, pars = c("b_mortality_rate_facility", "b_n_dialysis_stations", 
                            "b_five_star", "b_patient_experience_rating", "b_staff_rating")) +
   scale_color_manual(values = report_colors[1:5]) +
@@ -548,7 +577,11 @@ mcmc_trace(model, pars = c("b_mortality_rate_facility", "b_n_dialysis_stations",
   theme_report() +
   theme(legend.position = "none")
 
-# Density plots for key parameters
+```
+
+```{r}
+#| label: fig-posterior-density
+#| fig-cap: "Posterior Density Plots"
 mcmc_dens_overlay(model, pars = c("b_mortality_rate_facility", "b_n_dialysis_stations", 
                                   "b_five_star", "b_patient_experience_rating", "b_staff_rating")) +
   scale_color_manual(values = report_colors[1:5]) +
@@ -576,9 +609,17 @@ pred_plot <- ggplot(cbind(filtered_city_df, post_pred),
   scale_x_continuous(labels = scales::percent_format(accuracy = 1)) +
   scale_y_continuous(labels = scales::percent_format(accuracy = 1))
 
-print(pred_plot)
+```
 
-# Posterior predictive check
+```{r}
+#| label: fig-pred-plot
+#| fig-cap: "Posterior Predictive Intervals"
+pred_plot
+```
+
+```{r}
+#| label: fig-pp-check
+#| fig-cap: "Posterior Predictive Check"
 pp_check(model, type = "dens_overlay", nsamples = 100) +
   scale_color_manual(values = c("black", rep(report_colors[1], 100))) +
   labs(
