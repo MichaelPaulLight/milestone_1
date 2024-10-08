@@ -13,13 +13,10 @@ editor: visual
 
 ## Background on Dialysis and Proposition 29
 
-Dialysis is a lifesaving treatment that removes waste from blood, acting as an artificial kidney for those with chronic kidney disease. In recent years, California has seen multiple attempts to increase regulations on dialysis facilities through ballot initiatives:
+Dialysis is a lifesaving treatment that removes waste from blood—acting as an artificial kidney for those with chronic kidney disease. Prop. 29, which failed to pass, was the third attempt to increase regulations on dialysis clinics in the state—preceded by Prop. 8 in 2018 and Prop. 23 in 2020. Proposition 29—Dialysis Clinic Requirements Initiative—aimed to establish increased regulations for both staffing and operations for the roughly 600 dialysis clinics in California, an estimated $3.5 billion industry. Notably, the proposed regulation required the presence of a physician or licensed practitioner during all treatment hours, increasing each clinic costs by several hundred thousand annually.
 
--   Proposition 8 in 2018
--   Proposition 23 in 2020
--   Proposition 29 in 2022
+This project uses a novel approach to study an area of public interest relevant not just to California but the entire country. Investigative reporters, patient advocacy groups, and labor organizations have spent significant resources over the past decade to raise public awareness of the dialysis industry and its need for regulation.
 
-Proposition 29, which failed to pass, aimed to establish increased regulations for both staffing and operations for the roughly 600 dialysis facilities in California, an estimated \$3.5 billion industry. A key provision of the proposition required the presence of a physician or licensed practitioner during all treatment hours, potentially increasing each facility's costs by several hundred thousand dollars annually.
 
 ## Debate Surrounding Dialysis Regulations
 
@@ -28,18 +25,7 @@ Proposition 29, which failed to pass, aimed to establish increased regulations f
 
 ## Project Scope and Significance
 
-Our project explores trends in:
-
-1.  Dialysis facility access
-2.  Quality of care
-3.  Ballot results in California
-
-Using publicly available data from:
-
--   Center for Medicare and Medicaid Services
--   Aggregated election results from California's Secretary of State
-
-We analyze associations between dialysis care and voting behaviors, specifically those related to recent statewide ballot initiatives designed to regulate California's multibillion-dollar dialysis industry.
+Our project explores trends in dialysis clinic access, quality of care, and ballot results in the state of California in recent years. Using publicly available data from the Center for Medicare and Medicaid Services and aggregated election results from California's Secretary of State, we’ve analyze associations between dialysis care and voting behaviors, specifically those related to recent statewide ballot initiatives designed to regulate California’s multibillion-dollar dialysis industry—including 2022’s Proposition 29, which failed to pass by a large margin. While private health insurers typically pay higher rates, medicare pays for dialysis treatment for the majority of people on dialysis in California (source) meaning most patient interactions with dialysis clinics would exist within the Medicare and Medicaid datasets.
 
 ## Relevance and Novelty
 
@@ -344,3 +330,19 @@ Our analysis faced several key constraints that warrant consideration:
 
 These limitations highlight opportunities for future research, including more granular data collection, time-series analyses, incorporation of additional variables, and replication studies in diverse contexts.
 
+# Future Work and Next Steps
+
+Our Bayesian analysis of dialysis facility quality metrics and voting patterns on dialysis-related propositions in California has provided valuable insights. However, several avenues for future research and methodological improvements remain:
+
+1. **Granular Data Collection**:
+   - Incorporate sub-city (such as census tract) voting data to mitigate ecological fallacy risks.
+   - Collect more detailed patient-level data to better understand the link between personal experiences and voting behavior.
+
+2. **Temporal Analysis**:
+   - Investigate how changes in facility quality over time correlate with shifts in voting behavior.
+
+3. **Additional Variables**:
+   - Incorporate socioeconomic factors, political leanings, and media coverage data as potential confounders.
+
+4. **Causal Inference**:
+   - Explore natural experiments, such as sudden changes in facility ownership or closures, and their impact on voting behavior.
