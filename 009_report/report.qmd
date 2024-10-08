@@ -61,8 +61,6 @@ To test this relationship under the outlined assumptions, we approximate  qualit
 -   Number of available dialysis stations
 -   Staff rating
 -   Hospital readmission categorization (Worse than Expected, As Expected, Better than Expected)
--   Profit/non-profit designation
--   Parent company affiliation/independence
 
 ### Facility Categorization
 
