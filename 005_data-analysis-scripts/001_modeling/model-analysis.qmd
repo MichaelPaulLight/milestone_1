@@ -293,14 +293,16 @@ pp_group <- function(data, pp_samples, group_var) {
                shape = 18) +  # Use diamond shape for observed points
     theme_report() +
     theme(
-      axis.text.y = element_text(size = 10),  # Increase text size
-      axis.title.y = element_blank(),  # Remove y-axis title
-      panel.grid.major.y = element_blank(),  # Remove horizontal grid lines
+      axis.text.y = element_text(size = 10),
+      axis.title.y = element_blank(),
+      panel.grid.major.y = element_blank(),
       panel.grid.minor.y = element_blank(),
-      legend.position = "none"  # Remove legend
+      legend.position = "none",
+      plot.caption.position = "plot",
+      plot.caption = element_text(hjust = 0.7)
     ) +
     labs(
-      title = paste("Posterior Predictive Check:", format_group_name(group_name)),
+      title = paste("Posterior Predictive Check by Chain Organization"),
       subtitle = "Percentage of Votes in Favor of Regulation",
       x = NULL,  # Remove x-axis label
       y = "Vote Percentage",
@@ -321,7 +323,10 @@ pp_group <- function(data, pp_samples, group_var) {
 ```{r}
 #| label: fig-pp-group
 #| fig-cap: "Posterior Predictive Check for Chain Organizations"
-pp_group(filtered_city_df, pp_samples, std_chain_organization)
+pp_group_plot <- pp_group(filtered_city_df, pp_samples, std_chain_organization)
+
+ggsave("../../007_visualizations/pp_chain_org.png", plot = pp_group_plot, width = 10, height = 6, dpi = 300)
+
 ```
 
 This plot visualizes the effect of staff rating, facility mortality rate, and patient experience rating on the predicted vote percentage in favor of regulation, while holding other variables constant at their mean or most common values. It combines observed data points with model predictions to provide a comprehensive view of the relationship between staff ratings and voting outcomes.
@@ -431,7 +436,7 @@ predictions <- new_data |>
 ```{r}
 #| label: fig-mortality-rate-effect
 #| fig-cap: "Effect of Mortality Rate on Predicted Vote Percentage"
-ggplot(predictions, aes(x = mortality_rate_facility, y = .epred)) +
+mortality_rate_plot <- ggplot(predictions, aes(x = mortality_rate_facility, y = .epred)) +
   geom_jitter(data = filtered_city_df, aes(y = vote_perc), alpha = 0.2, color = report_colors[9]) +
   stat_lineribbon(aes(y = .epred), .width = c(.95, .80, .50), alpha = 0.5) +
   labs(
@@ -450,6 +455,9 @@ ggplot(predictions, aes(x = mortality_rate_facility, y = .epred)) +
     plot.caption = element_text(hjust = 0, size = 8, color = "#7f8c8d"),
     plot.subtitle = element_text(size = 10, color = "#7f8c8d")
   )
+
+ggsave("../../007_visualizations/mortality_rate_effect.png", plot = mortality_rate_plot, width = 10, height = 6, dpi = 300)
+
 ```
 
 ```{r}
@@ -481,7 +489,7 @@ predictions <- new_data |>
 ```{r}
 #| label: fig-patient-experience-effect
 #| fig-cap: "Effect of Patient Experience Rating on Predicted Vote Percentage"
-ggplot(predictions, aes(x = patient_experience_rating, y = .epred)) +
+experience_plot <- ggplot(predictions, aes(x = patient_experience_rating, y = .epred)) +
   geom_jitter(data = filtered_city_df, aes(y = vote_perc), alpha = 0.2, color = report_colors[9]) +
   stat_lineribbon(aes(y = .epred), .width = c(.95, .80, .50), alpha = 0.5) +
   labs(
@@ -500,6 +508,9 @@ ggplot(predictions, aes(x = patient_experience_rating, y = .epred)) +
     plot.caption = element_text(hjust = 0, size = 8, color = "#7f8c8d"),
     plot.subtitle = element_text(size = 10, color = "#7f8c8d")
   )
+
+ggsave("../../007_visualizations/patient_experience_effect.png", plot = experience_plot, width = 10, height = 6, dpi = 300)
+
 ```
 
 This plot visualizes the posterior distributions of the model parameters, providing insights into the effects of various factors on the predicted vote percentage in favor of regulation. The visualization uses a half-eye plot (also known as a ridgeline plot) to display the distribution of each parameter's posterior samples.
@@ -536,7 +547,7 @@ posterior_samples <- model |>
 ```{r}
 #| label: fig-posterior-distributions
 #| fig-cap: "Posterior Distributions of Model Parameters"
-ggplot(posterior_samples, aes(y = parameter, x = value, fill = parameter)) +
+posterior_effects_plot <- ggplot(posterior_samples, aes(y = parameter, x = value, fill = parameter)) +
   stat_halfeye(
     point_interval = "median_qi",
     .width = c(0.5, 0.8, 0.95),
@@ -564,6 +575,9 @@ ggplot(posterior_samples, aes(y = parameter, x = value, fill = parameter)) +
     labels = scales::label_number(accuracy = 0.01),
     breaks = scales::pretty_breaks(n = 6)
   )
+
+ggsave("../../007_visualizations/posterior_effects.png", plot = posterior_effects_plot, width = 10, height = 6, dpi = 300)
+
 ```
 
 
@@ -624,7 +638,7 @@ pred_plot
 ```{r}
 #| label: fig-pp-check
 #| fig-cap: "Posterior Predictive Check"
-pp_check(model, type = "dens_overlay", nsamples = 100) +
+pp_check_plot <- pp_check(model, type = "dens_overlay", nsamples = 100) +
   scale_color_manual(values = c("black", rep(report_colors[1], 100))) +
   labs(
     title = "Posterior Predictive Check",
@@ -634,4 +648,7 @@ pp_check(model, type = "dens_overlay", nsamples = 100) +
   ) +
   theme_report() +
   theme(legend.position = "none")
+
+ggsave("../../007_visualizations/pp_check.png", plot = pp_check_plot, width = 10, height = 6, dpi = 300)
+
 ```

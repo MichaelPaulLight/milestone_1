@@ -16,11 +16,7 @@ editor: visual
 
 Dialysis is a life-sustaining treatment that purifies blood for patients with chronic kidney disease, effectively serving as an artificial kidney. In recent years, California has seen multiple attempts to increase regulations on dialysis clinics, with Proposition 29 in 2022 being the latest in a series that included Proposition 8 in 2018 and Proposition 23 in 2020. All three propositions failed to pass.
 
-![Vote Percentages for Dialysis Regulation in California](../007_visualizations/Yes_Vote_Percentages_Propositions_in_Californa.png){width=90%}
-
 Proposition 29, known as the Dialysis Clinic Requirements Initiative, sought to implement stricter regulations on staffing and operations for California's approximately 600 dialysis clinics—an industry valued at an estimated $3.5 billion. A key provision of the proposed regulation mandated the presence of a physician or licensed practitioner during all treatment hours, a requirement that would have significantly increased operational costs for each clinic by several hundred thousand dollars annually.
-
-This project employs an innovative approach to examine a matter of significant public interest, with implications extending beyond California to the entire nation. Over the past decade, investigative journalists, patient advocacy groups, and labor organizations have invested considerable resources to heighten public awareness about the dialysis industry and the perceived need for increased regulation.
 
 
 ## Debate Surrounding Dialysis Regulations
@@ -30,12 +26,12 @@ This project employs an innovative approach to examine a matter of significant p
 
 ## Project Scope and Significance
 
-Our project explores trends in dialysis clinic access, quality of care, and ballot results in the state of California in recent years. Using publicly available data from the Center for Medicare and Medicaid Services and aggregated election results from California's Secretary of State, we’ve analyze associations between dialysis care and voting behaviors, specifically those related to recent statewide ballot initiatives designed to regulate California’s multibillion-dollar dialysis industry—including 2022’s Proposition 29, which failed to pass by a large margin. While private health insurers typically pay higher rates, medicare pays for dialysis treatment for the majority of people on dialysis in California (source) meaning most patient interactions with dialysis clinics would exist within the Medicare and Medicaid datasets.
+Our project explores trends in dialysis clinic access, quality of care, and ballot results in the state of California in recent years. Using publicly available data from the Center for Medicare and Medicaid Services and aggregated election results from California's Secretary of State, we’ve analyzed associations between dialysis care and voting behaviors, specifically those related to recent statewide ballot initiatives designed to regulate California’s multibillion-dollar dialysis industry—including 2022’s Proposition 29, which failed to pass by a large margin.
 
 ## Relevance and Novelty
 
 -   This project uses a novel approach to study an area of public interest relevant not just to California but the entire country.
--   To our knowledge, this is the first project of its kind to explore the possible association between voting patterns and the quality of dialysis care received.
+-   To our knowledge, this is the first project of its kind to explore the possible association between voting patterns and the quality of dialysis care received by patients at the facility level.
 -   The majority of dialysis treatments in California [are covered by Medicare](https://lao.ca.gov/BallotAnalysis/Proposition?number=29&year=2022), making the Medicare and Medicaid datasets particularly relevant to our analysis.
 
 ## Broader Context
@@ -44,20 +40,20 @@ Investigative reporters, patient advocacy groups, and labor organizations have s
 
 # Project Research Questions
 
-Our research questions are divided into two categories: primary and secondary. The primary question serves as the main focus of our analysis, while secondary questions provide additional insights through further investigation of the data.
+Our research questions are divided into two categories: primary and secondary. The primary question serves as the main focus of our analysis, while the secondary question provides additional insights through further investigation of the data.
 
 ## Primary Research Question
 
-**Is the quality of care of dialysis facilities correlated with voting in favor of or against dialysis industry regulation?**
+**Is the quality of care at dialysis facilities correlated with voting in favor of or against dialysis industry regulation?**
 
 ### Key Assumptions
 
 1.  The relationship between Quality of Care and Voting Behavior is not confounded.
-2.  A vote in favor of any of the three propositions (Prop 8 in 2018, Prop 23 in 2020, Prop 29 in 2022) can be interpreted as support for dialysis industry regulation.
+2.  A vote in favor of any of the three propositions (Prop 8 in 2018, Prop 23 in 2020, Prop 29 in 2022) can be interpreted as support for dialysis industry regulation broadly speaking.
 
 ### Quality of Care Metrics
 
-To test this relationship under the outlined assumptions, we approximate the quality of care using the following metrics:
+To test this relationship under the outlined assumptions, we approximate  quality of care using the following metrics, measured at the facility level:
 
 -   Five-star rating
 -   Patient experience rating
@@ -153,15 +149,16 @@ Observations of Quality of Care metrics in our data are categorized by:
 
 # Data Manipulation Methods
 
-Our workflow was broken down into five stages:
+Our workflow was broken down into four stages:
 
 1.  Data Collection
 2.  Data Preparation
-3.  Database Management
-4.  Exploratory Data Analysis
-5.  Statistical Analysis
+3.  Exploratory Data Analysis
+4.  Statistical Analysis
 
 ## Data Collection and Preparation
+
+### CMS Dialysis Facility Dataset
 
 #### Organization and Import
 
@@ -174,11 +171,11 @@ Our workflow was broken down into five stages:
 #### Challenges and Solutions
 
 1.  Inconsistent File Naming Conventions
-    -   Issue: 2021 files named differently (e.g., patient survey data file named '59mq-zhts')
+    -   Issue: 2021 files named differently (e.g., patient survey data file named '59mq-zhts' instead of including 'ICH' for In-Center Hemodialysis CAHPS Survey)
     -   Solution: Created a list of exact file names for selection, rather than using pattern matching
 2.  Missing Data
     -   Expected missing data: Survey non-responses
-    -   Unexpected missing data: Administrative errors (e.g., missing columns in recent ICHPS raw data files)
+    -   Unexpected missing data: Administrative errors (e.g., missing columns in recent ICHPS raw data files, including patient hospital readmission categorization and overall patient experience ratings)
     -   Solution for specific cases: Simple imputation during analysis (e.g., substituting 2018 'nan' values with 2019 values at the facility level)
 
 ![](../007_visualizations/001_missing_data_heatmap.png){width=90%}
@@ -216,8 +213,6 @@ Our workflow was broken down into five stages:
     4.  Merged dataframes using outer join on common columns
     5.  Dropped rows with missing FAC_NO (facility data)
 
-## Database Management
-
 ### Data Merging and Standardization
 
 -   Standardized data types and column names across all datasets
@@ -233,17 +228,31 @@ Our workflow was broken down into five stages:
     1.  Data aggregated at city level
     2.  Data aggregated at assembly district level
 
-### Custom Relational Database System
+## Additional Details on Data Manipulation
 
--   We developed a custom Python-based relational database system to centralize our datasets and facilitate efficient data access and analysis. Key features include:
+### CMS Dialysis Facility Dataset
 
-    1.  **Table and View Structure**: Distinct tables for datasets with multiple views for focused data access.
-    2.  **Dynamic View Creation and Merging**: On-the-fly creation of custom views and combination of multiple views for complex analysis.
-    3.  **Conditional Querying**: User-defined conditions for precise data retrieval and filtering.
-    4.  **Efficient Data Access**: Quick and reliable access across the entire database.
-    5.  **Code Quality**: Object-oriented design with consistent naming conventions for improved maintainability and adaptability.
+The dataset was organized in .zip files, one per year, each containing several Excel files grouped by variables. We focused on files relevant to facility general information, ratings, and patient survey results. The data was split into two separate parquet files at the facility level: one for patient survey responses and another for facility ratings and measurements.
 
--   For detailed functionality, refer to the included database demo (Milestone_1/004_data-processing-scripts/002_clean-raw-data/database_demo.ipynb).
+### SOS Ballot Data
+
+The data was imported by URL for each relevant proposition year (2018, 2020, and 2022). We selected columns containing 'Kidney' or 'Dialysis' for analysis. Geographic column manipulation included renaming columns and backfilling rows to address the multi-level index with sub-counties falling under their respective counties. The cleaned data for each year was merged into one final ballot data parquet with a column specifying the year and count and sub-county vote counts for each Dialysis Requirements Initiative proposition.
+
+### CHHS Specialty Care Clinic Complete Data Set
+
+Excel files were downloaded for 2013 through 2023, one file per year. The main manipulations were performed on files from years before 2018 to align them with the structure and naming convention of the files from 2018 onward. We used a mapping dictionary created by CHHS to map pre-2018 and post-2018 data columns, ensuring consistent column names and data types across all years.
+
+### Data Merging Process
+
+To merge the datasets on time period, geography, and facility names, we standardized data types and column names. The process involved:
+
+1. Merging the CMS facility rating dataset with the CMS patient survey dataset
+2. Filtering the CHHS dataset to show only dialysis clinic-related data
+3. Merging the filtered CHHS data with the combined CMS data
+4. Reshaping the CMS and CHHS data by geographic level from the original facility-level information
+5. Merging these aggregations with the SOS Ballot Measures dataset
+
+This comprehensive data manipulation process resulted in two final parquet files: one with data aggregated at the city level and another at the assembly district level.
 
 # Analysis and Insights
 
@@ -251,7 +260,7 @@ This project employed a Bayesian approach to investigate the relationship betwee
 
 To maximize the granularity of our analysis, we chose to focus on city-level data, which provided more detailed vote counts compared to assembly district level data. We encoded voting outcomes as the percentage of "Yes" votes in favor of the propositions, allowing for a nuanced examination of support for dialysis industry regulation across different localities.
 
-Given the limitations and challenges detailed below, we were able to gain some insights into our primary research question: **Is the quality of care of dialysis facilities correlated with voting in favor of or against dialysis industry regulation?**
+Given the limitations and challenges detailed below, we were able to gain some insights into our primary research question: **Is the quality of care at dialysis facilities correlated with voting in favor of or against dialysis industry regulation?**
 
 We were also able to use visual analysis of the un-modeled data to gain some insights into the geographic coverage of dialysis facilities in the state.
 
@@ -261,7 +270,7 @@ We were also able to use visual analysis of the un-modeled data to gain some ins
 
 ### Data Preparation
 
-Before modeling and analysis, we underwent several data preparation steps. These were kept until the analysis stage in the interest of transparency. Steps taken included 
+Before modeling and analysis, we underwent several data preparation steps. These steps were performed during the analysis stage in the interest of transparency. Steps taken included: 
 
 1. Imputing missing 2018 values using 2019 data for select variables.
 3. Converting datatypes.
@@ -276,9 +285,15 @@ We constructed a Bayesian multilevel model using the brms package in R. This mod
 
 ### Posterior Predictive Checks:
 
-We performed posterior predictive checks to assess model fit and explore relationships between key variables and voting outcomes.
+We performed posterior predictive checks to assess model fit and explore relationships between key variables and voting outcomes. The following visualization provides a comprehensive overview of the model parameters and their effects on the predicted vote percentage in favor of regulation.
 
 ![Posterior Predictive Check for Chain Organizations](../007_visualizations/posterior_effects.png){width=90%}
+
+This half-eye plot (also known as a ridgeline plot) displays the posterior distributions of the model parameters.
+
+To assess the overall performance of our model in capturing the relationship between voting behavior and quality of care metrics, we conducted a posterior predictive check for the entire model. This check allows us to compare the observed data with simulated data from the fitted model, providing insight into how well the model represents the underlying patterns in our dataset.
+
+![Posterior Predictive Check for Entire Model](../007_visualizations/pp_check.png){width=90%}
 
 ## Insights
 
@@ -323,13 +338,13 @@ Our analysis faced several key constraints that warrant consideration:
 
 3. **Confounding Factors**: Unmeasured variables such as socioeconomic factors, political leanings, or media coverage may influence both facility quality and voting patterns.
 
-4. **Causal Interpretation**: While our model reveals associations, causal relationships cannot be inferred without further quasi-experimental or instrumental variable approaches.
+4. **Causal Interpretation**: While our model reveals associations, causal relationships cannot be inferred without further analysis.
 
 5. **Measurement and Data Quality**: Quality metrics and aggregated voting data may not perfectly capture true care quality or individual voting behavior, introducing potential measurement error.
 
 6. **External Validity**: Findings from California may not generalize to regions with different political, demographic, or healthcare landscapes.
 
-These limitations highlight opportunities for future research, including more granular data collection, time-series analyses, incorporation of additional variables, and replication studies in diverse contexts.
+These limitations highlight opportunities for future research.
 
 # Future Work and Next Steps
 
@@ -347,3 +362,21 @@ Our Bayesian analysis of dialysis facility quality metrics and voting patterns o
 
 4. **Causal Inference**:
    - Explore natural experiments, such as sudden changes in facility ownership or closures, and their impact on voting behavior.
+
+# Statement of Contribution
+
+## Collaboration 
+
+As a group, each member proposed a project proposal including sources, topics, and possible analyses. We met frequently during the weeks of the project to align on current progress and next steps.
+
+## Iris Lin
+    
+Managed project logistics, including status updates and coordination of group meetings. Performed research into ballot measurement data, census data, and demographics data. Prepared the final report and ensured project rubric was followed - including code review and extensive documentation.
+
+## Kasra Afzali
+
+Performed exploratory data analysis and created visualizations to understand the data and the relationships between variables, with a focus on geographic data and representation. Built a database of the facilities as a Python class for future use and analysis.
+
+## Michael Light
+
+Led the data processing and analysis efforts, including developing automated scripts for importing and cleaning CMS dialysis facility data. Constructed and refined multiple Bayesian multilevel models using R, conducting in-depth analysis of facility metrics and voting patterns. Managed the technical aspects of report creation, synthesizing findings into a coherent narrative and creating visualizations to effectively communicate the project's outcomes.
