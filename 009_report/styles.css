@@ -1,53 +1,82 @@
+/* Base styles */
 body {
     font-family: 'Arial', sans-serif;
-    line-height: 1.6;
+    line-height: 1.4;
     color: #333;
 }
 
+/* Headings */
 h1, h2, h3, h4, h5, h6 {
     color: #2c3e50;
+    line-height: 1.2;
+    margin-top: 0.8em;
+    margin-bottom: 0.4em;
 }
 
+h1, .custom-header {
+    font-size: 1.8em;
+    border-bottom: 1px solid #3498db;
+    padding-bottom: 0.2em;
+}
+
+.custom-header {
+    border-bottom-width: 2px;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 1.5em;
+}
+
+h3, .data-source {
+    font-size: 1.3em;
+}
+
+h4, h5, h6 {
+    font-size: 1.1em;
+}
+
+/* Title styles */
 .title {
     color: #3498db;
+    font-size: 2em;
+    margin-bottom: 0.5em;
 }
 
 .quarto-title-block .quarto-title-banner {
     background-color: #ecf0f1;
+    padding: 1em 0;
+}
+
+/* Paragraph styles */
+p {
+    margin-top: 0.4em;
+    margin-bottom: 0.4em;
+}
+
+/* Code and pre styles */
+code, pre, .cell-output {
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 3px;
 }
 
 code {
-    background-color: #f8f8f8;
-    border: 1px solid #ddd;
-    border-radius: 3px;
     padding: 2px 4px;
 }
 
-pre {
-    background-color: #f8f8f8;
-    border: 1px solid #ddd;
-    border-radius: 3px;
+pre, .cell-output {
     padding: 10px;
 }
 
 .cell-output {
     background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    padding: 10px;
     margin-top: 10px;
 }
 
-/* New styles for Features of Interest section */
-.custom-header {
-    font-size: 1.8em;
-    border-bottom: 2px solid #3498db;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-}
-
+/* Custom styles */
 .data-source {
-    font-size: 1.3em;
     margin-top: 30px;
     margin-bottom: 15px;
 }
@@ -67,6 +96,7 @@ pre {
     padding-left: 20px;
 }
 
+/* Links */
 a {
     color: #3498db;
     text-decoration: none;
