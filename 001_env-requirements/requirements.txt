@@ -13,3 +13,6 @@ scripts>=3.0
 json5 >= 0.9.6
 requests>=2.31.0
 pathlib>=1.0.1
+xlrd>=2.0.1
+openpyxl>=3.0.0
+fastexcel>=0.7.0
