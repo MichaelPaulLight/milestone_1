@@ -1,3 +1,1 @@
-This is where we explain what's in the materials and methods folder.
-
-Citations, google docs, meeting minutes, project proposal, etc.
+This folder contains google docs, meeting minutes, project proposal, etc accumulated from this project.

@@ -1,6 +1,8 @@
 # milestone_1
 Team 16's Milestone 1 project:
 
+Authors: Kasra Afzali, Michael Light, Iris Lin
+
 An Exploration of Voting Drivers Behind California Prop. 29 (Nov. 2022 Ballot)—Dialysis Clinic Requirements Initiative
 
 Background:
