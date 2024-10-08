@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Iris Lin, Kasra Afzali, Michael Light">
 
-<title>Project Findings</title>
+<title>model-visualization</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -36,7 +35,6 @@ ul.task-list li input[type="checkbox"] {
 <link href="report_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
 
-<link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
@@ -47,96 +45,93 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#project-motivation" id="toc-project-motivation" class="nav-link active" data-scroll-target="#project-motivation">Project Motivation</a>
+  <li><a href="#project-motivation" id="toc-project-motivation" class="nav-link active" data-scroll-target="#project-motivation"><span class="header-section-number">1</span> Project Motivation</a>
   <ul class="collapse">
-  <li><a href="#background-on-dialysis-and-proposition-29" id="toc-background-on-dialysis-and-proposition-29" class="nav-link" data-scroll-target="#background-on-dialysis-and-proposition-29">Background on Dialysis and Proposition 29</a></li>
-  <li><a href="#debate-surrounding-dialysis-regulations" id="toc-debate-surrounding-dialysis-regulations" class="nav-link" data-scroll-target="#debate-surrounding-dialysis-regulations">Debate Surrounding Dialysis Regulations</a></li>
-  <li><a href="#project-scope-and-significance" id="toc-project-scope-and-significance" class="nav-link" data-scroll-target="#project-scope-and-significance">Project Scope and Significance</a></li>
-  <li><a href="#relevance-and-novelty" id="toc-relevance-and-novelty" class="nav-link" data-scroll-target="#relevance-and-novelty">Relevance and Novelty</a></li>
-  <li><a href="#broader-context" id="toc-broader-context" class="nav-link" data-scroll-target="#broader-context">Broader Context</a></li>
+  <li><a href="#background-on-dialysis-and-proposition-29" id="toc-background-on-dialysis-and-proposition-29" class="nav-link" data-scroll-target="#background-on-dialysis-and-proposition-29"><span class="header-section-number">1.1</span> Background on Dialysis and Proposition 29</a></li>
+  <li><a href="#debate-surrounding-dialysis-regulations" id="toc-debate-surrounding-dialysis-regulations" class="nav-link" data-scroll-target="#debate-surrounding-dialysis-regulations"><span class="header-section-number">1.2</span> Debate Surrounding Dialysis Regulations</a></li>
+  <li><a href="#project-scope-and-significance" id="toc-project-scope-and-significance" class="nav-link" data-scroll-target="#project-scope-and-significance"><span class="header-section-number">1.3</span> Project Scope and Significance</a></li>
+  <li><a href="#relevance-and-novelty" id="toc-relevance-and-novelty" class="nav-link" data-scroll-target="#relevance-and-novelty"><span class="header-section-number">1.4</span> Relevance and Novelty</a></li>
+  <li><a href="#broader-context" id="toc-broader-context" class="nav-link" data-scroll-target="#broader-context"><span class="header-section-number">1.5</span> Broader Context</a></li>
   </ul></li>
-  <li><a href="#project-research-questions" id="toc-project-research-questions" class="nav-link" data-scroll-target="#project-research-questions">Project Research Questions</a>
+  <li><a href="#project-research-questions" id="toc-project-research-questions" class="nav-link" data-scroll-target="#project-research-questions"><span class="header-section-number">2</span> Project Research Questions</a>
   <ul class="collapse">
-  <li><a href="#primary-research-question" id="toc-primary-research-question" class="nav-link" data-scroll-target="#primary-research-question">Primary Research Question</a>
+  <li><a href="#primary-research-question" id="toc-primary-research-question" class="nav-link" data-scroll-target="#primary-research-question"><span class="header-section-number">2.1</span> Primary Research Question</a>
   <ul class="collapse">
-  <li><a href="#key-assumptions" id="toc-key-assumptions" class="nav-link" data-scroll-target="#key-assumptions">Key Assumptions</a></li>
-  <li><a href="#quality-of-care-metrics" id="toc-quality-of-care-metrics" class="nav-link" data-scroll-target="#quality-of-care-metrics">Quality of Care Metrics</a></li>
-  <li><a href="#facility-categorization" id="toc-facility-categorization" class="nav-link" data-scroll-target="#facility-categorization">Facility Categorization</a></li>
+  <li><a href="#key-assumptions" id="toc-key-assumptions" class="nav-link" data-scroll-target="#key-assumptions"><span class="header-section-number">2.1.1</span> Key Assumptions</a></li>
+  <li><a href="#quality-of-care-metrics" id="toc-quality-of-care-metrics" class="nav-link" data-scroll-target="#quality-of-care-metrics"><span class="header-section-number">2.1.2</span> Quality of Care Metrics</a></li>
+  <li><a href="#facility-categorization" id="toc-facility-categorization" class="nav-link" data-scroll-target="#facility-categorization"><span class="header-section-number">2.1.3</span> Facility Categorization</a></li>
   </ul></li>
-  <li><a href="#secondary-research-questions" id="toc-secondary-research-questions" class="nav-link" data-scroll-target="#secondary-research-questions">Secondary Research Questions</a></li>
+  <li><a href="#secondary-research-questions" id="toc-secondary-research-questions" class="nav-link" data-scroll-target="#secondary-research-questions"><span class="header-section-number">2.2</span> Secondary Research Questions</a></li>
   </ul></li>
-  <li><a href="#data-sources" id="toc-data-sources" class="nav-link" data-scroll-target="#data-sources">Data Sources</a>
+  <li><a href="#data-sources" id="toc-data-sources" class="nav-link" data-scroll-target="#data-sources"><span class="header-section-number">3</span> Data Sources</a>
   <ul class="collapse">
-  <li><a href="#primary-data-sources" id="toc-primary-data-sources" class="nav-link" data-scroll-target="#primary-data-sources">Primary Data Sources</a>
+  <li><a href="#primary-data-sources" id="toc-primary-data-sources" class="nav-link" data-scroll-target="#primary-data-sources"><span class="header-section-number">3.1</span> Primary Data Sources</a>
   <ul class="collapse">
-  <li><a href="#center-for-medicare-and-medicaid-services-cms-quarterly-dialysis-facility-compare-dataset" id="toc-center-for-medicare-and-medicaid-services-cms-quarterly-dialysis-facility-compare-dataset" class="nav-link" data-scroll-target="#center-for-medicare-and-medicaid-services-cms-quarterly-dialysis-facility-compare-dataset">Center for Medicare and Medicaid Services (CMS) Quarterly Dialysis Facility Compare Dataset</a></li>
-  <li><a href="#california-secretary-of-states-sos-statement-of-vote-for-ballot-measures" id="toc-california-secretary-of-states-sos-statement-of-vote-for-ballot-measures" class="nav-link" data-scroll-target="#california-secretary-of-states-sos-statement-of-vote-for-ballot-measures">California Secretary of State’s (SOS) Statement of Vote for Ballot Measures</a></li>
+  <li><a href="#center-for-medicare-and-medicaid-services-cms-quarterly-dialysis-facility-compare-dataset" id="toc-center-for-medicare-and-medicaid-services-cms-quarterly-dialysis-facility-compare-dataset" class="nav-link" data-scroll-target="#center-for-medicare-and-medicaid-services-cms-quarterly-dialysis-facility-compare-dataset"><span class="header-section-number">3.1.1</span> Center for Medicare and Medicaid Services (CMS) Quarterly Dialysis Facility Compare Dataset</a></li>
+  <li><a href="#california-secretary-of-states-sos-statement-of-vote-for-ballot-measures" id="toc-california-secretary-of-states-sos-statement-of-vote-for-ballot-measures" class="nav-link" data-scroll-target="#california-secretary-of-states-sos-statement-of-vote-for-ballot-measures"><span class="header-section-number">3.1.2</span> California Secretary of State’s (SOS) Statement of Vote for Ballot Measures</a></li>
   </ul></li>
-  <li><a href="#secondary-data-source" id="toc-secondary-data-source" class="nav-link" data-scroll-target="#secondary-data-source">Secondary Data Source</a>
+  <li><a href="#secondary-data-source" id="toc-secondary-data-source" class="nav-link" data-scroll-target="#secondary-data-source"><span class="header-section-number">3.2</span> Secondary Data Source</a>
   <ul class="collapse">
-  <li><a href="#california-health-and-human-services-specialty-care-clinic-complete-data-set" id="toc-california-health-and-human-services-specialty-care-clinic-complete-data-set" class="nav-link" data-scroll-target="#california-health-and-human-services-specialty-care-clinic-complete-data-set">California Health and Human Services Specialty Care Clinic Complete Data Set</a></li>
+  <li><a href="#california-health-and-human-services-specialty-care-clinic-complete-data-set" id="toc-california-health-and-human-services-specialty-care-clinic-complete-data-set" class="nav-link" data-scroll-target="#california-health-and-human-services-specialty-care-clinic-complete-data-set"><span class="header-section-number">3.2.1</span> California Health and Human Services Specialty Care Clinic Complete Data Set</a></li>
   </ul></li>
-  <li><a href="#data-integration-and-analysis-potential" id="toc-data-integration-and-analysis-potential" class="nav-link" data-scroll-target="#data-integration-and-analysis-potential">Data Integration and Analysis Potential</a></li>
-  <li><a href="#features-of-interest" id="toc-features-of-interest" class="nav-link" data-scroll-target="#features-of-interest">Features of Interest</a></li>
+  <li><a href="#data-integration-and-analysis-potential" id="toc-data-integration-and-analysis-potential" class="nav-link" data-scroll-target="#data-integration-and-analysis-potential"><span class="header-section-number">3.3</span> Data Integration and Analysis Potential</a></li>
+  <li><a href="#features-of-interest" id="toc-features-of-interest" class="nav-link" data-scroll-target="#features-of-interest"><span class="header-section-number">3.4</span> Features of Interest</a></li>
   </ul></li>
-  <li><a href="#data-manipulation-methods" id="toc-data-manipulation-methods" class="nav-link" data-scroll-target="#data-manipulation-methods">Data Manipulation Methods</a>
+  <li><a href="#data-manipulation-methods" id="toc-data-manipulation-methods" class="nav-link" data-scroll-target="#data-manipulation-methods"><span class="header-section-number">4</span> Data Manipulation Methods</a>
   <ul class="collapse">
-  <li><a href="#data-collection-and-preparation" id="toc-data-collection-and-preparation" class="nav-link" data-scroll-target="#data-collection-and-preparation">Data Collection and Preparation</a>
+  <li><a href="#data-collection-and-preparation" id="toc-data-collection-and-preparation" class="nav-link" data-scroll-target="#data-collection-and-preparation"><span class="header-section-number">4.1</span> Data Collection and Preparation</a>
   <ul class="collapse">
-  <li><a href="#cms-dialysis-facility-dataset" id="toc-cms-dialysis-facility-dataset" class="nav-link" data-scroll-target="#cms-dialysis-facility-dataset">CMS Dialysis Facility Dataset</a></li>
-  <li><a href="#sos-ballot-data" id="toc-sos-ballot-data" class="nav-link" data-scroll-target="#sos-ballot-data">SOS Ballot Data</a></li>
-  <li><a href="#chhs-specialty-care-clinic-complete-data-set" id="toc-chhs-specialty-care-clinic-complete-data-set" class="nav-link" data-scroll-target="#chhs-specialty-care-clinic-complete-data-set">CHHS Specialty Care Clinic Complete Data Set</a></li>
+  <li><a href="#cms-dialysis-facility-dataset" id="toc-cms-dialysis-facility-dataset" class="nav-link" data-scroll-target="#cms-dialysis-facility-dataset"><span class="header-section-number">4.1.1</span> CMS Dialysis Facility Dataset</a></li>
+  <li><a href="#sos-ballot-data" id="toc-sos-ballot-data" class="nav-link" data-scroll-target="#sos-ballot-data"><span class="header-section-number">4.1.2</span> SOS Ballot Data</a></li>
+  <li><a href="#chhs-specialty-care-clinic-complete-data-set" id="toc-chhs-specialty-care-clinic-complete-data-set" class="nav-link" data-scroll-target="#chhs-specialty-care-clinic-complete-data-set"><span class="header-section-number">4.1.3</span> CHHS Specialty Care Clinic Complete Data Set</a></li>
   </ul></li>
-  <li><a href="#database-management" id="toc-database-management" class="nav-link" data-scroll-target="#database-management">Database Management</a>
+  <li><a href="#database-management" id="toc-database-management" class="nav-link" data-scroll-target="#database-management"><span class="header-section-number">4.2</span> Database Management</a>
   <ul class="collapse">
-  <li><a href="#data-merging-and-standardization" id="toc-data-merging-and-standardization" class="nav-link" data-scroll-target="#data-merging-and-standardization">Data Merging and Standardization</a></li>
-  <li><a href="#final-output" id="toc-final-output" class="nav-link" data-scroll-target="#final-output">Final Output</a></li>
-  <li><a href="#custom-relational-database-system" id="toc-custom-relational-database-system" class="nav-link" data-scroll-target="#custom-relational-database-system">Custom Relational Database System</a></li>
+  <li><a href="#data-merging-and-standardization" id="toc-data-merging-and-standardization" class="nav-link" data-scroll-target="#data-merging-and-standardization"><span class="header-section-number">4.2.1</span> Data Merging and Standardization</a></li>
+  <li><a href="#final-output" id="toc-final-output" class="nav-link" data-scroll-target="#final-output"><span class="header-section-number">4.2.2</span> Final Output</a></li>
+  <li><a href="#custom-relational-database-system" id="toc-custom-relational-database-system" class="nav-link" data-scroll-target="#custom-relational-database-system"><span class="header-section-number">4.2.3</span> Custom Relational Database System</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#analysis-and-insights" id="toc-analysis-and-insights" class="nav-link" data-scroll-target="#analysis-and-insights">Analysis and Insights</a>
+  <li><a href="#analysis-and-insights" id="toc-analysis-and-insights" class="nav-link" data-scroll-target="#analysis-and-insights"><span class="header-section-number">5</span> Analysis and Insights</a>
   <ul class="collapse">
-  <li><a href="#analysis-steps" id="toc-analysis-steps" class="nav-link" data-scroll-target="#analysis-steps">Analysis Steps</a>
+  <li><a href="#analysis-steps" id="toc-analysis-steps" class="nav-link" data-scroll-target="#analysis-steps"><span class="header-section-number">5.1</span> Analysis Steps</a>
   <ul class="collapse">
-  <li><a href="#data-preparation" id="toc-data-preparation" class="nav-link" data-scroll-target="#data-preparation">Data Preparation</a></li>
-  <li><a href="#model-construction" id="toc-model-construction" class="nav-link" data-scroll-target="#model-construction">Model Construction</a></li>
-  <li><a href="#posterior-predictive-checks" id="toc-posterior-predictive-checks" class="nav-link" data-scroll-target="#posterior-predictive-checks">Posterior Predictive Checks:</a></li>
-  <li><a href="#visualization-of-effects" id="toc-visualization-of-effects" class="nav-link" data-scroll-target="#visualization-of-effects">Visualization of Effects:</a></li>
+  <li><a href="#data-preparation" id="toc-data-preparation" class="nav-link" data-scroll-target="#data-preparation"><span class="header-section-number">5.1.1</span> Data Preparation</a></li>
+  <li><a href="#model-construction" id="toc-model-construction" class="nav-link" data-scroll-target="#model-construction"><span class="header-section-number">5.1.2</span> Model Construction</a></li>
+  <li><a href="#posterior-predictive-checks" id="toc-posterior-predictive-checks" class="nav-link" data-scroll-target="#posterior-predictive-checks"><span class="header-section-number">5.1.3</span> Posterior Predictive Checks:</a></li>
+  <li><a href="#visualization-of-effects" id="toc-visualization-of-effects" class="nav-link" data-scroll-target="#visualization-of-effects"><span class="header-section-number">5.1.4</span> Visualization of Effects:</a></li>
   </ul></li>
-  <li><a href="#insights" id="toc-insights" class="nav-link" data-scroll-target="#insights">Insights</a>
+  <li><a href="#insights" id="toc-insights" class="nav-link" data-scroll-target="#insights"><span class="header-section-number">5.2</span> Insights</a>
   <ul class="collapse">
-  <li><a href="#staff-rating-impact" id="toc-staff-rating-impact" class="nav-link" data-scroll-target="#staff-rating-impact">Staff Rating Impact:</a></li>
-  <li><a href="#mortality-rate-influence" id="toc-mortality-rate-influence" class="nav-link" data-scroll-target="#mortality-rate-influence">Mortality Rate Influence:</a></li>
-  <li><a href="#chain-organization-effects" id="toc-chain-organization-effects" class="nav-link" data-scroll-target="#chain-organization-effects">Chain Organization Effects:</a></li>
-  <li><a href="#facility-size-considerations" id="toc-facility-size-considerations" class="nav-link" data-scroll-target="#facility-size-considerations">Facility Size Considerations:</a></li>
+  <li><a href="#staff-rating-impact" id="toc-staff-rating-impact" class="nav-link" data-scroll-target="#staff-rating-impact"><span class="header-section-number">5.2.1</span> Staff Rating Impact:</a></li>
+  <li><a href="#mortality-rate-influence" id="toc-mortality-rate-influence" class="nav-link" data-scroll-target="#mortality-rate-influence"><span class="header-section-number">5.2.2</span> Mortality Rate Influence:</a></li>
+  <li><a href="#patient-experience-rating" id="toc-patient-experience-rating" class="nav-link" data-scroll-target="#patient-experience-rating"><span class="header-section-number">5.2.3</span> Patient Experience Rating:</a></li>
+  <li><a href="#five-star-rating-and-stations-per-facility" id="toc-five-star-rating-and-stations-per-facility" class="nav-link" data-scroll-target="#five-star-rating-and-stations-per-facility"><span class="header-section-number">5.2.4</span> Five Star Rating and Stations per Facility:</a></li>
+  <li><a href="#chain-organization-effects" id="toc-chain-organization-effects" class="nav-link" data-scroll-target="#chain-organization-effects"><span class="header-section-number">5.2.5</span> Chain Organization Effects:</a></li>
+  <li><a href="#facility-size-considerations" id="toc-facility-size-considerations" class="nav-link" data-scroll-target="#facility-size-considerations"><span class="header-section-number">5.2.6</span> Facility Size Considerations:</a></li>
   </ul></li>
-  <li><a href="#challenges-and-limitations" id="toc-challenges-and-limitations" class="nav-link" data-scroll-target="#challenges-and-limitations">Challenges and Limitations</a>
+  <li><a href="#challenges-and-limitations" id="toc-challenges-and-limitations" class="nav-link" data-scroll-target="#challenges-and-limitations"><span class="header-section-number">5.3</span> Challenges and Limitations</a>
   <ul class="collapse">
-  <li><a href="#data-granularity" id="toc-data-granularity" class="nav-link" data-scroll-target="#data-granularity">Data Granularity:</a></li>
-  <li><a href="#temporal-alignment" id="toc-temporal-alignment" class="nav-link" data-scroll-target="#temporal-alignment">Temporal Alignment:</a></li>
-  <li><a href="#confounding-factors" id="toc-confounding-factors" class="nav-link" data-scroll-target="#confounding-factors">Confounding Factors:</a></li>
+  <li><a href="#data-granularity" id="toc-data-granularity" class="nav-link" data-scroll-target="#data-granularity"><span class="header-section-number">5.3.1</span> Data Granularity:</a></li>
+  <li><a href="#temporal-alignment" id="toc-temporal-alignment" class="nav-link" data-scroll-target="#temporal-alignment"><span class="header-section-number">5.3.2</span> Temporal Alignment:</a></li>
+  <li><a href="#confounding-factors" id="toc-confounding-factors" class="nav-link" data-scroll-target="#confounding-factors"><span class="header-section-number">5.3.3</span> Confounding Factors:</a></li>
+  <li><a href="#causal-interpretation" id="toc-causal-interpretation" class="nav-link" data-scroll-target="#causal-interpretation"><span class="header-section-number">5.3.4</span> Causal Interpretation:</a></li>
   </ul></li>
   </ul></li>
   </ul>
-</nav>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="../report.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
 </div>
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Project Findings</h1>
+<h1 class="title">model-visualization</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Iris Lin, Kasra Afzali, Michael Light </p>
-          </div>
-  </div>
     
   
     
@@ -147,10 +142,10 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="project-motivation" class="level1">
-<h1>Project Motivation</h1>
-<section id="background-on-dialysis-and-proposition-29" class="level2">
-<h2 class="anchored" data-anchor-id="background-on-dialysis-and-proposition-29">Background on Dialysis and Proposition 29</h2>
+<section id="project-motivation" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Project Motivation</h1>
+<section id="background-on-dialysis-and-proposition-29" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="background-on-dialysis-and-proposition-29"><span class="header-section-number">1.1</span> Background on Dialysis and Proposition 29</h2>
 <p>Dialysis is a lifesaving treatment that removes waste from blood, acting as an artificial kidney for those with chronic kidney disease. In recent years, California has seen multiple attempts to increase regulations on dialysis facilities through ballot initiatives:</p>
 <ul>
 <li>Proposition 8 in 2018</li>
@@ -159,15 +154,15 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 <p>Proposition 29, which failed to pass, aimed to establish increased regulations for both staffing and operations for the roughly 600 dialysis facilities in California, an estimated $3.5 billion industry. A key provision of the proposition required the presence of a physician or licensed practitioner during all treatment hours, potentially increasing each facility’s costs by several hundred thousand dollars annually.</p>
 </section>
-<section id="debate-surrounding-dialysis-regulations" class="level2">
-<h2 class="anchored" data-anchor-id="debate-surrounding-dialysis-regulations">Debate Surrounding Dialysis Regulations</h2>
+<section id="debate-surrounding-dialysis-regulations" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="debate-surrounding-dialysis-regulations"><span class="header-section-number">1.2</span> Debate Surrounding Dialysis Regulations</h2>
 <ul>
 <li><strong>Proponents</strong> argue that increased regulations improve patient safety and quality of care.</li>
 <li><strong>Opponents</strong> contend that the increase in healthcare costs is unwarranted and would limit care coverage by overwhelming facilities with costs and potentially <a href="https://www.latimes.com/california/story/2022-11-08/2022-california-election-prop-29-vote-dialysis-clinic-results">forcing them to close</a>.</li>
 </ul>
 </section>
-<section id="project-scope-and-significance" class="level2">
-<h2 class="anchored" data-anchor-id="project-scope-and-significance">Project Scope and Significance</h2>
+<section id="project-scope-and-significance" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="project-scope-and-significance"><span class="header-section-number">1.3</span> Project Scope and Significance</h2>
 <p>Our project explores trends in:</p>
 <ol type="1">
 <li>Dialysis facility access</li>
@@ -181,34 +176,34 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 <p>We analyze associations between dialysis care and voting behaviors, specifically those related to recent statewide ballot initiatives designed to regulate California’s multibillion-dollar dialysis industry.</p>
 </section>
-<section id="relevance-and-novelty" class="level2">
-<h2 class="anchored" data-anchor-id="relevance-and-novelty">Relevance and Novelty</h2>
+<section id="relevance-and-novelty" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="relevance-and-novelty"><span class="header-section-number">1.4</span> Relevance and Novelty</h2>
 <ul>
 <li>This project uses a novel approach to study an area of public interest relevant not just to California but the entire country.</li>
 <li>To our knowledge, this is the first project of its kind to explore the possible association between voting patterns and the quality of dialysis care received.</li>
 <li>The majority of dialysis treatments in California <a href="https://lao.ca.gov/BallotAnalysis/Proposition?number=29&amp;year=2022">are covered by Medicare</a>, making the Medicare and Medicaid datasets particularly relevant to our analysis.</li>
 </ul>
 </section>
-<section id="broader-context" class="level2">
-<h2 class="anchored" data-anchor-id="broader-context">Broader Context</h2>
+<section id="broader-context" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="broader-context"><span class="header-section-number">1.5</span> Broader Context</h2>
 <p>Investigative reporters, patient advocacy groups, and labor organizations have spent significant resources over the past decade to raise public awareness of the dialysis industry and its need for regulation. Our project contributes to this ongoing discussion by providing data-driven insights into the relationship between dialysis care quality and voting behavior.</p>
 </section>
 </section>
-<section id="project-research-questions" class="level1">
-<h1>Project Research Questions</h1>
+<section id="project-research-questions" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Project Research Questions</h1>
 <p>Our research questions are divided into two categories: primary and secondary. The primary question serves as the main focus of our analysis, while secondary questions provide additional insights through further investigation of the data.</p>
-<section id="primary-research-question" class="level2">
-<h2 class="anchored" data-anchor-id="primary-research-question">Primary Research Question</h2>
+<section id="primary-research-question" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="primary-research-question"><span class="header-section-number">2.1</span> Primary Research Question</h2>
 <p><strong>Is the quality of care of dialysis facilities correlated with voting in favor of or against dialysis industry regulation?</strong></p>
-<section id="key-assumptions" class="level3">
-<h3 class="anchored" data-anchor-id="key-assumptions">Key Assumptions</h3>
+<section id="key-assumptions" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="key-assumptions"><span class="header-section-number">2.1.1</span> Key Assumptions</h3>
 <ol type="1">
 <li>The relationship between Quality of Care and Voting Behavior is not confounded.</li>
 <li>A vote in favor of any of the three propositions (Prop 8 in 2018, Prop 23 in 2020, Prop 29 in 2022) can be interpreted as support for dialysis industry regulation.</li>
 </ol>
 </section>
-<section id="quality-of-care-metrics" class="level3">
-<h3 class="anchored" data-anchor-id="quality-of-care-metrics">Quality of Care Metrics</h3>
+<section id="quality-of-care-metrics" class="level3" data-number="2.1.2">
+<h3 data-number="2.1.2" class="anchored" data-anchor-id="quality-of-care-metrics"><span class="header-section-number">2.1.2</span> Quality of Care Metrics</h3>
 <p>To test this relationship under the outlined assumptions, we approximate the quality of care using the following metrics:</p>
 <ul>
 <li>Five-star rating</li>
@@ -221,8 +216,8 @@ ul.task-list li input[type="checkbox"] {
 <li>Parent company affiliation/independence</li>
 </ul>
 </section>
-<section id="facility-categorization" class="level3">
-<h3 class="anchored" data-anchor-id="facility-categorization">Facility Categorization</h3>
+<section id="facility-categorization" class="level3" data-number="2.1.3">
+<h3 data-number="2.1.3" class="anchored" data-anchor-id="facility-categorization"><span class="header-section-number">2.1.3</span> Facility Categorization</h3>
 <p>Observations of Quality of Care metrics in our data are categorized by:</p>
 <ul>
 <li>Year</li>
@@ -233,8 +228,8 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 </section>
 </section>
-<section id="secondary-research-questions" class="level2">
-<h2 class="anchored" data-anchor-id="secondary-research-questions">Secondary Research Questions</h2>
+<section id="secondary-research-questions" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="secondary-research-questions"><span class="header-section-number">2.2</span> Secondary Research Questions</h2>
 <ol type="1">
 <li>What is the geographic coverage of dialysis facilities in California?</li>
 <li>Is there any correlation between organizational structure (chain-owned, profit vs.&nbsp;non-profit) and the quality of care?</li>
@@ -242,12 +237,12 @@ ul.task-list li input[type="checkbox"] {
 </ol>
 </section>
 </section>
-<section id="data-sources" class="level1">
-<h1>Data Sources</h1>
-<section id="primary-data-sources" class="level2">
-<h2 class="anchored" data-anchor-id="primary-data-sources">Primary Data Sources</h2>
-<section id="center-for-medicare-and-medicaid-services-cms-quarterly-dialysis-facility-compare-dataset" class="level3">
-<h3 class="anchored" data-anchor-id="center-for-medicare-and-medicaid-services-cms-quarterly-dialysis-facility-compare-dataset">Center for Medicare and Medicaid Services (CMS) Quarterly Dialysis Facility Compare Dataset</h3>
+<section id="data-sources" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Data Sources</h1>
+<section id="primary-data-sources" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="primary-data-sources"><span class="header-section-number">3.1</span> Primary Data Sources</h2>
+<section id="center-for-medicare-and-medicaid-services-cms-quarterly-dialysis-facility-compare-dataset" class="level3" data-number="3.1.1">
+<h3 data-number="3.1.1" class="anchored" data-anchor-id="center-for-medicare-and-medicaid-services-cms-quarterly-dialysis-facility-compare-dataset"><span class="header-section-number">3.1.1</span> Center for Medicare and Medicaid Services (CMS) Quarterly Dialysis Facility Compare Dataset</h3>
 <ul>
 <li><strong>Time range</strong>: 2017 to 2024</li>
 <li><strong>Key features</strong>:
@@ -277,8 +272,8 @@ ul.task-list li input[type="checkbox"] {
 </ul></li>
 </ul>
 </section>
-<section id="california-secretary-of-states-sos-statement-of-vote-for-ballot-measures" class="level3">
-<h3 class="anchored" data-anchor-id="california-secretary-of-states-sos-statement-of-vote-for-ballot-measures">California Secretary of State’s (SOS) Statement of Vote for Ballot Measures</h3>
+<section id="california-secretary-of-states-sos-statement-of-vote-for-ballot-measures" class="level3" data-number="3.1.2">
+<h3 data-number="3.1.2" class="anchored" data-anchor-id="california-secretary-of-states-sos-statement-of-vote-for-ballot-measures"><span class="header-section-number">3.1.2</span> California Secretary of State’s (SOS) Statement of Vote for Ballot Measures</h3>
 <ul>
 <li><strong>Elections covered</strong>: November 2022, 2020, and 2018</li>
 <li><strong>Focus</strong>: Propositions regarding dialysis clinic requirements</li>
@@ -296,10 +291,10 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 </section>
 </section>
-<section id="secondary-data-source" class="level2">
-<h2 class="anchored" data-anchor-id="secondary-data-source">Secondary Data Source</h2>
-<section id="california-health-and-human-services-specialty-care-clinic-complete-data-set" class="level3">
-<h3 class="anchored" data-anchor-id="california-health-and-human-services-specialty-care-clinic-complete-data-set">California Health and Human Services Specialty Care Clinic Complete Data Set</h3>
+<section id="secondary-data-source" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="secondary-data-source"><span class="header-section-number">3.2</span> Secondary Data Source</h2>
+<section id="california-health-and-human-services-specialty-care-clinic-complete-data-set" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="california-health-and-human-services-specialty-care-clinic-complete-data-set"><span class="header-section-number">3.2.1</span> California Health and Human Services Specialty Care Clinic Complete Data Set</h3>
 <ul>
 <li><strong>Time range</strong>: 2013 through 2023</li>
 <li><strong>Purpose</strong>: Supplement CMS dataset with additional geographic data</li>
@@ -312,16 +307,16 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 </section>
 </section>
-<section id="data-integration-and-analysis-potential" class="level2">
-<h2 class="anchored" data-anchor-id="data-integration-and-analysis-potential">Data Integration and Analysis Potential</h2>
+<section id="data-integration-and-analysis-potential" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="data-integration-and-analysis-potential"><span class="header-section-number">3.3</span> Data Integration and Analysis Potential</h2>
 <ul>
 <li>Multiple geographic levels allow for aggregation and analysis at various scales</li>
 <li>Combination of clinical data (CMS) with voting data (SOS) enables exploration of potential correlations between care quality and voting behavior</li>
 <li>Supplementary geographic data enhances spatial analysis capabilities</li>
 </ul>
 </section>
-<section id="features-of-interest" class="level2">
-<h2 class="anchored" data-anchor-id="features-of-interest">Features of Interest</h2>
+<section id="features-of-interest" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="features-of-interest"><span class="header-section-number">3.4</span> Features of Interest</h2>
 <table class="table">
 <thead>
 <tr class="header">
@@ -333,25 +328,25 @@ ul.task-list li input[type="checkbox"] {
 <tbody>
 <tr class="odd">
 <td>Center for Medicare and Medicaid Services Dialysis Facilities</td>
-<td>Type: .zip &amp; .xlsx<br>Years: 2017-2024<br>Combined Size: 5,684 rows, 173 columns<br>Link: <a href="https://data.cms.gov/provider-data/topics/dialysis-facilities">https://data.cms.gov/provider-data/topics/dialysis-facilities</a></td>
+<td>Type: .zip &amp; .xlsx<br>Years: 2017-2024<br>Combined Size: 5,684 rows, 173 columns<br>Link: <a href="https://data.cms.gov/provider-data/topics/dialysis-facilities" class="uri">https://data.cms.gov/provider-data/topics/dialysis-facilities</a></td>
 <td>- Facility Name<br>- County<br>- City<br>- Facility Quality of Care Rating<br>- Dialysis Center Staff Rating<br>- Patient Experience Rating<br>- Patient Readmission Category (Worse Than Expected, As Expected, Better Than Expected)<br>- Mortality Rate<br>- Number of Dialysis Stations<br>- Licensee Type (Non-Profit, For-Profit.)<br>- Organization Affiliation (Independent or Chain)</td>
 </tr>
 <tr class="even">
 <td>California Secretary of State November Ballot Measures</td>
-<td>Type: .xlsx<br>Years: 2018, 2020, 2022<br>Combined Size: 7,122 rows, 7 columns<br>Link: <a href="https://www.sos.ca.gov/elections/prior-elections/statewide-election-results">https://www.sos.ca.gov/elections/prior-elections/statewide-election-results</a></td>
+<td>Type: .xlsx<br>Years: 2018, 2020, 2022<br>Combined Size: 7,122 rows, 7 columns<br>Link: <a href="https://www.sos.ca.gov/elections/prior-elections/statewide-election-results" class="uri">https://www.sos.ca.gov/elections/prior-elections/statewide-election-results</a></td>
 <td>- County<br>- Congressional District<br>- City<br>- Ballot Proposition<br>- Yes Vote Count for Proposition<br>- No Vote Count for Proposition</td>
 </tr>
 <tr class="odd">
 <td>California Health and Human Services Speciality Care Clinic Complete Data Set</td>
-<td>Type: .xlsx<br>Years: 2013-2023<br>Combined Size: 6,605 rows, 143 columns<br>Link: <a href="https://data.chhs.ca.gov/dataset/specialty-care-clinic-complete-data-set">https://data.chhs.ca.gov/dataset/specialty-care-clinic-complete-data-set</a></td>
+<td>Type: .xlsx<br>Years: 2013-2023<br>Combined Size: 6,605 rows, 143 columns<br>Link: <a href="https://data.chhs.ca.gov/dataset/specialty-care-clinic-complete-data-set" class="uri">https://data.chhs.ca.gov/dataset/specialty-care-clinic-complete-data-set</a></td>
 <td>- Facility Name<br>- County<br>- Zip Code<br>- Assembly District<br>- Senate District<br>- Congressional District<br>- Census Tract<br>- Latitude and Longitude</td>
 </tr>
 </tbody>
 </table>
 </section>
 </section>
-<section id="data-manipulation-methods" class="level1">
-<h1>Data Manipulation Methods</h1>
+<section id="data-manipulation-methods" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Data Manipulation Methods</h1>
 <p>Our workflow was broken down into five stages:</p>
 <ol type="1">
 <li>Data Collection</li>
@@ -360,12 +355,12 @@ ul.task-list li input[type="checkbox"] {
 <li>Exploratory Data Analysis</li>
 <li>Statistical Analysis</li>
 </ol>
-<section id="data-collection-and-preparation" class="level2">
-<h2 class="anchored" data-anchor-id="data-collection-and-preparation">Data Collection and Preparation</h2>
-<section id="cms-dialysis-facility-dataset" class="level3">
-<h3 class="anchored" data-anchor-id="cms-dialysis-facility-dataset">CMS Dialysis Facility Dataset</h3>
-<section id="organization-and-import" class="level4">
-<h4 class="anchored" data-anchor-id="organization-and-import">Organization and Import</h4>
+<section id="data-collection-and-preparation" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="data-collection-and-preparation"><span class="header-section-number">4.1</span> Data Collection and Preparation</h2>
+<section id="cms-dialysis-facility-dataset" class="level3" data-number="4.1.1">
+<h3 data-number="4.1.1" class="anchored" data-anchor-id="cms-dialysis-facility-dataset"><span class="header-section-number">4.1.1</span> CMS Dialysis Facility Dataset</h3>
+<section id="organization-and-import" class="level4" data-number="4.1.1.1">
+<h4 data-number="4.1.1.1" class="anchored" data-anchor-id="organization-and-import"><span class="header-section-number">4.1.1.1</span> Organization and Import</h4>
 <ul>
 <li>Dataset structure: .zip files (one per year), containing multiple Excel files</li>
 <li>Focus: Excel files relevant to facility general information, ratings, and patient survey results</li>
@@ -376,8 +371,8 @@ ul.task-list li input[type="checkbox"] {
 </ol></li>
 </ul>
 </section>
-<section id="challenges-and-solutions" class="level4">
-<h4 class="anchored" data-anchor-id="challenges-and-solutions">Challenges and Solutions</h4>
+<section id="challenges-and-solutions" class="level4" data-number="4.1.1.2">
+<h4 data-number="4.1.1.2" class="anchored" data-anchor-id="challenges-and-solutions"><span class="header-section-number">4.1.1.2</span> Challenges and Solutions</h4>
 <ol type="1">
 <li>Inconsistent File Naming Conventions
 <ul>
@@ -393,10 +388,10 @@ ul.task-list li input[type="checkbox"] {
 </ol>
 </section>
 </section>
-<section id="sos-ballot-data" class="level3">
-<h3 class="anchored" data-anchor-id="sos-ballot-data">SOS Ballot Data</h3>
-<section id="import-and-selection" class="level4">
-<h4 class="anchored" data-anchor-id="import-and-selection">Import and Selection</h4>
+<section id="sos-ballot-data" class="level3" data-number="4.1.2">
+<h3 data-number="4.1.2" class="anchored" data-anchor-id="sos-ballot-data"><span class="header-section-number">4.1.2</span> SOS Ballot Data</h3>
+<section id="import-and-selection" class="level4" data-number="4.1.2.1">
+<h4 data-number="4.1.2.1" class="anchored" data-anchor-id="import-and-selection"><span class="header-section-number">4.1.2.1</span> Import and Selection</h4>
 <ul>
 <li>Data imported via URL for each relevant proposition year (2018, 2020, 2022)</li>
 <li>Selected columns containing ‘Kidney’ or ‘Dialysis’ for analysis</li>
@@ -412,8 +407,8 @@ ul.task-list li input[type="checkbox"] {
 </ul></li>
 </ul>
 </section>
-<section id="challenges-and-solutions-1" class="level4">
-<h4 class="anchored" data-anchor-id="challenges-and-solutions-1">Challenges and Solutions</h4>
+<section id="challenges-and-solutions-1" class="level4" data-number="4.1.2.2">
+<h4 data-number="4.1.2.2" class="anchored" data-anchor-id="challenges-and-solutions-1"><span class="header-section-number">4.1.2.2</span> Challenges and Solutions</h4>
 <ul>
 <li>Inconsistent naming conventions across years
 <ul>
@@ -424,10 +419,10 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 </section>
 </section>
-<section id="chhs-specialty-care-clinic-complete-data-set" class="level3">
-<h3 class="anchored" data-anchor-id="chhs-specialty-care-clinic-complete-data-set">CHHS Specialty Care Clinic Complete Data Set</h3>
-<section id="import-and-alignment" class="level4">
-<h4 class="anchored" data-anchor-id="import-and-alignment">Import and Alignment</h4>
+<section id="chhs-specialty-care-clinic-complete-data-set" class="level3" data-number="4.1.3">
+<h3 data-number="4.1.3" class="anchored" data-anchor-id="chhs-specialty-care-clinic-complete-data-set"><span class="header-section-number">4.1.3</span> CHHS Specialty Care Clinic Complete Data Set</h3>
+<section id="import-and-alignment" class="level4" data-number="4.1.3.1">
+<h4 data-number="4.1.3.1" class="anchored" data-anchor-id="import-and-alignment"><span class="header-section-number">4.1.3.1</span> Import and Alignment</h4>
 <ul>
 <li>Downloaded Excel files for 2013 through 2023 (one per year)</li>
 <li>Main challenge: Aligning pre-2018 data with 2018-forward structure</li>
@@ -443,10 +438,10 @@ ul.task-list li input[type="checkbox"] {
 </section>
 </section>
 </section>
-<section id="database-management" class="level2">
-<h2 class="anchored" data-anchor-id="database-management">Database Management</h2>
-<section id="data-merging-and-standardization" class="level3">
-<h3 class="anchored" data-anchor-id="data-merging-and-standardization">Data Merging and Standardization</h3>
+<section id="database-management" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="database-management"><span class="header-section-number">4.2</span> Database Management</h2>
+<section id="data-merging-and-standardization" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="data-merging-and-standardization"><span class="header-section-number">4.2.1</span> Data Merging and Standardization</h3>
 <ul>
 <li>Standardized data types and column names across all datasets</li>
 <li>Merged datasets:
@@ -458,8 +453,8 @@ ul.task-list li input[type="checkbox"] {
 </ol></li>
 </ul>
 </section>
-<section id="final-output" class="level3">
-<h3 class="anchored" data-anchor-id="final-output">Final Output</h3>
+<section id="final-output" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="final-output"><span class="header-section-number">4.2.2</span> Final Output</h3>
 <ul>
 <li>Two parquet files:
 <ol type="1">
@@ -468,8 +463,8 @@ ul.task-list li input[type="checkbox"] {
 </ol></li>
 </ul>
 </section>
-<section id="custom-relational-database-system" class="level3">
-<h3 class="anchored" data-anchor-id="custom-relational-database-system">Custom Relational Database System</h3>
+<section id="custom-relational-database-system" class="level3" data-number="4.2.3">
+<h3 data-number="4.2.3" class="anchored" data-anchor-id="custom-relational-database-system"><span class="header-section-number">4.2.3</span> Custom Relational Database System</h3>
 <ul>
 <li><p>We developed a custom Python-based relational database system to centralize our datasets and facilitate efficient data access and analysis. Key features include:</p>
 <ol type="1">
@@ -484,68 +479,80 @@ ul.task-list li input[type="checkbox"] {
 </section>
 </section>
 </section>
-<section id="analysis-and-insights" class="level1">
-<h1>Analysis and Insights</h1>
+<section id="analysis-and-insights" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Analysis and Insights</h1>
 <p>This project employed a Bayesian approach to investigate the relationship between dialysis facility quality metrics and voting patterns on dialysis-related propositions in California. Our analysis uniquely combines two distinct data resources:</p>
 <ul>
-<li><h3 id="the-center-for-medicare-and-medicaid-services-cms-quarterly-dialysis-facility-compare-dataset" class="anchored">The Center for Medicare and Medicaid Services (CMS) Quarterly Dialysis Facility Compare Dataset</h3></li>
-<li><h3 id="the-california-secretary-of-states-sos-statement-of-vote-for-ballot-measures" class="anchored">The California Secretary of State’s (SOS) Statement of Vote for Ballot Measures</h3></li>
+<li><h3 id="the-center-for-medicare-and-medicaid-services-cms-quarterly-dialysis-facility-compare-dataset" data-number="5.0.1" class="anchored"><span class="header-section-number">5.0.1</span> The Center for Medicare and Medicaid Services (CMS) Quarterly Dialysis Facility Compare Dataset</h3></li>
+<li><h3 id="the-california-secretary-of-states-sos-statement-of-vote-for-ballot-measures" data-number="5.0.2" class="anchored"><span class="header-section-number">5.0.2</span> The California Secretary of State’s (SOS) Statement of Vote for Ballot Measures</h3></li>
 </ul>
 <p>By integrating these datasets, we were able to explore potential relationships between dialysis facility quality metrics and voting outcomes on dialysis-related propositions, an analysis that would not have been possible with either dataset alone.</p>
 <p>To maximize the granularity of our analysis, we chose to focus on city-level data, which provided more detailed vote counts compared to assembly district level data. We encoded voting outcomes as the percentage of “Yes” votes in favor of the propositions, allowing for a nuanced examination of support for dialysis industry regulation across different localities.</p>
 <p>This novel approach enables us to investigate how various factors related to dialysis care quality might influence public opinion and voting behavior on healthcare policy initiatives, potentially offering valuable insights for policymakers, healthcare providers, and voters alike.</p>
-<section id="analysis-steps" class="level2">
-<h2 class="anchored" data-anchor-id="analysis-steps">Analysis Steps</h2>
-<section id="data-preparation" class="level3">
-<h3 class="anchored" data-anchor-id="data-preparation">Data Preparation</h3>
+<section id="analysis-steps" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="analysis-steps"><span class="header-section-number">5.1</span> Analysis Steps</h2>
+<section id="data-preparation" class="level3" data-number="5.1.1">
+<h3 data-number="5.1.1" class="anchored" data-anchor-id="data-preparation"><span class="header-section-number">5.1.1</span> Data Preparation</h3>
 <p>We first processed and standardized both datasets, then merged them based on geographic identifiers (county, city) and year. This step was crucial for aligning facility-level data with voting outcomes.</p>
 </section>
-<section id="model-construction" class="level3">
-<h3 class="anchored" data-anchor-id="model-construction">Model Construction</h3>
+<section id="model-construction" class="level3" data-number="5.1.2">
+<h3 data-number="5.1.2" class="anchored" data-anchor-id="model-construction"><span class="header-section-number">5.1.2</span> Model Construction</h3>
 <p>We constructed a Bayesian multilevel model using the brms package in R. This model allowed us to account for the hierarchical nature of our data (facilities nested within cities and counties) while examining the relationship between facility quality metrics and voting outcomes.</p>
 </section>
-<section id="posterior-predictive-checks" class="level3">
-<h3 class="anchored" data-anchor-id="posterior-predictive-checks">Posterior Predictive Checks:</h3>
+<section id="posterior-predictive-checks" class="level3" data-number="5.1.3">
+<h3 data-number="5.1.3" class="anchored" data-anchor-id="posterior-predictive-checks"><span class="header-section-number">5.1.3</span> Posterior Predictive Checks:</h3>
 <p>We performed posterior predictive checks to assess model fit and explore relationships between key variables and voting outcomes.</p>
 </section>
-<section id="visualization-of-effects" class="level3">
-<h3 class="anchored" data-anchor-id="visualization-of-effects">Visualization of Effects:</h3>
+<section id="visualization-of-effects" class="level3" data-number="5.1.4">
+<h3 data-number="5.1.4" class="anchored" data-anchor-id="visualization-of-effects"><span class="header-section-number">5.1.4</span> Visualization of Effects:</h3>
 <p>We created visualizations to illustrate the effects of key variables on voting outcomes, such as staff rating and mortality rate.</p>
 </section>
 </section>
-<section id="insights" class="level2">
-<h2 class="anchored" data-anchor-id="insights">Insights</h2>
-<section id="staff-rating-impact" class="level3">
-<h3 class="anchored" data-anchor-id="staff-rating-impact">Staff Rating Impact:</h3>
-<p>Our analysis revealed a negative relationship between staff ratings and the percentage of votes in favor of dialysis regulation. This suggests that areas with lower-rated dialysis facility staff were more likely to support increased regulation.</p>
+<section id="insights" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="insights"><span class="header-section-number">5.2</span> Insights</h2>
+<section id="staff-rating-impact" class="level3" data-number="5.2.1">
+<h3 data-number="5.2.1" class="anchored" data-anchor-id="staff-rating-impact"><span class="header-section-number">5.2.1</span> Staff Rating Impact:</h3>
+<p>Our analysis revealed a negative relationship between staff ratings and the percentage of votes in favor of dialysis regulation. This suggests that areas with lower-rated dialysis facility staff were more likely to support increased regulation. The effect of staff rating varied across counties, with some counties showing stronger negative relationships than others.</p>
 </section>
-<section id="mortality-rate-influence" class="level3">
-<h3 class="anchored" data-anchor-id="mortality-rate-influence">Mortality Rate Influence:</h3>
-<p>We found a positive relationship between facility mortality rates and support for regulation.</p>
+<section id="mortality-rate-influence" class="level3" data-number="5.2.2">
+<h3 data-number="5.2.2" class="anchored" data-anchor-id="mortality-rate-influence"><span class="header-section-number">5.2.2</span> Mortality Rate Influence:</h3>
+<p>We found a positive relationship between facility mortality rates and support for regulation. As mortality rates increased, the predicted vote percentage in favor of regulation also increased. This suggests that voters in areas with higher mortality rates at dialysis facilities were more likely to support increased oversight.</p>
 </section>
-<section id="chain-organization-effects" class="level3">
-<h3 class="anchored" data-anchor-id="chain-organization-effects">Chain Organization Effects:</h3>
+<section id="patient-experience-rating" class="level3" data-number="5.2.3">
+<h3 data-number="5.2.3" class="anchored" data-anchor-id="patient-experience-rating"><span class="header-section-number">5.2.3</span> Patient Experience Rating:</h3>
+<p>Interestingly, our analysis showed a positive relationship between patient experience ratings and support for regulation. This counterintuitive finding suggests that even in areas where patients report better experiences, there is still support for increased regulation.</p>
+</section>
+<section id="five-star-rating-and-stations-per-facility" class="level3" data-number="5.2.4">
+<h3 data-number="5.2.4" class="anchored" data-anchor-id="five-star-rating-and-stations-per-facility"><span class="header-section-number">5.2.4</span> Five Star Rating and Stations per Facility:</h3>
+<p>The associations of these metrics on voting behavior were weaker compared to staff ratings, mortality rates, and patient experience ratings. The estimated effects suggested by the posterior predictive checks were clustered around zero.</p>
+</section>
+<section id="chain-organization-effects" class="level3" data-number="5.2.5">
+<h3 data-number="5.2.5" class="anchored" data-anchor-id="chain-organization-effects"><span class="header-section-number">5.2.5</span> Chain Organization Effects:</h3>
 <p>The posterior predictive check for chain organizations showed varying levels of support for regulation across different dialysis chains, indicating that organizational factors may play a role in shaping public opinion or voting behavior.</p>
 </section>
-<section id="facility-size-considerations" class="level3">
-<h3 class="anchored" data-anchor-id="facility-size-considerations">Facility Size Considerations:</h3>
+<section id="facility-size-considerations" class="level3" data-number="5.2.6">
+<h3 data-number="5.2.6" class="anchored" data-anchor-id="facility-size-considerations"><span class="header-section-number">5.2.6</span> Facility Size Considerations:</h3>
 <p>The number of dialysis stations (a proxy for facility size) showed a slight positive relationship with voting in favor of regulation, suggesting that areas with larger facilities might be more supportive of increased oversight.</p>
 </section>
 </section>
-<section id="challenges-and-limitations" class="level2">
-<h2 class="anchored" data-anchor-id="challenges-and-limitations">Challenges and Limitations</h2>
-<section id="data-granularity" class="level3">
-<h3 class="anchored" data-anchor-id="data-granularity">Data Granularity:</h3>
-<p>While we had facility-level data for quality metrics, agregating voting data at the city and county level creates a mismatch in granularity, potentially obscuring some finer-grained relationships.</p>
+<section id="challenges-and-limitations" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="challenges-and-limitations"><span class="header-section-number">5.3</span> Challenges and Limitations</h2>
+<section id="data-granularity" class="level3" data-number="5.3.1">
+<h3 data-number="5.3.1" class="anchored" data-anchor-id="data-granularity"><span class="header-section-number">5.3.1</span> Data Granularity:</h3>
+<p>While we had facility-level data for quality metrics, aggregating voting data at the city and county level creates a mismatch in granularity, potentially obscuring some finer-grained relationships.</p>
 </section>
-<section id="temporal-alignment" class="level3">
-<h3 class="anchored" data-anchor-id="temporal-alignment">Temporal Alignment:</h3>
+<section id="temporal-alignment" class="level3" data-number="5.3.2">
+<h3 data-number="5.3.2" class="anchored" data-anchor-id="temporal-alignment"><span class="header-section-number">5.3.2</span> Temporal Alignment:</h3>
 <p>Our analysis assumed that facility metrics from a given year directly influenced voting in that year’s proposition. However, there may be lag effects or longer-term trends that our current model doesn’t capture.</p>
 </section>
-<section id="confounding-factors" class="level3">
-<h3 class="anchored" data-anchor-id="confounding-factors">Confounding Factors:</h3>
+<section id="confounding-factors" class="level3" data-number="5.3.3">
+<h3 data-number="5.3.3" class="anchored" data-anchor-id="confounding-factors"><span class="header-section-number">5.3.3</span> Confounding Factors:</h3>
 <p>Despite our efforts to control for various factors, there may be unmeasured confounders influencing both facility quality and voting patterns that our model doesn’t account for.</p>
-<p>In conclusion, our analysis provides novel insights into the relationship between dialysis facility quality and public support for industry regulation. While we’ve uncovered several interesting patterns, the complexity of the issue and limitations in our data suggest that further research is needed to fully understand these relationships and their policy implications.</p>
+</section>
+<section id="causal-interpretation" class="level3" data-number="5.3.4">
+<h3 data-number="5.3.4" class="anchored" data-anchor-id="causal-interpretation"><span class="header-section-number">5.3.4</span> Causal Interpretation:</h3>
+<p>While our model reveals associations between facility metrics and voting patterns, caution should be exercised in interpreting these relationships as causal. Further research, possibly including quasi-experimental designs, would be needed to establish causal links.</p>
+<p>In conclusion, our analysis provides novel insights into the complex relationship between dialysis facility quality and public support for industry regulation. The varying effects across counties and organizations highlight the importance of considering local contexts when interpreting these results. While we’ve uncovered several interesting patterns, the complexity of the issue and limitations in our data suggest that further research is needed to fully understand these relationships and their policy implications.</p>
 </section>
 </section>
 </section>
