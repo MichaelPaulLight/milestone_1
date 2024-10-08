@@ -8,8 +8,19 @@ Background:
 Our project explores trends in dialysis clinic access, quality of care, and ballot results in the state of California in recent years using data from the Center for Medicare and Medicaid Services (CMS), California Health and Human Services (CHHS), and California Secretary of State (SOS).
 
 Installation
-1. 001
+- To install the necessary packages, run the notebook in 001_env-requirements.
 
 
-Usage
-1. Run 004/001
+Structure and Usage
+
+Our folders are broken down into the following structure:
+    001_env-requirenemts
+    002_materials-and-methods
+    003_data
+    004_data-processing-scripts
+    005_data-analysis-scripts
+    006_visualization-scripts
+    007_visualizations
+    008_supplemental
+    009_report
+
