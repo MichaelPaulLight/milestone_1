@@ -264,6 +264,12 @@ To maximize the granularity of our analysis, we chose to focus on city-level dat
 
 Given the limitations and challenges detailed below, we were able to gain some insights into our primary research question: **Is the quality of care of dialysis facilities correlated with voting in favor of or against dialysis industry regulation?**
 
+We were also able to use visual analysis of the un-modeled data to gain some insights into the geographic coverage of dialysis facilities in the state.
+
+#| echo: false
+#| out.width: "100%"
+knitr::include_url("../007_visualizations/2022_missing_data_heatmap.html", height = "600px")
+
 ## Analysis Steps
 
 ### Data Preparation
@@ -314,27 +320,27 @@ The associations of these metrics on voting behavior were weaker compared to sta
 
 The posterior predictive check for chain organizations showed varying levels of support for regulation across different dialysis chains, indicating that organizational factors may play a role in shaping public opinion or voting behavior.
 
+![Posterior Predictive Check for Chain Organizations](../007_visualizations/pp_chain_org.png){width=90%}
+
 ### Facility Size Considerations:
 
 The number of dialysis stations (a proxy for facility size) showed a slight positive relationship with voting in favor of regulation, suggesting that areas with larger facilities might be more supportive of increased oversight.
 
 ## Challenges and Limitations
 
-### Data Granularity:
+Our analysis faced several key constraints that warrant consideration:
 
-While we had facility-level data for quality metrics, aggregating voting data at the city and county level creates a mismatch in granularity, potentially obscuring some finer-grained relationships.
+1. **Data Granularity**: Facility-level quality metrics were paired with city/county-level voting data, potentially obscuring finer-grained relationships and risking ecological fallacy.
 
-### Temporal Alignment:
+2. **Temporal Dynamics**: The model assumes immediate effects of facility metrics on voting behavior, potentially overlooking lagged effects or longer-term trends.
 
-Our analysis assumed that facility metrics from a given year directly influenced voting in that year's proposition. However, there may be lag effects or longer-term trends that our current model doesn't capture.
+3. **Confounding Factors**: Unmeasured variables such as socioeconomic factors, political leanings, or media coverage may influence both facility quality and voting patterns.
 
-### Confounding Factors:
+4. **Causal Interpretation**: While our model reveals associations, causal relationships cannot be inferred without further quasi-experimental or instrumental variable approaches.
 
-Despite our efforts to control for various factors, there may be unmeasured confounders influencing both facility quality and voting patterns that our model doesn't account for.
+5. **Measurement and Data Quality**: Quality metrics and aggregated voting data may not perfectly capture true care quality or individual voting behavior, introducing potential measurement error.
 
-### Causal Interpretation:
+6. **External Validity**: Findings from California may not generalize to regions with different political, demographic, or healthcare landscapes.
 
-While our model reveals associations between facility metrics and voting patterns, caution should be exercised in interpreting these relationships as causal. Further research, possibly including quasi-experimental designs, would be needed to establish causal links.
-
-In conclusion, our analysis provides novel insights into the complex relationship between dialysis facility quality and public support for industry regulation. The varying effects across counties and organizations highlight the importance of considering local contexts when interpreting these results. While we've uncovered several interesting patterns, the complexity of the issue and limitations in our data suggest that further research is needed to fully understand these relationships and their policy implications.
+These limitations highlight opportunities for future research, including more granular data collection, time-series analyses, incorporation of additional variables, and replication studies in diverse contexts.
 
