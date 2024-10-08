@@ -39,11 +39,15 @@ report_colors <- c("#3498db", "#e74c3c", "#2ecc71", "#f39c12", "#9b59b6",
                    "#1abc9c", "#d35400", "#34495e", "#7f8c8d", "#2980b9", "#8e44ad")
 ```
 
+Reading in the city-aggregated dataset imputing 2019 patient experience star ratings and hospital readmission categories values for 2018. 
+
 ```{r}
 city_df <- read_parquet("../../003_data/003_merged-data/merged_cms_ballot-measures_by-city.parquet")
 
+# Impute 2019 values for patient experience star ratings and hospital readmission categories
+
 city_df <- city_df  |> 
-  # First, create a temporary dataframe with 2019 values for variables we need to impute
+  # First,we create a temporary dataframe with 2019 values for variables we need to impute
   left_join(
     city_df |> 
       filter(year == 2019) |>
@@ -54,7 +58,7 @@ city_df <- city_df  |>
       ),
     by = "provider_number"
   ) |>
-  # Then, replace 2018 values with 2019 values for both variables
+  # Then, we replace 2018 values with 2019 values for both variables
   mutate(
     ich_cahps_survey_of_patients_experiences_star_rating = case_when(
       year == 2018 ~ ich_cahps_survey_of_patients_experiences_star_rating_2019,
@@ -65,9 +69,26 @@ city_df <- city_df  |>
       TRUE ~ patient_hospital_readmission_category
     )
   ) |>
-  # Finally, remove the temporary columns
+  # Finally, we remove the temporary column
   select(-ends_with("_2019"))
 
+```
+
+
+This below code prepares the dialysis facility data for analysis:
+
+1. Converts quality metrics to numeric type (mortality rate, staff rating, etc.)
+2. Creates an ordered factor for hospital readmission categories
+3. Filters data for years 2018, 2020, and 2022, removing rows with missing city data
+4. Aggregates data by facility and year, calculating:
+   - Total votes and yes votes
+   - Vote percentage
+   - Quality metrics (using first occurrence in group)
+5. Selects relevant columns and removes duplicates and rows with missing values
+
+The resulting `filtered_city_df` contains clean, aggregated data for each facility-year combination, including voting results and quality metrics.\
+
+```{r}
 filtered_city_df <- (
   city_df 
   |> mutate(mortality_rate_facility = as.numeric(mortality_rate_facility),
@@ -100,6 +121,11 @@ filtered_city_df <- (
   |> drop_na()
 )
 ```
+
+This section defines the model formula and fits the Bayesian regression model using brms.
+The model predicts vote percentage based on various variables of interest, including quality metrics (staff rating, mortality rate, patient experience rating), facility characteristics (number of dialysis stations), and other factors (hospital readmission category).
+
+It's commented out because the model has already been fitted and saved as an RDS file, which is loaded in the next code chunk for further analysis.
 
 ```{r}
 # model_formula <- bf(
