@@ -344,3 +344,19 @@ Our analysis faced several key constraints that warrant consideration:
 
 These limitations highlight opportunities for future research, including more granular data collection, time-series analyses, incorporation of additional variables, and replication studies in diverse contexts.
 
+# Future Work and Next Steps
+
+Our Bayesian analysis of dialysis facility quality metrics and voting patterns on dialysis-related propositions in California has provided valuable insights. However, several avenues for future research and methodological improvements remain:
+
+1. **Granular Data Collection**:
+   - Incorporate sub-city (such as census tract) voting data to mitigate ecological fallacy risks.
+   - Collect more detailed patient-level data to better understand the link between personal experiences and voting behavior.
+
+2. **Temporal Analysis**:
+   - Investigate how changes in facility quality over time correlate with shifts in voting behavior.
+
+3. **Additional Variables**:
+   - Incorporate socioeconomic factors, political leanings, and media coverage data as potential confounders.
+
+4. **Causal Inference**:
+   - Explore natural experiments, such as sudden changes in facility ownership or closures, and their impact on voting behavior.
