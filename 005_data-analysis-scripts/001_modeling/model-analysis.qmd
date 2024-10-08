@@ -39,11 +39,15 @@ report_colors <- c("#3498db", "#e74c3c", "#2ecc71", "#f39c12", "#9b59b6",
                    "#1abc9c", "#d35400", "#34495e", "#7f8c8d", "#2980b9", "#8e44ad")
 ```
 
+Reading in the city-aggregated dataset imputing 2019 patient experience star ratings and hospital readmission categories values for 2018. 
+
 ```{r}
 city_df <- read_parquet("../../003_data/003_merged-data/merged_cms_ballot-measures_by-city.parquet")
 
+# Impute 2019 values for patient experience star ratings and hospital readmission categories
+
 city_df <- city_df  |> 
-  # First, create a temporary dataframe with 2019 values for variables we need to impute
+  # First,we create a temporary dataframe with 2019 values for variables we need to impute
   left_join(
     city_df |> 
       filter(year == 2019) |>
@@ -54,7 +58,7 @@ city_df <- city_df  |>
       ),
     by = "provider_number"
   ) |>
-  # Then, replace 2018 values with 2019 values for both variables
+  # Then, we replace 2018 values with 2019 values for both variables
   mutate(
     ich_cahps_survey_of_patients_experiences_star_rating = case_when(
       year == 2018 ~ ich_cahps_survey_of_patients_experiences_star_rating_2019,
@@ -65,9 +69,26 @@ city_df <- city_df  |>
       TRUE ~ patient_hospital_readmission_category
     )
   ) |>
-  # Finally, remove the temporary columns
+  # Finally, we remove the temporary column
   select(-ends_with("_2019"))
 
+```
+
+
+This below code prepares the dialysis facility data for analysis:
+
+1. Converts quality metrics to numeric type (mortality rate, staff rating, etc.)
+2. Creates an ordered factor for hospital readmission categories
+3. Filters data for years 2018, 2020, and 2022, removing rows with missing city data
+4. Aggregates data by facility and year, calculating:
+   - Total votes and yes votes
+   - Vote percentage
+   - Quality metrics (using first occurrence in group)
+5. Selects relevant columns and removes duplicates and rows with missing values
+
+The resulting `filtered_city_df` contains clean, aggregated data for each facility-year combination, including voting results and quality metrics.\
+
+```{r}
 filtered_city_df <- (
   city_df 
   |> mutate(mortality_rate_facility = as.numeric(mortality_rate_facility),
@@ -100,6 +121,11 @@ filtered_city_df <- (
   |> drop_na()
 )
 ```
+
+This section defines the model formula and fits the Bayesian regression model using brms.
+The model predicts vote percentage based on various variables of interest, including quality metrics (staff rating, mortality rate, patient experience rating), facility characteristics (number of dialysis stations), and other factors (hospital readmission category).
+
+It's commented out because the model has already been fitted and saved as an RDS file, which is loaded in the next code chunk for further analysis.
 
 ```{r}
 # model_formula <- bf(
@@ -448,6 +474,17 @@ ggplot(predictions, aes(x = patient_experience_rating, y = .epred)) +
   )
 ```
 
+This plot visualizes the posterior distributions of the model parameters, providing insights into the effects of various factors on the predicted vote percentage in favor of regulation. The visualization uses a half-eye plot (also known as a ridgeline plot) to display the distribution of each parameter's posterior samples.
+
+Each row in the plot represents a different model parameter, with the parameter names listed on the y-axis. The x-axis shows the parameter estimates, indicating the magnitude and direction of each parameter's effect on the vote percentage.
+The half-eye plot for each parameter consists of three main components:
+1. The shaded area represents the full distribution of posterior samples, with darker regions indicating higher density of samples.
+2. The thick horizontal bar in the center of each distribution shows the 50% credible interval, which is the range within which we expect the true parameter value to fall with 50% probability.
+3. The thin horizontal line extending from the thick bar represents the 95% credible interval, providing a wider range of plausible parameter values.
+
+A vertical dashed line at x=0 is included to easily identify whether a parameter's effect is likely to be positive, negative, or centered around zero (indicating little to no effect).
+
+The parameters are ordered based on their median effect size, with those having the largest positive effect at the top and those with the largest negative effect at the bottom.
 
 ```{r}
 posterior_samples <- model |>
@@ -498,28 +535,6 @@ ggplot(posterior_samples, aes(y = parameter, x = value, fill = parameter)) +
 ```
 
 
-```{r}
-mcmc_trace(model, pars = c("b_mortality_rate_facility", "b_n_dialysis_stations", 
-                              "b_five_star", "b_patient_experience_rating", "b_staff_rating"))
-
-# Density plots for key parameters
-mcmc_dens_overlay(model, pars = c("b_mortality_rate_facility", "b_n_dialysis_stations", 
-                                     "b_five_star", "b_patient_experience_rating", "b_staff_rating"))
-
-# Posterior predictive intervals
-post_pred <- fitted(model, probs = c(0.025, 0.975))
-pred_plot <- ggplot(cbind(filtered_city_df, post_pred), 
-                    aes(x = vote_perc, y = Estimate)) +
-  geom_point() +
-  geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
-  geom_errorbar(aes(ymin = Q2.5, ymax = Q97.5), alpha = 0.3) +
-  theme_minimal() +
-  ggtitle("Posterior Predictive Intervals")
-print(pred_plot)
-
-# Posterior distribution of profit/nonprofit
-pp_check(model, type = "dens_overlay", nsamples = 100)
-```
 
 ```{r}
 # Trace plots
@@ -575,126 +590,3 @@ pp_check(model, type = "dens_overlay", nsamples = 100) +
   theme_report() +
   theme(legend.position = "none")
 ```
-
-```{r}
-post_pred <- fitted(model, probs = c(0.025, 0.975))
-pred_plot <- ggplot(cbind(filtered_city_df, post_pred), 
-                    aes(x = vote_perc, y = Estimate)) +
-  # Make the dashed line more prominent
-  geom_abline(intercept = 0, slope = 1, color = report_colors[2], linetype = "dashed", 
-              linewidth = 1, alpha = 0.8) +
-  # Reduce alpha of error bars and make them thinner
-  geom_errorbar(aes(ymin = Q2.5, ymax = Q97.5), alpha = 0.1, color = report_colors[3], 
-                width = 0, linewidth = 0.5) +
-  # Slightly increase alpha of points but make them smaller
-  geom_point(color = report_colors[1], alpha = 0.6, size = 1) +
-  theme_report() +
-  labs(
-    title = "Posterior Predictive Intervals",
-    subtitle = "Comparing observed vs. predicted vote percentages",
-    x = "Observed Vote Percentage",
-    y = "Predicted Vote Percentage"
-  ) +
-  scale_x_continuous(labels = scales::percent_format(accuracy = 1)) +
-  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
-  # Add a light grid to help with readability
-  theme(panel.grid.major = element_line(color = "gray90", linewidth = 0.2),
-        panel.grid.minor = element_blank())
-
-print(pred_plot)
-```
-
-```{r}
-
-conditional_effects(model)
-
-```
-
-```{r}
-library(patchwork)
-
-# Get conditional effects
-ce <- conditional_effects(model)
-
-# Function to create a styled plot for each effect
-plot_effect <- function(effect_data, effect_name) {
-  ggplot(effect_data, aes(x = .data[[effect_name]], y = estimate__)) +
-    geom_ribbon(aes(ymin = lower__, ymax = upper__), fill = report_colors[1], alpha = 0.3) +
-    geom_line(color = report_colors[2], size = 1) +
-    labs(
-      title = paste("Effect of", gsub("_", " ", effect_name)),
-      x = gsub("_", " ", effect_name),
-      y = "Predicted Vote Percentage"
-    ) +
-    scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
-    theme_report() +
-    theme(
-      plot.title = element_text(size = 10),
-      axis.title = element_text(size = 8),
-      axis.text = element_text(size = 7)
-    )
-}
-
-# Create a list of plots
-plots <- map2(ce, names(ce), plot_effect)
-
-# Combine plots using patchwork
-combined_plot <- wrap_plots(plots, ncol = 2) +
-  plot_annotation(
-    title = "Conditional Effects of Model Parameters",
-    subtitle = "Shaded areas represent 95% credible intervals",
-    theme = theme(
-      plot.title = element_text(size = 16, face = "bold"),
-      plot.subtitle = element_text(size = 12)
-    )
-  )
-
-# Print the combined plot
-print(combined_plot)
-```
-
-```{r}
-param_names <- c(
-  b_mortality_rate_facility = "Mortality Rate",
-  b_n_dialysis_stations = "Number of Dialysis Stations",
-  b_five_star = "Five Star Rating",
-  b_patient_experience_rating = "Patient Experience Rating",
-  b_staff_rating = "Staff Rating"
-)
-
-mcmc_areas(
-  model, 
-  pars = c("b_mortality_rate_facility", "b_n_dialysis_stations", 
-           "b_five_star", "b_patient_experience_rating", "b_staff_rating"),
-  prob = 0.95,  # 95% credible interval
-  prob_outer = 0.99  # 99% credible interval
-) +
-  scale_fill_manual(values = report_colors[1:5]) +
-  scale_y_discrete(labels = param_names) +  # Use readable parameter names
-  labs(
-    title = "Posterior Distributions of Model Parameters",
-    subtitle = "Shaded areas represent 95% and 99% credible intervals",
-    x = "Parameter Estimate",
-    y = NULL  # Remove y-axis label as parameter names are self-explanatory
-  ) +
-  theme_report() +
-  theme(
-    legend.position = "none",
-    axis.text.y = element_text(hjust = 1, size = 10),
-    axis.text.x = element_text(size = 9),
-    plot.subtitle = element_text(size = 10, color = "#7f8c8d"),
-    panel.grid.major.y = element_line(color = "gray90", size = 0.1),
-    panel.grid.minor = element_blank()
-  ) +
-  geom_vline(xintercept = 0, linetype = "dashed", color = "#2c3e50", alpha = 0.7) +
-  scale_x_continuous(
-    labels = scales::label_number(accuracy = 0.01),
-    breaks = scales::pretty_breaks(n = 6)
-  )
-```
-
-
-```{r}
-conditional_effects(model)
-```
-

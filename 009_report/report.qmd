@@ -1,15 +1,23 @@
 ---
-title: "Project Findings"
-author: "Iris Lin, Kasra Afzali, Michael Light"
+title: "model-visualization"
 format: 
-  html:
+  pdf:
     toc: true
-    code-fold: true
-    css: styles.css
-    theme: cosmo
-execute:
-  echo: true
-  warning: false
+    number-sections: true
+    colorlinks: true
+    papersize: letter
+    geometry:
+      - top=30mm
+      - left=20mm
+      - right=20mm
+      - bottom=30mm
+    fontsize: 11pt
+    linestretch: 1.15
+    header-includes:
+      - \usepackage{fancyhdr}
+      - \pagestyle{fancy}
+      - \fancyhead[R]{\thepage}
+editor: visual
 ---
 
 # Project Motivation
@@ -102,7 +110,12 @@ Observations of Quality of Care metrics in our data are categorized by:
 
 ### Center for Medicare and Medicaid Services (CMS) Quarterly Dialysis Facility Compare Dataset
 
--   **Time range**: 2017 to 2024
+-   **Source Details:**
+    -   Type: .zip & .xlsx
+    -   Years: 2017-2024
+    -   Combined Size: 5,684 rows, 173 columns
+    -   Link: [CMS Dialysis Facilities Data](https://data.cms.gov/provider-data/topics/dialysis-facilities)
+
 -   **Key features**:
     -   Star ratings for dialysis facilities
     -   Patient experience metrics
@@ -123,6 +136,12 @@ Observations of Quality of Care metrics in our data are categorized by:
 
 ### California Secretary of State's (SOS) Statement of Vote for Ballot Measures
 
+-   **Source Details:**
+    -   Type: .xlsx
+    -   Years: 2018, 2020, 2022
+    -   Combined Size: 7,122 rows, 7 columns
+    - Link: [CA SOS Statewide Election Results](https://www.sos.ca.gov/elections/prior-elections/statewide-election-results)
+
 -   **Elections covered**: November 2022, 2020, and 2018
 -   **Focus**: Propositions regarding dialysis clinic requirements
 -   **Geographic levels**:
@@ -137,6 +156,12 @@ Observations of Quality of Care metrics in our data are categorized by:
 
 ### California Health and Human Services Specialty Care Clinic Complete Data Set
 
+-   **Source Details:**
+    -   Type: .xlsx
+    -   Years: 2013-2023
+    -   Combined Size: 6,605 rows, 143 columns
+    -   Link: [CHHS Specialty Care Clinic Data](https://data.chhs.ca.gov/dataset/specialty-care-clinic-complete-data-set)
+
 -   **Time range**: 2013 through 2023
 -   **Purpose**: Supplement CMS dataset with additional geographic data
 -   **Additional facility-level features**:
@@ -149,14 +174,6 @@ Observations of Quality of Care metrics in our data are categorized by:
 -   Multiple geographic levels allow for aggregation and analysis at various scales
 -   Combination of clinical data (CMS) with voting data (SOS) enables exploration of potential correlations between care quality and voting behavior
 -   Supplementary geographic data enhances spatial analysis capabilities
-
-## Features of Interest
-
-| Data Source                                                                   | File Information                                                                                                                                                      | Features                                                                                                                                                                                                                                                                                                                                                                                       |
-|-------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Center for Medicare and Medicaid Services Dialysis Facilities                 | Type: .zip & .xlsx<br>Years: 2017-2024<br>Combined Size: 5,684 rows, 173 columns<br>Link: <https://data.cms.gov/provider-data/topics/dialysis-facilities>             | \- Facility Name<br>- County<br>- City<br>- Facility Quality of Care Rating<br>- Dialysis Center Staff Rating<br>- Patient Experience Rating<br>- Patient Readmission Category (Worse Than Expected, As Expected, Better Than Expected)<br>- Mortality Rate<br>- Number of Dialysis Stations<br>- Licensee Type (Non-Profit, For-Profit.)<br>- Organization Affiliation (Independent or Chain) |
-| California Secretary of State November Ballot Measures                        | Type: .xlsx<br>Years: 2018, 2020, 2022<br>Combined Size: 7,122 rows, 7 columns<br>Link: <https://www.sos.ca.gov/elections/prior-elections/statewide-election-results> | \- County<br>- Congressional District<br>- City<br>- Ballot Proposition<br>- Yes Vote Count for Proposition<br>- No Vote Count for Proposition                                                                                                                                                                                                                                                 |
-| California Health and Human Services Speciality Care Clinic Complete Data Set | Type: .xlsx<br>Years: 2013-2023<br>Combined Size: 6,605 rows, 143 columns<br>Link: <https://data.chhs.ca.gov/dataset/specialty-care-clinic-complete-data-set>         | \- Facility Name<br>- County<br>- Zip Code<br>- Assembly District<br>- Senate District<br>- Congressional District<br>- Census Tract<br>- Latitude and Longitude                                                                                                                                                                                                                               |
 
 # Data Manipulation Methods
 
@@ -288,11 +305,18 @@ We created visualizations to illustrate the effects of key variables on voting o
 
 ### Staff Rating Impact:
 
-Our analysis revealed a negative relationship between staff ratings and the percentage of votes in favor of dialysis regulation. This suggests that areas with lower-rated dialysis facility staff were more likely to support increased regulation.
+Our analysis revealed a negative relationship between staff ratings and the percentage of votes in favor of dialysis regulation. This suggests that areas with lower-rated dialysis facility staff were more likely to support increased regulation. The effect of staff rating varied across counties, with some counties showing stronger negative relationships than others.
 
 ### Mortality Rate Influence:
 
-We found a positive relationship between facility mortality rates and support for regulation.
+We found a positive relationship between facility mortality rates and support for regulation. As mortality rates increased, the predicted vote percentage in favor of regulation also increased. This suggests that voters in areas with higher mortality rates at dialysis facilities were more likely to support increased oversight.
+
+### Patient Experience Rating:
+
+Interestingly, our analysis showed a positive relationship between patient experience ratings and support for regulation. This counterintuitive finding suggests that even in areas where patients report better experiences, there is still support for increased regulation.
+
+### Five Star Rating and Stations per Facility: 
+The associations of these metrics on voting behavior were weaker compared to staff ratings, mortality rates, and patient experience ratings. The estimated effects suggested by the posterior predictive checks were clustered around zero.
 
 ### Chain Organization Effects:
 
@@ -306,7 +330,7 @@ The number of dialysis stations (a proxy for facility size) showed a slight posi
 
 ### Data Granularity:
 
-While we had facility-level data for quality metrics, agregating voting data at the city and county level creates a mismatch in granularity, potentially obscuring some finer-grained relationships.
+While we had facility-level data for quality metrics, aggregating voting data at the city and county level creates a mismatch in granularity, potentially obscuring some finer-grained relationships.
 
 ### Temporal Alignment:
 
@@ -316,4 +340,8 @@ Our analysis assumed that facility metrics from a given year directly influenced
 
 Despite our efforts to control for various factors, there may be unmeasured confounders influencing both facility quality and voting patterns that our model doesn't account for.
 
-In conclusion, our analysis provides novel insights into the relationship between dialysis facility quality and public support for industry regulation. While we've uncovered several interesting patterns, the complexity of the issue and limitations in our data suggest that further research is needed to fully understand these relationships and their policy implications.
+### Causal Interpretation:
+
+While our model reveals associations between facility metrics and voting patterns, caution should be exercised in interpreting these relationships as causal. Further research, possibly including quasi-experimental designs, would be needed to establish causal links.
+
+In conclusion, our analysis provides novel insights into the complex relationship between dialysis facility quality and public support for industry regulation. The varying effects across counties and organizations highlight the importance of considering local contexts when interpreting these results. While we've uncovered several interesting patterns, the complexity of the issue and limitations in our data suggest that further research is needed to fully understand these relationships and their policy implications.
