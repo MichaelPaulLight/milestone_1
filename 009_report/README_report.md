@@ -1,12 +1,16 @@
 # Main files in this folder
 
-- `report.qmd`: The main Quarto document containing the full project report, including background, methodology, analysis, and results. To compile an up to date version of the report, install Quarto, navigate to this folder, and run:
+- `report.qmd`: The main Quarto document containing the full project report, including background, methodology, analysis, and results. 
+
+To compile an up to date version of the report (stored as report.html and report.pdf), install Quarto, navigate to this folder, and run:
 
 ```
 quarto render report.qmd
 ```
 
 - `styles.css`: CSS file for styling the HTML output of the report. report.qmd draws on this file to style itself automatically.
+
+- `16-irisqlin-kasra-mikalite-kb.pdf` is a pdf of the html version of report.qmd as it was rendered on 2024-10-07.
 
 ## Notes on Quarto
 
