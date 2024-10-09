@@ -23,12 +23,12 @@ library(tidybayes)
 library(modelr)
 ```
 
-Defining a style sheet to adhere to styles.css
+Defining a custom theme to adhere to styles.css in 009_report. 
 
 ```{r}
 library(ggthemes)
 
-# Define a custom theme
+# Definng a custom theme
 theme_report <- function() {
   theme_minimal() +
   theme(
@@ -41,7 +41,7 @@ theme_report <- function() {
   )
 }
 
-# Define a color palette
+# Defining a color palette
 report_colors <- c("#3498db", "#e74c3c", "#2ecc71", "#f39c12", "#9b59b6", 
                    "#1abc9c", "#d35400", "#34495e", "#7f8c8d", "#2980b9", "#8e44ad")
 ```
